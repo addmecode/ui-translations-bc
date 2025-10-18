@@ -38,7 +38,15 @@ table 50100 "ADD_ElementTranslation"
         {
             Caption = 'Element Name';
         }
-        field(8; "Element Source Caption"; Text[250])
+        field(8; "Developer Note"; Text[250])
+        {
+            Caption = 'Developer Note';
+        }
+        field(9; "Xliff Note"; Text[250])
+        {
+            Caption = 'Xliff Note';
+        }
+        field(10; "Element Source Caption"; Text[250])
         {
             Caption = 'Element Source Caption';
         }

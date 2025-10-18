@@ -66,7 +66,25 @@ table 50101 "ADD_ElementTranslated"
                 "Extension Version" = field("Extension Version"),
                 "Trans Unit ID" = field("Trans Unit ID")));
         }
-        field(10; "Element Source Caption"; Text[250])
+        field(10; "Developer Note"; Text[250])
+        {
+            Caption = 'Developer Note';
+            FieldClass = FlowField;
+            CalcFormula = Lookup(ADD_ElementTranslation."Developer Note" Where(
+                "Extension ID" = field("Extension ID"),
+                "Extension Version" = field("Extension Version"),
+                "Trans Unit ID" = field("Trans Unit ID")));
+        }
+        field(11; "Xliff Note"; Text[250])
+        {
+            Caption = 'Xliff Note';
+            FieldClass = FlowField;
+            CalcFormula = Lookup(ADD_ElementTranslation."Xliff Note" Where(
+                "Extension ID" = field("Extension ID"),
+                "Extension Version" = field("Extension Version"),
+                "Trans Unit ID" = field("Trans Unit ID")));
+        }
+        field(12; "Element Source Caption"; Text[250])
         {
             Caption = 'Element Source Caption';
             FieldClass = FlowField;

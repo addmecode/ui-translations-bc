@@ -10,16 +10,22 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ImportedFileName: text;
         ExtTranslMod: Record ADD_ExtensionTranslation;
         TransUnitNodeList: XmlNodeList;
+        NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
         TuId: Text;
-        Node: XmlNode;
-        Attributes: XmlAttributeCollection;
-        Attr: XmlAttribute;
+        TransUnitNode: XmlNode;
+        NoteNode: XmlNode;
+        TransUnitAttributes: XmlAttributeCollection;
+        NoteAttributes: XmlAttributeCollection;
+        TransUnitAttr: XmlAttribute;
+        NoteAttr: XmlAttribute;
         Root: XmlElement;
         NsUri: Text;
         NewElTransl: Record ADD_ElementTranslation;
         SourceNode: XmlNode;
         SourceTxt: text;
+        DeveloperNote: Text;
+        XliffNote: Text;
     begin
         ElTransl.SetRange("Extension ID", ExtTransl."Extension ID");
         if ElTransl.FindSet() then begin
@@ -43,18 +49,32 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         NsUri := Root.NamespaceUri();
         NsMgr.AddNamespace('x', NsUri);
         XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
-        foreach Node in TransUnitNodeList do begin
-            Attributes := Node.AsXmlElement().Attributes();
-            Attributes.Get('id', Attr);
-            TuId := Attr.Value();
+        foreach TransUnitNode in TransUnitNodeList do begin
+            TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
+            TransUnitAttributes.Get('id', TransUnitAttr);
+            TuId := TransUnitAttr.Value();
 
-            Node.SelectSingleNode('x:source', NsMgr, SourceNode);
+            TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
             SourceTxt := SourceNode.AsXmlElement().InnerText();
+
+            TransUnitNode.SelectNodes('x:note', NsMgr, NoteNodeList);
+            foreach NoteNode in NoteNodeList do begin
+                NoteAttributes := NoteNode.AsXmlElement().Attributes();
+                NoteAttributes.Get('from', NoteAttr);
+                case NoteAttr.Value() of
+                    'Developer':
+                        DeveloperNote := NoteNode.AsXmlElement().InnerText();
+                    'Xliff Generator':
+                        XliffNote := NoteNode.AsXmlElement().InnerText();
+                end;
+            end;
 
             NewElTransl.Init();
             NewElTransl."Extension ID" := ExtTransl."Extension ID";
             NewElTransl."Extension Version" := ExtTransl."Extension Version";
             NewElTransl."Trans Unit ID" := TuId;
+            NewElTransl."Developer Note" := DeveloperNote;
+            NewElTransl."Xliff Note" := XliffNote;
             NewElTransl."Element Source Caption" := SourceTxt;
             NewElTransl.Insert(false);
         end;

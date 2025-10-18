@@ -16,6 +16,14 @@ page 50102 "ADD_ExtTranslSubform"
                 {
                     ToolTip = 'Specifies the value of the Trans Unit ID field.', Comment = 'Where am i';
                 }
+                field("Developer Note"; Rec."Developer Note")
+                {
+                    ToolTip = 'Specifies the value of the Developer Note field.', Comment = 'Where am i';
+                }
+                field("Xliff Note"; Rec."Xliff Note")
+                {
+                    ToolTip = 'Specifies the value of the Xliff Note field.', Comment = 'Where am i';
+                }
                 field("Object Type"; Rec."Object Type")
                 {
                     ToolTip = 'Specifies the value of the Object Type field.', Comment = '%';
