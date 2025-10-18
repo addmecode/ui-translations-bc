@@ -12,6 +12,10 @@ page 50102 "ADD_ExtTranslSubform"
         {
             repeater(General)
             {
+                field("Trans Unit ID"; Rec."Trans Unit ID")
+                {
+                    ToolTip = 'Specifies the value of the Trans Unit ID field.', Comment = 'Where am i';
+                }
                 field("Object Type"; Rec."Object Type")
                 {
                     ToolTip = 'Specifies the value of the Object Type field.', Comment = '%';

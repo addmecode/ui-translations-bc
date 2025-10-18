@@ -57,7 +57,7 @@ table 50101 "ADD_ElementTranslated"
                 "Extension Version" = field("Extension Version"),
                 "Trans Unit ID" = field("Trans Unit ID")));
         }
-        field(9; "Element Name"; Text[30])
+        field(9; "Element Name"; Text[250])
         {
             Caption = 'Element Name';
             FieldClass = FlowField;
@@ -66,7 +66,7 @@ table 50101 "ADD_ElementTranslated"
                 "Extension Version" = field("Extension Version"),
                 "Trans Unit ID" = field("Trans Unit ID")));
         }
-        field(10; "Element Source Caption"; Text[30])
+        field(10; "Element Source Caption"; Text[250])
         {
             Caption = 'Element Source Caption';
             FieldClass = FlowField;

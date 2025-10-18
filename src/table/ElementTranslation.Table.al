@@ -34,11 +34,11 @@ table 50100 "ADD_ElementTranslation"
         {
             Caption = 'Element Type';
         }
-        field(7; "Element Name"; Text[30])
+        field(7; "Element Name"; Text[250])
         {
             Caption = 'Element Name';
         }
-        field(8; "Element Source Caption"; Text[30])
+        field(8; "Element Source Caption"; Text[250])
         {
             Caption = 'Element Source Caption';
         }
