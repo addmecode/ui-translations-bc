@@ -156,6 +156,44 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit(XliffNoteHyphenPart.Substring(XliffNoteHyphenPart.IndexOf(' ') + 1));
     end;
 
+    procedure RunObject(ElemTransl: Record ADD_ElementTranslation)
+    var
+        AllObj: Record AllObjWithCaption;
+    begin
+        case UpperCase(ElemTransl."Object Type") of
+            'TABLE':
+                AllObj.SetRange("Object Type", AllObj."Object Type"::Table);
+            'PAGE':
+                AllObj.SetRange("Object Type", AllObj."Object Type"::Page);
+            else
+                Error('Object Type %1 is not supported', ElemTransl."Object Type");
+        end;
+        AllObj.SetRange("Object Name", ElemTransl."Object Name");
+        if AllObj.FindFirst() then begin
+            RunObject(AllObj."Object Type", AllObj."Object ID");
+            Exit;
+        end;
+
+        AllObj.SetRange("Object Name", '');
+        AllObj.SetRange("Object Caption", ElemTransl."Object Name");
+        if AllObj.FindFirst() then begin
+            RunObject(AllObj."Object Type", AllObj."Object ID");
+            Exit;
+        end;
+    end;
+
+    local procedure RunObject(ObjType: Integer; ObjectId: Integer)
+    var
+        AllObj: Record AllObjWithCaption;
+    begin
+        case ObjType of
+            AllObj."Object Type"::Page:
+                PAGE.Run(ObjectId);
+            AllObj."Object Type"::Table:
+                Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
+        end;
+    end;
+
     local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtensionTranslation)
     var
         ElTransl: Record ADD_ElementTranslation;

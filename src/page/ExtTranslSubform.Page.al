@@ -47,4 +47,27 @@ page 50102 "ADD_ExtTranslSubform"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            group("Run")
+            {
+                Caption = 'Run';
+                Image = Process;
+                action("Run Object")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Run Object';
+                    Image = Process;
+                    trigger OnAction()
+                    var
+                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                    begin
+                        ExtTranslMgt.RunObject(Rec);
+                    end;
+                }
+            }
+        }
+    }
 }
