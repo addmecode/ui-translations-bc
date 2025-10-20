@@ -26,6 +26,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         SourceTxt: text;
         DeveloperNote: Text;
         XliffNote: Text;
+        TableFieldStartPos: Integer;
     begin
         ElTransl.SetRange("Extension ID", ExtTransl."Extension ID");
         if ElTransl.FindSet() then begin
@@ -73,9 +74,39 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Extension ID" := ExtTransl."Extension ID";
             NewElTransl."Extension Version" := ExtTransl."Extension Version";
             NewElTransl."Trans Unit ID" := TuId;
-            NewElTransl."Developer Note" := DeveloperNote;
-            NewElTransl."Xliff Note" := XliffNote;
-            NewElTransl."Element Source Caption" := SourceTxt;
+            TableFieldStartPos := 1;
+            NewElTransl."Developer Note 1" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 1"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 1");
+            NewElTransl."Developer Note 2" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 2"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 2");
+            NewElTransl."Developer Note 3" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 3"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 3");
+            NewElTransl."Developer Note 4" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 4"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 4");
+            NewElTransl."Developer Note 5" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 5"));
+
+            TableFieldStartPos := 1;
+            NewElTransl."Xliff Note 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 1"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 1");
+            NewElTransl."Xliff Note 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 2"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 2");
+            NewElTransl."Xliff Note 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 3"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 3");
+            NewElTransl."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 4"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 4");
+            NewElTransl."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 5"));
+
+            TableFieldStartPos := 1;
+            NewElTransl."Element Source Caption 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 1"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 1");
+            NewElTransl."Element Source Caption 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 2"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 2");
+            NewElTransl."Element Source Caption 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 3"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 3");
+            NewElTransl."Element Source Caption 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 4"));
+            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 4");
+            NewElTransl."Element Source Caption 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 5"));
+
             NewElTransl.Insert(false);
         end;
     end;
@@ -92,7 +123,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Object Name" := 'ADD_ElementTranslated';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Target Language';
-        ElTransl."Element Source Caption" := 'Target Language';
+        ElTransl."Element Source Caption 1" := 'Target Language';
         ElTransl.Insert(false);
 
         ElTransl.Init();
@@ -103,7 +134,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Object Name" := 'ADD_ElementTranslation';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Object ID';
-        ElTransl."Element Source Caption" := 'Object ID';
+        ElTransl."Element Source Caption 1" := 'Object ID';
         ElTransl.Insert(false);
 
         ElTransl.Init();
@@ -114,7 +145,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Object Name" := 'ADD_ExtensionTranslation';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Publisher';
-        ElTransl."Element Source Caption" := 'Publisher';
+        ElTransl."Element Source Caption 1" := 'Publisher';
         ElTransl.Insert(false);
     end;
 }

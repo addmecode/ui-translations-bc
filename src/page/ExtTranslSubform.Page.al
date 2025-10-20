@@ -16,13 +16,17 @@ page 50102 "ADD_ExtTranslSubform"
                 {
                     ToolTip = 'Specifies the value of the Trans Unit ID field.', Comment = 'Where am i';
                 }
-                field("Developer Note"; Rec."Developer Note")
+                field("Developer Note"; Rec.GetDeveloperNotes())
                 {
-                    ToolTip = 'Specifies the value of the Developer Note field.', Comment = 'Where am i';
+                    ToolTip = 'Specifies the value of the Developer Note fields.', Comment = 'Where am i';
                 }
-                field("Xliff Note"; Rec."Xliff Note")
+                field("Xliff Note"; Rec.GetXliffNotes())
                 {
-                    ToolTip = 'Specifies the value of the Xliff Note field.', Comment = 'Where am i';
+                    ToolTip = 'Specifies the value of the Xliff Note fields.', Comment = 'Where am i';
+                }
+                field("Element Source Caption"; Rec.GetElementSourceCaptions())
+                {
+                    ToolTip = 'Specifies the value of the Element Source Caption fields.', Comment = '%';
                 }
                 field("Object Type"; Rec."Object Type")
                 {
@@ -39,10 +43,6 @@ page 50102 "ADD_ExtTranslSubform"
                 field("Element Name"; Rec."Element Name")
                 {
                     ToolTip = 'Specifies the value of the Element Name field.', Comment = '%';
-                }
-                field("Element Source Caption"; Rec."Element Source Caption")
-                {
-                    ToolTip = 'Specifies the value of the Element Source Caption field.', Comment = '%';
                 }
             }
         }
