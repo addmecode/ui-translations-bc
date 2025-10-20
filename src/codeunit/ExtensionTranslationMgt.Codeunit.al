@@ -36,6 +36,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
         // CreateDemoElTransl(ExtTransl); // todo
 
+        //TODO: add progress bar
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, InStr);
         ExtTranslMod.Get(ExtTransl."Extension ID", ExtTransl."Extension Version");
         ExtTransl."Imported Xlf".CreateOutStream(OutStr);
@@ -74,6 +75,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Extension ID" := ExtTransl."Extension ID";
             NewElTransl."Extension Version" := ExtTransl."Extension Version";
             NewElTransl."Trans Unit ID" := TuId;
+            ParseTransUnitId(NewElTransl."Trans Unit ID", NewElTransl."Object Type", NewElTransl."Element Type");
             TableFieldStartPos := 1;
             NewElTransl."Developer Note 1" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 1"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 1");
@@ -95,20 +97,63 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 4");
             NewElTransl."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 5"));
+            ParseXliffNote(NewElTransl.GetXliffNotes(), NewElTransl."Object Name", NewElTransl."Element Name");
 
             TableFieldStartPos := 1;
-            NewElTransl."Element Source Caption 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 1"));
+            NewElTransl."Element Source Caption 1" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 1"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 1");
-            NewElTransl."Element Source Caption 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 2"));
+            NewElTransl."Element Source Caption 2" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 2"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 2");
-            NewElTransl."Element Source Caption 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 3"));
+            NewElTransl."Element Source Caption 3" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 3"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 3");
-            NewElTransl."Element Source Caption 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 4"));
+            NewElTransl."Element Source Caption 4" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 4");
-            NewElTransl."Element Source Caption 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 5"));
+            NewElTransl."Element Source Caption 5" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 5"));
 
             NewElTransl.Insert(false);
         end;
+    end;
+
+    local procedure ParseTransUnitId(TransUnitId: Text; var ObjType: Text; var ElemType: Text)
+    var
+        HyphenParts: List of [Text];
+        HyphenCounter: Integer;
+    begin
+        // Page 2164439538 - Control 2515772770 - Property 1295455071 -> ObjType = Report, Element type = Control property
+        HyphenParts := TransUnitId.Split(' - ');
+        ObjType := DecodeTransUnitIdHyphenPart(HyphenParts.Get(1));
+        ElemType := '';
+        for HyphenCounter := 2 to HyphenParts.Count() do begin
+            if HyphenCounter > 2 then
+                ElemType += ' ';
+            ElemType += DecodeTransUnitIdHyphenPart(HyphenParts.Get(HyphenCounter));
+        end;
+    end;
+
+    local procedure DecodeTransUnitIdHyphenPart(TransUnitIdHyphenPart: Text): Text
+    begin
+        exit(TransUnitIdHyphenPart.Substring(1, TransUnitIdHyphenPart.IndexOf(' ') - 1));
+    end;
+
+    local procedure ParseXliffNote(XliffNote: Text; var ObjectName: Text; var ElementName: Text)
+    var
+        HyphenParts: List of [Text];
+        HyphenCounter: Integer;
+    begin
+        // Page Contact List - Action NewSalesQuote - Property ToolTip
+        HyphenParts := XliffNote.Split(' - ');
+        ObjectName := DecodeXliffNoteHyphenPart(HyphenParts.Get(1));
+        ElementName := '';
+        for HyphenCounter := 2 to HyphenParts.Count() do begin
+            if HyphenCounter > 2 then
+                ElementName += ' ';
+            ElementName += DecodeXliffNoteHyphenPart(HyphenParts.Get(HyphenCounter));
+        end;
+    end;
+
+    local procedure DecodeXliffNoteHyphenPart(XliffNoteHyphenPart: Text): Text
+    begin
+        exit(XliffNoteHyphenPart.Substring(XliffNoteHyphenPart.IndexOf(' ') + 1));
     end;
 
     local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtensionTranslation)
@@ -119,7 +164,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Extension ID" := ExtTransl."Extension ID";
         ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407374 - Property 2879900210';
-        ElTransl."Object Type" := ElTransl."Object Type"::Table;
+        ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ElementTranslated';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Target Language';
@@ -130,7 +175,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Extension ID" := ExtTransl."Extension ID";
         ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407375 - Property 2879900211';
-        ElTransl."Object Type" := ElTransl."Object Type"::Table;
+        ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ElementTranslation';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Object ID';
@@ -141,7 +186,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElTransl."Extension ID" := ExtTransl."Extension ID";
         ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407376 - Property 2879900212';
-        ElTransl."Object Type" := ElTransl."Object Type"::Table;
+        ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ExtensionTranslation';
         ElTransl."Element Type" := 'Field';
         ElTransl."Element Name" := 'Publisher';

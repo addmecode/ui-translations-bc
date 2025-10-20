@@ -21,16 +21,15 @@ table 50100 "ADD_ElementTranslation"
         {
             Caption = 'Trans Unit ID';
         }
-        field(4; "Object Type"; option)
+        field(4; "Object Type"; Text[30])
         {
-            OptionMembers = "TableData","Table",,"Report",,"Codeunit","XMLport","MenuSuite","Page","Query","System","FieldNumber",,,"PageExtension","TableExtension","Enum","EnumExtension","Profile","ProfileExtension","PermissionSet","PermissionSetExtension","ReportExtension";
-            OptionCaption = 'TableData,Table,,Report,,Codeunit,XMLport,MenuSuite,Page,Query,System,FieldNumber,,,PageExtension,TableExtension,Enum,EnumExtension,Profile,ProfileExtension,PermissionSet,PermissionSetExtension,ReportExtension';
+            Caption = 'Object Type';
         }
-        field(5; "Object Name"; Text[30])
+        field(5; "Object Name"; Text[250])
         {
             Caption = 'Object Name';
         }
-        field(6; "Element Type"; Text[30])
+        field(6; "Element Type"; Text[250])
         {
             Caption = 'Element Type';
         }
