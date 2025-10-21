@@ -17,8 +17,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         NoteNode: XmlNode;
         TransUnitAttributes: XmlAttributeCollection;
         NoteAttributes: XmlAttributeCollection;
+        FileAttributes: XmlAttributeCollection;
         TransUnitAttr: XmlAttribute;
         NoteAttr: XmlAttribute;
+        FileAttr: XmlAttribute;
         Root: XmlElement;
         NsUri: Text;
         NewElTransl: Record ADD_ElementTranslation;
@@ -27,6 +29,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         DeveloperNote: Text;
         XliffNote: Text;
         TableFieldStartPos: Integer;
+        FileNode: XmlNode;
+        SourceLang: Text;
+        TargetLang: Text;
     begin
         ElTransl.SetRange("Extension ID", ExtTransl."Extension ID");
         if ElTransl.FindSet() then begin
@@ -38,18 +43,19 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         //TODO: add progress bar
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, InStr);
-        ExtTranslMod.Get(ExtTransl."Extension ID");
-        ExtTransl."Imported Xlf".CreateOutStream(OutStr);
-        CopyStream(OutStr, InStr);
-        ExtTransl.Modify(false);
-
-        ExtTransl.CalcFields("Imported Xlf");
-        ExtTransl."Imported Xlf".CreateInStream(InStr);
-
         XmlDocument.ReadFrom(InStr, XmlDoc);
         XmlDoc.GetRoot(Root);
         NsUri := Root.NamespaceUri();
         NsMgr.AddNamespace('x', NsUri);
+
+        XmlDoc.SelectSingleNode('//x:file', NsMgr, FileNode);
+        FileAttributes := FileNode.AsXmlElement().Attributes();
+        FileAttributes.Get('source-language', FileAttr);
+        SourceLang := FileAttr.Value();
+        FileAttributes.Get('target-language', FileAttr);
+        TargetLang := FileAttr.Value();
+
+
         XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
@@ -112,6 +118,13 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
             NewElTransl.Insert(false);
         end;
+
+        ExtTranslMod.Get(ExtTransl."Extension ID");
+        ExtTranslMod."Imported Xlf".CreateOutStream(OutStr);
+        CopyStream(OutStr, InStr);
+        ExtTranslMod."Source Language" := SourceLang;
+        ExtTranslMod."Target Language" := TargetLang;
+        ExtTranslMod.Modify(false);
     end;
 
     local procedure ParseTransUnitId(TransUnitId: Text; var ObjType: Text; var ElemType: Text)

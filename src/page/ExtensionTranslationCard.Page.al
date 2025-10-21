@@ -29,6 +29,14 @@ page 50101 "ADD_ExtensionTranslationCard"
                 {
                     ToolTip = 'Specifies the value of the Extension Publisher field.', Comment = '%';
                 }
+                field("Source Language"; Rec."Source Language")
+                {
+                    ToolTip = 'Specifies the value of the Source Language field.', Comment = '%';
+                }
+                field("Target Language"; Rec."Target Language")
+                {
+                    ToolTip = 'Specifies the value of the Target Language field.', Comment = '%';
+                }
             }
             part(TranslationElements; ADD_ExtTranslSubform)
             {

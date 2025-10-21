@@ -46,7 +46,17 @@ table 50102 "ADD_ExtensionTranslation"
             Caption = 'Extension Publisher';
             Editable = true;
         }
-        field(5; "Imported Xlf"; Blob)
+        field(5; "Source Language"; Text[250])
+        {
+            Caption = 'Source Language';
+            Editable = false;
+        }
+        field(6; "Target Language"; Text[250])
+        {
+            Caption = 'Target Language';
+            Editable = true;
+        }
+        field(7; "Imported Xlf"; Blob)
         {
             Caption = 'Imported Xlf';
         }
