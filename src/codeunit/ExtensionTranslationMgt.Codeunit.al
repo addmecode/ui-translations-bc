@@ -1,14 +1,14 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
-    procedure ImportXlf(ExtTransl: Record ADD_ExtensionTranslation)
+    procedure ImportXlf(ExtTransl: Record ADD_ExtTranslSetupHeader)
     var
-        ElTransl: Record ADD_ElementTranslation;
+        ElTransl: Record ADD_ExtTranslSetupLine;
         DelElTranslQues: Label 'Translation elements already exist for %1 Extension ID. Do you want to delete them and continue?';
         XmlDoc: XmlDocument;
         InStr: InStream;
         OutStr: OutStream;
         ImportedFileName: text;
-        ExtTranslMod: Record ADD_ExtensionTranslation;
+        ExtTranslMod: Record ADD_ExtTranslSetupHeader;
         TransUnitNodeList: XmlNodeList;
         NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
@@ -23,7 +23,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileAttr: XmlAttribute;
         Root: XmlElement;
         NsUri: Text;
-        NewElTransl: Record ADD_ElementTranslation;
+        NewElTransl: Record ADD_ExtTranslSetupLine;
         SourceNode: XmlNode;
         SourceTxt: text;
         DeveloperNote: Text;
@@ -169,7 +169,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit(XliffNoteHyphenPart.Substring(XliffNoteHyphenPart.IndexOf(' ') + 1));
     end;
 
-    procedure RunObject(ElemTransl: Record ADD_ElementTranslation)
+    procedure RunObject(ElemTransl: Record ADD_ExtTranslSetupLine)
     var
         AllObj: Record AllObjWithCaption;
     begin
@@ -207,9 +207,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtensionTranslation)
+    local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslSetupHeader)
     var
-        ElTransl: Record ADD_ElementTranslation;
+        ElTransl: Record ADD_ExtTranslSetupLine;
     begin
         ElTransl.Init();
         ElTransl."Extension ID" := ExtTransl."Extension ID";

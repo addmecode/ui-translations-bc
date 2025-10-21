@@ -1,6 +1,6 @@
-table 50100 "ADD_ElementTranslation"
+table 50100 "ADD_ExtTranslSetupLine"
 {
-    Caption = 'Element Translation';
+    Caption = 'Element Translation Setup Line';
     DataClassification = ToBeClassified;
 
     fields
@@ -8,13 +8,7 @@ table 50100 "ADD_ElementTranslation"
         field(1; "Extension ID"; Guid)
         {
             Caption = 'Extension ID';
-            TableRelation = ADD_ExtensionTranslation."Extension ID";
-            ValidateTableRelation = true;
-        }
-        field(2; "Extension Version"; Text[250])
-        {
-            Caption = 'Extension Version';
-            TableRelation = ADD_ExtensionTranslation."Extension Version";
+            TableRelation = ADD_ExtTranslSetupHeader."Extension ID";
             ValidateTableRelation = true;
         }
         field(3; "Trans Unit ID"; Text[250]) //TODO: encrypt

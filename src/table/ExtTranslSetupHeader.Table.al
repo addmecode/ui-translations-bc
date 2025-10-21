@@ -1,8 +1,8 @@
-table 50102 "ADD_ExtensionTranslation"
+table 50102 "ADD_ExtTranslSetupHeader"
 {
-    Caption = 'Extension Translation';
+    Caption = 'Extension Translation Setup Header';
     DataClassification = ToBeClassified;
-    DrillDownPageID = ADD_ExtensionTranslationCard;
+    DrillDownPageID = ADD_ExtTranslSetupCard;
 
     fields
     {
@@ -16,8 +16,6 @@ table 50102 "ADD_ExtensionTranslation"
             trigger OnValidate()
             var
                 NavAppInstalledApp: Record "NAV App Installed App";
-                GraphMgtGenTools: Codeunit "Graph Mgt - General Tools";
-                gu: Guid;
             begin
                 if IsNullGuid(Rec."Extension ID") then
                     exit;

@@ -1,9 +1,9 @@
-page 50101 "ADD_ExtensionTranslationCard"
+page 50101 "ADD_ExtTranslSetupCard"
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Card';
     PageType = Card;
-    SourceTable = ADD_ExtensionTranslation;
+    SourceTable = ADD_ExtTranslSetupHeader;
 
     layout
     {
@@ -38,7 +38,7 @@ page 50101 "ADD_ExtensionTranslationCard"
                     ToolTip = 'Specifies the value of the Target Language field.', Comment = '%';
                 }
             }
-            part(TranslationElements; ADD_ExtTranslSubform)
+            part(TranslationElements; ADD_ExtTranslSetupSubform)
             {
                 ApplicationArea = All;
                 Enabled = true;
