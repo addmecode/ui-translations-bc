@@ -9,13 +9,13 @@ table 50100 "ADD_ElementTranslation"
         {
             Caption = 'Extension ID';
             TableRelation = ADD_ExtensionTranslation."Extension ID";
-            ValidateTableRelation = false;
+            ValidateTableRelation = true;
         }
         field(2; "Extension Version"; Text[250])
         {
             Caption = 'Extension Version';
             TableRelation = ADD_ExtensionTranslation."Extension Version";
-            ValidateTableRelation = false;
+            ValidateTableRelation = true;
         }
         field(3; "Trans Unit ID"; Text[250]) //TODO: encrypt
         {
@@ -100,7 +100,7 @@ table 50100 "ADD_ElementTranslation"
     }
     keys
     {
-        key(PK; "Extension ID", "Extension Version", "Trans Unit ID")
+        key(PK; "Extension ID", "Trans Unit ID")
         {
             Clustered = true;
         }

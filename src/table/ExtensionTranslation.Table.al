@@ -10,6 +10,26 @@ table 50102 "ADD_ExtensionTranslation"
         {
             Caption = 'Extension ID';
             Editable = true;
+            TableRelation = "NAV App Installed App"."App ID";
+            ValidateTableRelation = false;
+
+            trigger OnValidate()
+            var
+                NavAppInstalledApp: Record "NAV App Installed App";
+                GraphMgtGenTools: Codeunit "Graph Mgt - General Tools";
+                gu: Guid;
+            begin
+                if IsNullGuid(Rec."Extension ID") then
+                    exit;
+                if not NavAppInstalledApp.Get(Rec."Extension ID") then
+                    exit;
+                Rec."Extension Name" := NavAppInstalledApp.Name;
+                Rec."Extension Publisher" := NavAppInstalledApp.Publisher;
+                Rec."Extension Version" := Format(NavAppInstalledApp."Version Major") + '.' +
+                                           Format(NavAppInstalledApp."Version Minor") + '.' +
+                                           Format(NavAppInstalledApp."Version Build") + '.' +
+                                           Format(NavAppInstalledApp."Version Revision");
+            end;
         }
         field(2; "Extension Version"; Text[250])
         {
@@ -33,7 +53,7 @@ table 50102 "ADD_ExtensionTranslation"
     }
     keys
     {
-        key(PK; "Extension ID", "Extension Version")
+        key(PK; "Extension ID")
         {
             Clustered = true;
         }

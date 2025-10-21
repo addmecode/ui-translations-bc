@@ -38,7 +38,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         //TODO: add progress bar
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, InStr);
-        ExtTranslMod.Get(ExtTransl."Extension ID", ExtTransl."Extension Version");
+        ExtTranslMod.Get(ExtTransl."Extension ID");
         ExtTransl."Imported Xlf".CreateOutStream(OutStr);
         CopyStream(OutStr, InStr);
         ExtTransl.Modify(false);
