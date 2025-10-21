@@ -33,8 +33,25 @@ page 50100 "ADD_ExtTranslSetupList"
             }
         }
     }
-    var
-        c: Record Customer;
-        a: record "NAV App Installed App";
-        s: page "Sales Invoice";
+    actions
+    {
+        area(Processing)
+        {
+            group(Xlf)
+            {
+                Caption = 'Xlf';
+                Image = Import;
+                action("Import Xlf")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Import Xlf';
+                    Image = Import;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    RunObject = Report ADD_ImportXlf;
+                }
+            }
+        }
+    }
 }

@@ -43,34 +43,8 @@ page 50101 "ADD_ExtTranslSetupCard"
                 ApplicationArea = All;
                 Enabled = true;
                 SubPageLink = "Extension ID" = field("Extension ID"),
-                              "Extension Version" = field("Extension Version");
+                              "Target Language" = field("Target Language");
                 UpdatePropagation = SubPart;
-            }
-        }
-    }
-    actions
-    {
-        area(Processing)
-        {
-            group(Xlf)
-            {
-                Caption = 'Xlf';
-                Image = Import;
-                action("Import Xlf")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Import Xlf';
-                    Image = Import;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    trigger OnAction()
-                    var
-                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
-                    begin
-                        ExtTranslMgt.ImportXlf(Rec);
-                    end;
-                }
             }
         }
     }

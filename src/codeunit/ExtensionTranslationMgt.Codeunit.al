@@ -1,6 +1,6 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
-    procedure ImportXlf(ExtTransl: Record ADD_ExtTranslSetupHeader)
+    procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; TargetLang: Text)
     var
         ElTransl: Record ADD_ExtTranslSetupLine;
         DelElTranslQues: Label 'Translation elements already exist for %1 Extension ID. Do you want to delete them and continue?';
@@ -8,7 +8,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         InStr: InStream;
         OutStr: OutStream;
         ImportedFileName: text;
-        ExtTranslMod: Record ADD_ExtTranslSetupHeader;
+        ExtTranslNew: Record ADD_ExtTranslSetupHeader;
         TransUnitNodeList: XmlNodeList;
         NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
@@ -31,11 +31,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         TableFieldStartPos: Integer;
         FileNode: XmlNode;
         SourceLang: Text;
-        TargetLang: Text;
     begin
-        ElTransl.SetRange("Extension ID", ExtTransl."Extension ID");
+        ElTransl.SetRange("Extension ID", ExtID);
         if ElTransl.FindSet() then begin
-            if not Confirm(DelElTranslQues, false, ExtTransl."Extension ID") then
+            if not Confirm(DelElTranslQues, false, ExtID) then
                 exit;
             ElTransl.DeleteAll(false);
         end;
@@ -52,9 +51,17 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileAttributes := FileNode.AsXmlElement().Attributes();
         FileAttributes.Get('source-language', FileAttr);
         SourceLang := FileAttr.Value();
-        FileAttributes.Get('target-language', FileAttr);
-        TargetLang := FileAttr.Value();
 
+        ExtTranslNew.init();
+        ExtTranslNew."Extension ID" := ExtID;
+        ExtTranslNew."Target Language" := TargetLang;
+        ExtTranslNew."Extension Name" := ExtName;
+        ExtTranslNew."Extension Publisher" := ExtPublisher;
+        ExtTranslNew."Extension Version" := ExtVersion;
+        ExtTranslNew."Imported Xlf".CreateOutStream(OutStr);
+        CopyStream(OutStr, InStr);
+        ExtTranslNew."Source Language" := SourceLang;
+        ExtTranslNew.Insert(false);
 
         XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
         foreach TransUnitNode in TransUnitNodeList do begin
@@ -78,8 +85,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             end;
 
             NewElTransl.Init();
-            NewElTransl."Extension ID" := ExtTransl."Extension ID";
-            NewElTransl."Extension Version" := ExtTransl."Extension Version";
+            NewElTransl."Extension ID" := ExtTranslNew."Extension ID";
+            NewElTransl."Target Language" := ExtTranslNew."Target Language";
             NewElTransl."Trans Unit ID" := TuId;
             ParseTransUnitId(NewElTransl."Trans Unit ID", NewElTransl."Object Type", NewElTransl."Element Type");
             TableFieldStartPos := 1;
@@ -118,13 +125,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
             NewElTransl.Insert(false);
         end;
-
-        ExtTranslMod.Get(ExtTransl."Extension ID");
-        ExtTranslMod."Imported Xlf".CreateOutStream(OutStr);
-        CopyStream(OutStr, InStr);
-        ExtTranslMod."Source Language" := SourceLang;
-        ExtTranslMod."Target Language" := TargetLang;
-        ExtTranslMod.Modify(false);
     end;
 
     local procedure ParseTransUnitId(TransUnitId: Text; var ObjType: Text; var ElemType: Text)
@@ -213,7 +213,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     begin
         ElTransl.Init();
         ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407374 - Property 2879900210';
         ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ElementTranslated';
@@ -224,7 +223,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         ElTransl.Init();
         ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407375 - Property 2879900211';
         ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ElementTranslation';
@@ -235,7 +233,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         ElTransl.Init();
         ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Extension Version" := ExtTransl."Extension Version";
         ElTransl."Trans Unit ID" := 'Table 1163407376 - Property 2879900212';
         ElTransl."Object Type" := 'Table';
         ElTransl."Object Name" := 'ADD_ExtensionTranslation';

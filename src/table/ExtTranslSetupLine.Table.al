@@ -11,9 +11,15 @@ table 50100 "ADD_ExtTranslSetupLine"
             TableRelation = ADD_ExtTranslSetupHeader."Extension ID";
             ValidateTableRelation = true;
         }
-        field(3; "Trans Unit ID"; Text[250]) //TODO: encrypt
+        field(2; "Trans Unit ID"; Text[250]) //TODO: encrypt
         {
             Caption = 'Trans Unit ID';
+        }
+        field(3; "Target Language"; Text[30])
+        {
+            Caption = 'Target Language';
+            TableRelation = ADD_ExtTranslSetupHeader."Target Language";
+            ValidateTableRelation = true;
         }
         field(4; "Object Type"; Text[30])
         {
@@ -91,10 +97,30 @@ table 50100 "ADD_ExtTranslSetupLine"
         {
             Caption = 'Element Source Caption 5';
         }
+        field(40; "Target Source Caption 1"; Text[250])
+        {
+            Caption = 'Target Source Caption 1';
+        }
+        field(41; "Target Source Caption 2"; Text[250])
+        {
+            Caption = 'Target Source Caption 2';
+        }
+        field(42; "Target Source Caption 3"; Text[250])
+        {
+            Caption = 'Target Source Caption 3';
+        }
+        field(43; "Target Source Caption 4"; Text[250])
+        {
+            Caption = 'Target Source Caption 4';
+        }
+        field(44; "Target Source Caption 5"; Text[250])
+        {
+            Caption = 'Target Source Caption 5';
+        }
     }
     keys
     {
-        key(PK; "Extension ID", "Trans Unit ID")
+        key(PK; "Extension ID", "Trans Unit ID", "Target Language")
         {
             Clustered = true;
         }
