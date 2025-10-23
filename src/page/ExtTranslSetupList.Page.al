@@ -18,6 +18,14 @@ page 50100 "ADD_ExtTranslSetupList"
                 {
                     ToolTip = 'Specifies the value of the Extension ID field.', Comment = '%';
                 }
+                field("Target Language"; Rec."Target Language")
+                {
+                    ToolTip = 'Specifies the value of the Target Language field.', Comment = '%';
+                }
+                field("Source Language"; Rec."Source Language")
+                {
+                    ToolTip = 'Specifies the value of the Source Language field.', Comment = '%';
+                }
                 field("Extension Version"; Rec."Extension Version")
                 {
                     ToolTip = 'Specifies the value of the Extension Version field.', Comment = '%';

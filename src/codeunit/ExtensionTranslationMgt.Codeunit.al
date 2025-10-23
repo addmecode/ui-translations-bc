@@ -197,6 +197,36 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
+    internal procedure CopyExtTranslToNewTargLang(CopyFromExtID: Guid; CopyFromTargetLang: Text[30]; CopyToTargetLang: Text[30])
+    var
+        ExtTranslHeadCopyFrom: Record ADD_ExtTranslSetupHeader;
+        ExtTranslHeadCopyTo: Record ADD_ExtTranslSetupHeader;
+        ExtTranslLineCopyFrom: Record ADD_ExtTranslSetupLine;
+        ExtTranslLineCopyTo: Record ADD_ExtTranslSetupLine;
+    begin
+        if (IsNullGuid(CopyFromExtID)) or (CopyFromTargetLang = '') or (CopyToTargetLang = '') then
+            Error('Extension ID, Target Language and Source Language cannot be empty');
+        if CopyFromTargetLang = CopyToTargetLang then
+            Error('The target language to copy to must be different from the source language');
+
+        ExtTranslHeadCopyFrom.Get(CopyFromExtID, CopyFromTargetLang);
+        ExtTranslHeadCopyTo.Init();
+        ExtTranslHeadCopyTo.TransferFields(ExtTranslHeadCopyFrom);
+        ExtTranslHeadCopyTo."Target Language" := CopyToTargetLang;
+        ExtTranslHeadCopyTo.Insert(True);
+
+        ExtTranslLineCopyFrom.SetRange("Extension ID", ExtTranslHeadCopyFrom."Extension ID");
+        ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslHeadCopyFrom."Target Language");
+        if ExtTranslLineCopyFrom.FindSet(true) then begin
+            repeat
+                ExtTranslLineCopyTo.Init();
+                ExtTranslLineCopyTo.TransferFields(ExtTranslLineCopyFrom);
+                ExtTranslLineCopyTo."Target Language" := CopyToTargetLang;
+                ExtTranslLineCopyTo.Insert(True);
+            until ExtTranslLineCopyFrom.Next() = 0;
+        end;
+    end;
+
     local procedure RunObject(ObjType: Integer; ObjectId: Integer)
     var
         AllObj: Record AllObjWithCaption;

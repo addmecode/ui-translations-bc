@@ -5,8 +5,6 @@ page 50101 "ADD_ExtTranslSetupCard"
     PageType = Card;
     SourceTable = ADD_ExtTranslSetupHeader;
     InsertAllowed = false;
-    Editable = false;
-
     layout
     {
         area(Content)
@@ -14,6 +12,7 @@ page 50101 "ADD_ExtTranslSetupCard"
             group(General)
             {
                 Caption = 'General';
+                Editable = false;
 
                 field("Extension ID"; Rec."Extension ID")
                 {
@@ -50,6 +49,35 @@ page 50101 "ADD_ExtTranslSetupCard"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            group(Process)
+            {
+                Caption = 'Process';
+                Image = Action;
+                action("Copy to new target lang")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Copy to new target lang';
+                    Image = Copy;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+
+                    trigger OnAction()
+                    var
+                        CopyExtTranslToNewTargLang: Report ADD_CopyExtTranslToNewTargLang;
+                    begin
+                        CopyExtTranslToNewTargLang.SetReqPageParams(Rec."Extension ID", Rec."Target Language");
+                        CopyExtTranslToNewTargLang.Run();
+                    end;
+                }
+            }
+        }
+    }
+
     trigger OnAfterGetCurrRecord()
     begin
         CurrPage.TranslationElements.Page.SetElemTargetCaptEditable(Rec."Source Language" <> Rec."Target Language");
