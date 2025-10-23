@@ -88,7 +88,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Extension ID" := ExtTranslNew."Extension ID";
             NewElTransl."Target Language" := ExtTranslNew."Target Language";
             NewElTransl."Trans Unit ID" := TuId;
-            ParseTransUnitId(NewElTransl."Trans Unit ID", NewElTransl."Object Type", NewElTransl."Element Type");
             TableFieldStartPos := 1;
             NewElTransl."Developer Note 1" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 1"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 1");
@@ -110,7 +109,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 4");
             NewElTransl."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 5"));
-            ParseXliffNote(NewElTransl.GetXliffNotes(), NewElTransl."Object Name", NewElTransl."Element Name");
+            ParseXliffNote(NewElTransl.GetXliffNotes(), NewElTransl."Object Type", NewElTransl."Object Name",
+                           NewElTransl."Element Type", NewElTransl."Element Name");
 
             TableFieldStartPos := 1;
             NewElTransl."Element Source Caption 1" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 1"));
@@ -127,46 +127,48 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    local procedure ParseTransUnitId(TransUnitId: Text; var ObjType: Text; var ElemType: Text)
+    local procedure ParseXliffNote(XliffNote: Text; var ObjType: Text; var ObjName: Text; var ElementType: Text; var ElementName: Text)
     var
         HyphenParts: List of [Text];
         HyphenCounter: Integer;
-    begin
-        // Page 2164439538 - Control 2515772770 - Property 1295455071 -> ObjType = Report, Element type = Control property
-        HyphenParts := TransUnitId.Split(' - ');
-        ObjType := DecodeTransUnitIdHyphenPart(HyphenParts.Get(1));
-        ElemType := '';
-        for HyphenCounter := 2 to HyphenParts.Count() do begin
-            if HyphenCounter > 2 then
-                ElemType += ' ';
-            ElemType += DecodeTransUnitIdHyphenPart(HyphenParts.Get(HyphenCounter));
-        end;
-    end;
-
-    local procedure DecodeTransUnitIdHyphenPart(TransUnitIdHyphenPart: Text): Text
-    begin
-        exit(TransUnitIdHyphenPart.Substring(1, TransUnitIdHyphenPart.IndexOf(' ') - 1));
-    end;
-
-    local procedure ParseXliffNote(XliffNote: Text; var ObjectName: Text; var ElementName: Text)
-    var
-        HyphenParts: List of [Text];
-        HyphenCounter: Integer;
+        ElemTypeStartPart: Integer;
     begin
         // Page Contact List - Action NewSalesQuote - Property ToolTip
+        // ObjType = Page, ObjName = Contact List, ElementName = Action NewSalesQuote, ElementType = Property ToolTip
+        // Page ADD_ExtTranslSetupSubform - Property Caption
+        // ObjType = Page, ObjName = ADD_ExtTranslSetupSubform, ElementName = , ElementType = Property Caption
+
+        //TODO : find all possible starting words after object name
+        //Codeunit Cash Flow Wksh. - Register - NamedType RegisterWorksheetLinesQst
+        //Cash Flow Wksh. - Register is the cu name
+
+        // Page Report Selection - VAT Stmt. - Control Sequence - Property ToolTip
+
         HyphenParts := XliffNote.Split(' - ');
-        ObjectName := DecodeXliffNoteHyphenPart(HyphenParts.Get(1));
+        ObjType := GetTextPartBeforeSpace(HyphenParts.Get(1));
+        ObjName := GetTextPartAfterSpace(HyphenParts.Get(1));
         ElementName := '';
-        for HyphenCounter := 2 to HyphenParts.Count() do begin
-            if HyphenCounter > 2 then
-                ElementName += ' ';
-            ElementName += DecodeXliffNoteHyphenPart(HyphenParts.Get(HyphenCounter));
+        ElemTypeStartPart := 2;
+        if HyphenParts.Count() > 2 then begin
+            ElementName := HyphenParts.Get(2);
+            ElemTypeStartPart := 3;
+        end;
+        ElementType := '';
+        for HyphenCounter := ElemTypeStartPart to HyphenParts.Count() do begin
+            if HyphenCounter > ElemTypeStartPart then
+                ElementType += ' ';
+            ElementType += HyphenParts.Get(HyphenCounter);
         end;
     end;
 
-    local procedure DecodeXliffNoteHyphenPart(XliffNoteHyphenPart: Text): Text
+    local procedure GetTextPartAfterSpace(InputText: Text): Text
     begin
-        exit(XliffNoteHyphenPart.Substring(XliffNoteHyphenPart.IndexOf(' ') + 1));
+        exit(InputText.Substring(InputText.IndexOf(' ') + 1));
+    end;
+
+    local procedure GetTextPartBeforeSpace(InputText: Text): Text
+    begin
+        exit(InputText.Substring(1, InputText.IndexOf(' ') - 1));
     end;
 
     procedure RunObject(ElemTransl: Record ADD_ExtTranslSetupLine)

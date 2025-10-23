@@ -20,13 +20,13 @@ page 50102 "ADD_ExtTranslSetupSubform"
                 {
                     ToolTip = 'Specifies the value of the Object Name field.', Comment = '%';
                 }
-                field("Element Type"; Rec."Element Type")
-                {
-                    ToolTip = 'Specifies the value of the Element Type field.', Comment = '%';
-                }
                 field("Element Name"; Rec."Element Name")
                 {
                     ToolTip = 'Specifies the value of the Element Name field.', Comment = '%';
+                }
+                field("Element Type"; Rec."Element Type")
+                {
+                    ToolTip = 'Specifies the value of the Element Type field.', Comment = '%';
                 }
                 field("Element Source Caption"; Rec.GetElementSourceCaptions())
                 {
@@ -81,17 +81,14 @@ page 50102 "ADD_ExtTranslSetupSubform"
         }
     }
 
-    trigger OnOpenPage()
-    var
-        ExtTransHead: Record ADD_ExtTranslSetupHeader;
-    begin
-        ExtTransHead.Get(Rec."Extension ID", Rec."Target Language");
-        IsElemTargetCaptEditable := ExtTransHead."Source Language" <> ExtTransHead."Target Language";
-    end;
-
     trigger OnAfterGetRecord()
     begin
         ElemTargetCapt := Rec.GetElementTargetCaptions();
+    end;
+
+    procedure SetElemTargetCaptEditable(IsEditable: Boolean)
+    begin
+        IsElemTargetCaptEditable := IsEditable;
     end;
 
     var

@@ -48,4 +48,8 @@ page 50101 "ADD_ExtTranslSetupCard"
             }
         }
     }
+    trigger OnAfterGetCurrRecord()
+    begin
+        CurrPage.TranslationElements.Page.SetElemTargetCaptEditable(Rec."Source Language" <> Rec."Target Language");
+    end;
 }
