@@ -4,6 +4,8 @@ page 50101 "ADD_ExtTranslSetupCard"
     Caption = 'Extension Translation Card';
     PageType = Card;
     SourceTable = ADD_ExtTranslSetupHeader;
+    InsertAllowed = false;
+    Editable = false;
 
     layout
     {
