@@ -36,7 +36,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         if ElTransl.FindSet() then begin
             if not Confirm(DelElTranslQues, false, ExtID) then
                 exit;
-            ElTransl.DeleteAll(false);
+            ElTransl.DeleteAll(true);
         end;
         // CreateDemoElTransl(ExtTransl); // todo
 

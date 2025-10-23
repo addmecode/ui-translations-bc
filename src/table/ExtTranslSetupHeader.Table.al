@@ -51,4 +51,14 @@ table 50102 "ADD_ExtTranslSetupHeader"
             Clustered = true;
         }
     }
+
+    trigger OnDelete()
+    var
+        ExtTransLine: Record ADD_ExtTranslSetupLine;
+    begin
+        ExtTransLine.SetRange("Extension ID", Rec."Extension ID");
+        ExtTransLine.SetRange("Target Language", Rec."Target Language");
+        if ExtTransLine.FindSet() then
+            ExtTransLine.DeleteAll(true);
+    end;
 }

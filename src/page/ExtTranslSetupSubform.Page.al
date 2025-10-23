@@ -2,7 +2,7 @@ page 50102 "ADD_ExtTranslSetupSubform"
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Setup Subform';
-    Editable = false;
+    Editable = true;
     PageType = ListPart;
     SourceTable = ADD_ExtTranslSetupLine;
 
@@ -31,10 +31,20 @@ page 50102 "ADD_ExtTranslSetupSubform"
                 field("Element Source Caption"; Rec.GetElementSourceCaptions())
                 {
                     ToolTip = 'Specifies the value of the Element Source Caption fields.', Comment = '%';
+                    Editable = false;
                 }
                 field("Developer Note"; Rec.GetDeveloperNotes())
                 {
                     ToolTip = 'Specifies the value of the Developer Note fields.', Comment = 'Where am i';
+                }
+                field("Element Target Caption"; ElemTargetCapt)
+                {
+                    ToolTip = 'Specifies the value of the Element Target Caption fields.', Comment = '%';
+                    Editable = IsElemTargetCaptEditable;
+                    trigger OnValidate()
+                    begin
+                        Rec.SetElementTargetCaptions(ElemTargetCapt);
+                    end;
                 }
                 field("Trans Unit ID"; Rec."Trans Unit ID")
                 {
@@ -70,4 +80,21 @@ page 50102 "ADD_ExtTranslSetupSubform"
             }
         }
     }
+
+    trigger OnOpenPage()
+    var
+        ExtTransHead: Record ADD_ExtTranslSetupHeader;
+    begin
+        ExtTransHead.Get(Rec."Extension ID", Rec."Target Language");
+        IsElemTargetCaptEditable := ExtTransHead."Source Language" <> ExtTransHead."Target Language";
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        ElemTargetCapt := Rec.GetElementTargetCaptions();
+    end;
+
+    var
+        ElemTargetCapt: Text;
+        IsElemTargetCaptEditable: Boolean;
 }
