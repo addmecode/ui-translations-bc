@@ -2,8 +2,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
     procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; TargetLang: Text)
     var
-        ElTransl: Record ADD_ExtTranslSetupLine;
-        DelElTranslQues: Label 'Translation elements already exist for %1 Extension ID. Do you want to delete them and continue?';
+        ElTranslHead: Record ADD_ExtTranslSetupHeader;
+        DelExtTranslQues: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?';
         XmlDoc: XmlDocument;
         InStr: InStream;
         OutStr: OutStream;
@@ -32,11 +32,11 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileNode: XmlNode;
         SourceLang: Text;
     begin
-        ElTransl.SetRange("Extension ID", ExtID);
-        if ElTransl.FindSet() then begin
-            if not Confirm(DelElTranslQues, false, ExtID) then
+        ElTranslHead.SetRange("Extension ID", ExtID);
+        if ElTranslHead.FindSet() then begin
+            if not Confirm(DelExtTranslQues, false, ExtID) then
                 exit;
-            ElTransl.DeleteAll(true);
+            ElTranslHead.DeleteAll(true);
         end;
         // CreateDemoElTransl(ExtTransl); // todo
 
