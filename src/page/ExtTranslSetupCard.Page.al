@@ -91,6 +91,22 @@ page 50101 "ADD_ExtTranslSetupCard"
                         ExtTranslMgt.DownloadImported(Rec."Extension ID", Rec."Target Language");
                     end;
                 }
+                action("Download Translated")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Download Translated';
+                    Image = Download;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+
+                    trigger OnAction()
+                    var
+                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                    begin
+                        ExtTranslMgt.DownloadTranslated(Rec."Extension ID", Rec."Target Language");
+                    end;
+                }
             }
         }
     }

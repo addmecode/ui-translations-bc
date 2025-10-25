@@ -247,6 +247,83 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
     end;
 
+    internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[30])
+    var
+        ExtTranslHead: Record ADD_ExtTranslSetupHeader;
+        ExtTranslLine: Record ADD_ExtTranslSetupLine;
+        InStr: InStream;
+        OutStr: OutStream;
+        XmlDoc: XmlDocument;
+        Root: XmlElement;
+        NsUri: Text;
+        NsMgr: XmlNamespaceManager;
+        FileNode: XmlNode;
+        FileAttributes: XmlAttributeCollection;
+        TransUnitNodeList: XmlNodeList;
+        TransUnitNode: XmlNode;
+        TransUnitAttributes: XmlAttributeCollection;
+        TransUnitAttr: XmlAttribute;
+        TuId: Text;
+        SourceNode: XmlNode;
+        TargetElement: XmlElement;
+        TempBlob: Codeunit "Temp Blob";
+        TranslatedFileName: Text;
+        Ind: Integer;
+        IndentBeforeTarget: XmlNode;
+        IndentAfterTarget: XmlNode;
+        CR: Char;
+        LF: Char;
+        NewLineText: Text;
+    begin
+        CR := 13; // \r
+        LF := 10; // \n
+        NewLineText := Format(CR) + Format(LF) + '          ';
+
+        ExtTranslHead.Get(ExtensionID, TargetLanguage);
+        ExtTranslLine.SetRange("Extension ID", ExtensionID);
+        ExtTranslLine.SetRange("Target Language", TargetLanguage);
+        if ExtTranslLine.IsEmpty() then
+            Error('No lines exist');
+        ExtTranslLine.SetRange(Translated, false);
+        if not ExtTranslLine.IsEmpty() then
+            if not Confirm('No all lines are marked as translated. Do you want to download the file anyway?', true) then
+                exit;
+
+        ExtTranslHead.CalcFields("Imported Xlf");
+        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
+        XmlDocument.ReadFrom(InStr, XmlDoc);
+        XmlDoc.GetRoot(Root);
+        NsUri := Root.NamespaceUri();
+        NsMgr.AddNamespace('x', NsUri);
+
+        XmlDoc.SelectSingleNode('//x:file', NsMgr, FileNode);
+        FileAttributes := FileNode.AsXmlElement().Attributes();
+        FileAttributes.Set('target-language', ExtTranslHead."Target Language");
+
+        XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
+        foreach TransUnitNode in TransUnitNodeList do begin
+            TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
+            TransUnitAttributes.Get('id', TransUnitAttr);
+            TuId := TransUnitAttr.Value();
+            if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then begin
+                if ExtTranslLine.Translated then begin
+                    //TODO: if target already exists overwrite it
+                    TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
+                    TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetElementTargetCaptions());
+                    IndentBeforeTarget := XmlText.Create(NewLineText).AsXmlNode();
+                    SourceNode.AddAfterSelf(IndentBeforeTarget);
+                    IndentBeforeTarget.AddAfterSelf(TargetElement);
+                end;
+            end;
+        end;
+
+        TempBlob.CreateOutStream(OutStr);
+        XmlDoc.WriteTo(OutStr);
+        TempBlob.CreateInStream(InStr);
+        TranslatedFileName := ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf';
+        DownloadFromStream(InStr, '', '', '', TranslatedFileName);
+    end;
+
     local procedure RunObject(ObjType: Integer; ObjectId: Integer)
     var
         AllObj: Record AllObjWithCaption;
