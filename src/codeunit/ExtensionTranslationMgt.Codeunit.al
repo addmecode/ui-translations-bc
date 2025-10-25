@@ -60,6 +60,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslNew."Extension Version" := ExtVersion;
         ExtTranslNew."Imported Xlf".CreateOutStream(OutStr);
         CopyStream(OutStr, InStr);
+        ExtTranslNew."Imported FileName" := ImportedFileName;
         ExtTranslNew."Source Language" := SourceLang;
         ExtTranslNew.Insert(false);
 
@@ -212,6 +213,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         ExtTranslHeadCopyFrom.Get(CopyFromExtID, CopyFromTargetLang);
         ExtTranslHeadCopyTo.Init();
+        ExtTranslHeadCopyFrom.CalcFields("Imported Xlf");
         ExtTranslHeadCopyTo.TransferFields(ExtTranslHeadCopyFrom);
         ExtTranslHeadCopyTo."Target Language" := CopyToTargetLang;
         ExtTranslHeadCopyTo.Insert(True);
@@ -232,6 +234,17 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLineCopyTo.Insert(True);
             until ExtTranslLineCopyFrom.Next() = 0;
         end;
+    end;
+
+    internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[30])
+    var
+        ExtTranslHead: Record ADD_ExtTranslSetupHeader;
+        InStr: InStream;
+    begin
+        ExtTranslHead.Get(ExtensionID, TargetLanguage);
+        ExtTranslHead.CalcFields("Imported Xlf");
+        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
+        DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
     end;
 
     local procedure RunObject(ObjType: Integer; ObjectId: Integer)

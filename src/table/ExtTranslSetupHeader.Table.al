@@ -43,6 +43,11 @@ table 50102 "ADD_ExtTranslSetupHeader"
         {
             Caption = 'Imported Xlf';
         }
+        field(8; "Imported FileName"; Text[250])
+        {
+            Caption = 'Imported FileName';
+            Editable = false;
+        }
     }
     keys
     {

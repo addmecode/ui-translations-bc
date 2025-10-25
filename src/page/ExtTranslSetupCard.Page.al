@@ -75,6 +75,22 @@ page 50101 "ADD_ExtTranslSetupCard"
                         CopyExtTranslToNewTargLang.Run();
                     end;
                 }
+                action("Download Imported")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Download Imported';
+                    Image = Download;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+
+                    trigger OnAction()
+                    var
+                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                    begin
+                        ExtTranslMgt.DownloadImported(Rec."Extension ID", Rec."Target Language");
+                    end;
+                }
             }
         }
     }
