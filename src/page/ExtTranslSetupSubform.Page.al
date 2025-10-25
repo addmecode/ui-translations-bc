@@ -5,6 +5,8 @@ page 50102 "ADD_ExtTranslSetupSubform"
     Editable = true;
     PageType = ListPart;
     SourceTable = ADD_ExtTranslSetupLine;
+    InsertAllowed = false;
+    DeleteAllowed = false;
 
     layout
     {
@@ -46,6 +48,10 @@ page 50102 "ADD_ExtTranslSetupSubform"
                         Rec.SetElementTargetCaptions(ElemTargetCapt);
                     end;
                 }
+                field(Translated; Rec.Translated)
+                {
+                    ToolTip = 'Specifies the value of the Translated fields.', Comment = 'Where am i';
+                }
                 field("Trans Unit ID"; Rec."Trans Unit ID")
                 {
                     ToolTip = 'Specifies the value of the Trans Unit ID field.', Comment = 'Where am i';
@@ -61,22 +67,47 @@ page 50102 "ADD_ExtTranslSetupSubform"
     {
         area(Processing)
         {
-            group("Run")
+            action("Run Object")
             {
-                Caption = 'Run';
+                ApplicationArea = All;
+                Caption = 'Run Object';
                 Image = Process;
-                action("Run Object")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Run Object';
-                    Image = Process;
-                    trigger OnAction()
-                    var
-                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
-                    begin
-                        ExtTranslMgt.RunObject(Rec);
-                    end;
-                }
+                trigger OnAction()
+                var
+                    ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                begin
+                    ExtTranslMgt.RunObject(Rec);
+                end;
+            }
+            action("Show All")
+            {
+                ApplicationArea = All;
+                Caption = 'Show All';
+                Image = ClearFilter;
+                trigger OnAction()
+                begin
+                    Rec.SetRange(Translated);
+                end;
+            }
+            action("Show Translated")
+            {
+                ApplicationArea = All;
+                Caption = 'Show Translated';
+                Image = FilterLines;
+                trigger OnAction()
+                begin
+                    Rec.SetRange(Translated, true);
+                end;
+            }
+            action("Hide Translated")
+            {
+                ApplicationArea = All;
+                Caption = 'Hide Translated';
+                Image = FilterLines;
+                trigger OnAction()
+                begin
+                    Rec.SetRange(Translated, false);
+                end;
             }
         }
     }

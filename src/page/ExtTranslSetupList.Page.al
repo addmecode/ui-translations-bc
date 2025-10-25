@@ -53,6 +53,7 @@ page 50100 "ADD_ExtTranslSetupList"
                 {
                     ApplicationArea = All;
                     Caption = 'Import Xlf';
+                    Ellipsis = true;
                     Image = Import;
                     Promoted = true;
                     PromotedCategory = Process;

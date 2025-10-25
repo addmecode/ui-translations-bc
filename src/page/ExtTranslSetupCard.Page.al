@@ -61,6 +61,7 @@ page 50101 "ADD_ExtTranslSetupCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Copy to new target lang';
+                    Ellipsis = true;
                     Image = Copy;
                     Promoted = true;
                     PromotedCategory = Process;

@@ -88,6 +88,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Extension ID" := ExtTranslNew."Extension ID";
             NewElTransl."Target Language" := ExtTranslNew."Target Language";
             NewElTransl."Trans Unit ID" := TuId;
+            NewElTransl.Translated := false;
             TableFieldStartPos := 1;
             NewElTransl."Developer Note 1" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 1"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Developer Note 1");
@@ -222,6 +223,12 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLineCopyTo.Init();
                 ExtTranslLineCopyTo.TransferFields(ExtTranslLineCopyFrom);
                 ExtTranslLineCopyTo."Target Language" := CopyToTargetLang;
+                ExtTranslLineCopyTo."Element Target Caption 1" := '';
+                ExtTranslLineCopyTo."Element Target Caption 2" := '';
+                ExtTranslLineCopyTo."Element Target Caption 3" := '';
+                ExtTranslLineCopyTo."Element Target Caption 4" := '';
+                ExtTranslLineCopyTo."Element Target Caption 5" := '';
+                ExtTranslLineCopyTo.Translated := false;
                 ExtTranslLineCopyTo.Insert(True);
             until ExtTranslLineCopyFrom.Next() = 0;
         end;

@@ -44,6 +44,11 @@ table 50100 "ADD_ExtTranslSetupLine"
             Caption = 'Element Name';
             Editable = false;
         }
+        field(8; Translated; Boolean)
+        {
+            Caption = 'Translated';
+            Editable = true;
+        }
         field(10; "Developer Note 1"; Text[250])
         {
             Caption = 'Developer Note 1';
