@@ -25,7 +25,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         NsUri: Text;
         NewElTransl: Record ADD_ExtTranslSetupLine;
         SourceNode: XmlNode;
+        TargetNode: XmlNode;
         SourceTxt: text;
+        TargetTxt: text;
         DeveloperNote: Text;
         XliffNote: Text;
         TableFieldStartPos: Integer;
@@ -72,6 +74,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
             TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
             SourceTxt := SourceNode.AsXmlElement().InnerText();
+
+            TargetTxt := '';
+            if TransUnitNode.SelectSingleNode('x:target', NsMgr, TargetNode) then
+                TargetTxt := TargetNode.AsXmlElement().InnerText();
 
             TransUnitNode.SelectNodes('x:note', NsMgr, NoteNodeList);
             foreach NoteNode in NoteNodeList do begin
@@ -124,6 +130,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Element Source Caption 4" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 4");
             NewElTransl."Element Source Caption 5" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 5"));
+
+            NewElTransl.SetElementTargetCaptions(TargetTxt);
 
             NewElTransl.Insert(false);
         end;
@@ -225,11 +233,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLineCopyTo.Init();
                 ExtTranslLineCopyTo.TransferFields(ExtTranslLineCopyFrom);
                 ExtTranslLineCopyTo."Target Language" := CopyToTargetLang;
-                ExtTranslLineCopyTo."Element Target Caption 1" := '';
-                ExtTranslLineCopyTo."Element Target Caption 2" := '';
-                ExtTranslLineCopyTo."Element Target Caption 3" := '';
-                ExtTranslLineCopyTo."Element Target Caption 4" := '';
-                ExtTranslLineCopyTo."Element Target Caption 5" := '';
                 ExtTranslLineCopyTo.Translated := false;
                 ExtTranslLineCopyTo.Insert(True);
             until ExtTranslLineCopyFrom.Next() = 0;
@@ -274,6 +277,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         CR: Char;
         LF: Char;
         NewLineText: Text;
+        TargetNode: XmlNode;
     begin
         CR := 13; // \r
         LF := 10; // \n
@@ -307,12 +311,15 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             TuId := TransUnitAttr.Value();
             if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then begin
                 if ExtTranslLine.Translated then begin
-                    //TODO: if target already exists overwrite it
-                    TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
                     TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetElementTargetCaptions());
-                    IndentBeforeTarget := XmlText.Create(NewLineText).AsXmlNode();
-                    SourceNode.AddAfterSelf(IndentBeforeTarget);
-                    IndentBeforeTarget.AddAfterSelf(TargetElement);
+                    if TransUnitNode.SelectSingleNode('x:target', NsMgr, TargetNode) then
+                        TargetNode.ReplaceWith(TargetElement)
+                    else begin
+                        TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
+                        IndentBeforeTarget := XmlText.Create(NewLineText).AsXmlNode();
+                        SourceNode.AddAfterSelf(IndentBeforeTarget);
+                        IndentBeforeTarget.AddAfterSelf(TargetElement);
+                    end;
                 end;
             end;
         end;
