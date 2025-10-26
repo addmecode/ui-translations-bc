@@ -56,10 +56,11 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
         // CreateDemoElTransl(ExtTransl); // todo
 
-        Progress.Open(ProgressMsg);
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, InStr);
-        Progress.Update(1, StrSubstNo(FirstProgrStepMsg, ImportedFileName));
-
+        if GuiAllowed then begin
+            Progress.Open(ProgressMsg);
+            Progress.Update(1, StrSubstNo(FirstProgrStepMsg, ImportedFileName));
+        end;
         XmlDocument.ReadFrom(InStr, XmlDoc);
         XmlDoc.GetRoot(Root);
         NsUri := Root.NamespaceUri();
@@ -93,7 +94,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ProgrUpdBatch := Round(TransUnitNodeList.Count() * PROGR_UPD_PERC, 1, '>');
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
-            if TransUnitCounter mod ProgrUpdBatch = 0 then
+            if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
                 Progress.Update(2, StrSubstNo(SecProgrStepMsg, TransUnitCounter, TransUnitNodeList.Count()));
             TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
             TransUnitAttributes.Get('id', TransUnitAttr);
@@ -153,7 +154,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
             NewElTransl.Insert(false);
         end;
-        Progress.Close();
+        if GuiAllowed then
+            Progress.Close();
     end;
 
     local procedure ParseXliffNote(XliffNote: Text; var ObjType: Text; var ObjName: Text; var ElementType: Text; var ElementName: Text)
@@ -246,7 +248,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Error('The target language to copy to must be different from the source language');
 
         PROGR_UPD_PERC := 0.1;
-        Progress.Open(ProgressMsg);
+        if GuiAllowed then
+            Progress.Open(ProgressMsg);
         ExtTranslHeadCopyFrom.Get(CopyFromExtID, CopyFromTargetLang);
         ExtTranslHeadCopyTo.Init();
         ExtTranslHeadCopyFrom.CalcFields("Imported Xlf");
@@ -262,7 +265,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         if ExtTranslLineCopyFrom.FindSet(true) then begin
             repeat
                 LinesCounter += 1;
-                if LinesCounter mod ProgrUpdBatch = 0 then
+                if GuiAllowed and (LinesCounter mod ProgrUpdBatch = 0) then
                     Progress.Update(2, StrSubstNo(FirstProgrStepMsg, LinesCounter, LinesNumber));
 
                 ExtTranslLineCopyTo.Init();
@@ -272,7 +275,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLineCopyTo.Insert(True);
             until ExtTranslLineCopyFrom.Next() = 0;
         end;
-        Progress.Close();
+        if GuiAllowed then
+            Progress.Close();
     end;
 
     internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[30])
@@ -337,8 +341,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             if not Confirm('No all lines are marked as translated. Do you want to download the file anyway?', true) then
                 exit;
         TranslatedFileName := ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf';
-        Progress.Open(ProgressMsg);
-        Progress.Update(1, StrSubstNo(FirstProgrStepMsg, TranslatedFileName));
+        if GuiAllowed then begin
+            Progress.Open(ProgressMsg); //TODO: add guiallowed
+            Progress.Update(1, StrSubstNo(FirstProgrStepMsg, TranslatedFileName));
+        end;
 
         ExtTranslHead.CalcFields("Imported Xlf");
         ExtTranslHead."Imported Xlf".CreateInStream(InStr);
@@ -356,7 +362,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ProgrUpdBatch := Round(TransUnitNodeList.Count() * PROGR_UPD_PERC, 1, '>');
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
-            if TransUnitCounter mod ProgrUpdBatch = 0 then
+            if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
                 Progress.Update(2, StrSubstNo(SecProgrStepMsg, TransUnitCounter, TransUnitNodeList.Count()));
 
             TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
@@ -381,7 +387,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         XmlDoc.WriteTo(OutStr);
         TempBlob.CreateInStream(InStr);
         DownloadFromStream(InStr, '', '', '', TranslatedFileName);
-        Progress.Close();
+        if GuiAllowed then
+            Progress.Close();
     end;
 
     local procedure RunObject(ObjType: Integer; ObjectId: Integer)
