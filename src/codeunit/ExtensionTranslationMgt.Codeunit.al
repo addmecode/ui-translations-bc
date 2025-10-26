@@ -1,6 +1,6 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
-    procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; TargetLang: Text)
+    procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
     var
         ElTranslHead: Record ADD_ExtTranslSetupHeader;
         DelExtTranslQues: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?';
@@ -34,6 +34,12 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileNode: XmlNode;
         SourceLang: Text;
     begin
+        if IsNullGuid(ExtID) then
+            Error('Extension ID cannot be empty');
+        if (not ImportTargetLang) and (TargetLang = '') then
+            Error('Target Language must be specified when Import Target Language is set to false');
+        //TODO: validate Target Lang
+
         ElTranslHead.SetRange("Extension ID", ExtID);
         if ElTranslHead.FindSet() then begin
             if not Confirm(DelExtTranslQues, false, ExtID) then
@@ -53,6 +59,12 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileAttributes := FileNode.AsXmlElement().Attributes();
         FileAttributes.Get('source-language', FileAttr);
         SourceLang := FileAttr.Value();
+
+        if ImportTargetLang then begin
+            FileAttributes := FileNode.AsXmlElement().Attributes();
+            FileAttributes.Get('target-language', FileAttr);
+            TargetLang := FileAttr.Value();
+        end;
 
         ExtTranslNew.init();
         ExtTranslNew."Extension ID" := ExtID;

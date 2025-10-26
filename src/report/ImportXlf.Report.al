@@ -48,9 +48,19 @@ report 50100 "ADD_ImportXlf"
                     {
                         Caption = 'Extension Version';
                     }
+                    field("Import Target Language"; ImportTargetLang)
+                    {
+                        Caption = 'Import Target Language';
+                        trigger OnValidate()
+                        begin
+                            if ImportTargetLang then
+                                TargetLang := '';
+                        end;
+                    }
                     field("Target Language"; TargetLang)
                     {
                         Caption = 'Target Language';
+                        Enabled = not ImportTargetLang;
                     }
                 }
             }
@@ -63,6 +73,7 @@ report 50100 "ADD_ImportXlf"
         ExtPublisher: Text;
         ExtVersion: Text;
         TargetLang: Text;
+        ImportTargetLang: Boolean;
 
     trigger OnInitReport()
     begin
@@ -73,10 +84,7 @@ report 50100 "ADD_ImportXlf"
     var
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
-        //TODO: validate Target Lang
-        if (IsNullGuid(ExtID)) or (TargetLang = '') then
-            Error('Extension ID and Target Language cannot be empty');
-        ExtTranslMgt.ImportXlf(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang);
+        ExtTranslMgt.ImportXlf(ExtID, ExtName, ExtPublisher, ExtVersion, ImportTargetLang, TargetLang);
         commit();
     end;
 

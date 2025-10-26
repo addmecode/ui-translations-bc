@@ -50,7 +50,7 @@ page 50102 "ADD_ExtTranslSetupSubform"
                 }
                 field(Translated; Rec.Translated)
                 {
-                    ToolTip = 'Specifies the value of the Translated fields.', Comment = 'Where am i';
+                    ToolTip = 'Specifies the value of the Translated field.', Comment = 'Where am i';
                 }
                 field("Trans Unit ID"; Rec."Trans Unit ID")
                 {
