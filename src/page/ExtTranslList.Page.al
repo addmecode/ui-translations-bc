@@ -1,11 +1,11 @@
-page 50100 "ADD_ExtTranslSetupList"
+page 50100 "ADD_ExtTranslList"
 {
     ApplicationArea = All;
-    Caption = 'Extension Translation Setups';
-    CardPageID = ADD_ExtTranslSetupCard;
+    Caption = 'Extension Translations';
+    CardPageID = ADD_ExtTranslCard;
     Editable = false;
     PageType = List;
-    SourceTable = ADD_ExtTranslSetupHeader;
+    SourceTable = ADD_ExtTranslHeader;
     UsageCategory = Lists;
 
     layout

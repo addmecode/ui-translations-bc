@@ -2,13 +2,13 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
     procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
     var
-        ElTranslHead: Record ADD_ExtTranslSetupHeader;
+        ElTranslHead: Record ADD_ExtTranslHeader;
         DelExtTranslQues: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?';
         XmlDoc: XmlDocument;
         InStr: InStream;
         OutStr: OutStream;
         ImportedFileName: text;
-        ExtTranslNew: Record ADD_ExtTranslSetupHeader;
+        ExtTranslNew: Record ADD_ExtTranslHeader;
         TransUnitNodeList: XmlNodeList;
         NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
@@ -23,7 +23,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileAttr: XmlAttribute;
         Root: XmlElement;
         NsUri: Text;
-        NewElTransl: Record ADD_ExtTranslSetupLine;
+        NewElTransl: Record ADD_ExtTranslLine;
         SourceNode: XmlNode;
         TargetNode: XmlNode;
         SourceTxt: text;
@@ -157,8 +157,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     begin
         // Page Contact List - Action NewSalesQuote - Property ToolTip
         // ObjType = Page, ObjName = Contact List, ElementName = Action NewSalesQuote, ElementType = Property ToolTip
-        // Page ADD_ExtTranslSetupSubform - Property Caption
-        // ObjType = Page, ObjName = ADD_ExtTranslSetupSubform, ElementName = , ElementType = Property Caption
+        // Page ADD_ExtTranslSubform - Property Caption
+        // ObjType = Page, ObjName = ADD_ExtTranslSubform, ElementName = , ElementType = Property Caption
 
         //TODO : find all possible starting words after object name
         //Codeunit Cash Flow Wksh. - Register - NamedType RegisterWorksheetLinesQst
@@ -193,7 +193,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit(InputText.Substring(1, InputText.IndexOf(' ') - 1));
     end;
 
-    procedure RunObject(ElemTransl: Record ADD_ExtTranslSetupLine)
+    procedure RunObject(ElemTransl: Record ADD_ExtTranslLine)
     var
         AllObj: Record AllObjWithCaption;
     begin
@@ -221,10 +221,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     internal procedure CopyExtTranslToNewTargLang(CopyFromExtID: Guid; CopyFromTargetLang: Text[30]; CopyToTargetLang: Text[30])
     var
-        ExtTranslHeadCopyFrom: Record ADD_ExtTranslSetupHeader;
-        ExtTranslHeadCopyTo: Record ADD_ExtTranslSetupHeader;
-        ExtTranslLineCopyFrom: Record ADD_ExtTranslSetupLine;
-        ExtTranslLineCopyTo: Record ADD_ExtTranslSetupLine;
+        ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader;
+        ExtTranslHeadCopyTo: Record ADD_ExtTranslHeader;
+        ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
+        ExtTranslLineCopyTo: Record ADD_ExtTranslLine;
     begin
         if (IsNullGuid(CopyFromExtID)) or (CopyFromTargetLang = '') or (CopyToTargetLang = '') then
             Error('Extension ID, Target Language and Source Language cannot be empty');
@@ -253,7 +253,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[30])
     var
-        ExtTranslHead: Record ADD_ExtTranslSetupHeader;
+        ExtTranslHead: Record ADD_ExtTranslHeader;
         InStr: InStream;
     begin
         ExtTranslHead.Get(ExtensionID, TargetLanguage);
@@ -264,8 +264,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[30])
     var
-        ExtTranslHead: Record ADD_ExtTranslSetupHeader;
-        ExtTranslLine: Record ADD_ExtTranslSetupLine;
+        ExtTranslHead: Record ADD_ExtTranslHeader;
+        ExtTranslLine: Record ADD_ExtTranslLine;
         InStr: InStream;
         OutStr: OutStream;
         XmlDoc: XmlDocument;
@@ -355,9 +355,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslSetupHeader)
+    local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslHeader)
     var
-        ElTransl: Record ADD_ExtTranslSetupLine;
+        ElTransl: Record ADD_ExtTranslLine;
     begin
         ElTransl.Init();
         ElTransl."Extension ID" := ExtTransl."Extension ID";

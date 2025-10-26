@@ -90,9 +90,9 @@ report 50100 "ADD_ImportXlf"
 
     trigger OnPostReport()
     var
-        ExtTranslNew: Record ADD_ExtTranslSetupHeader;
+        ExtTranslNew: Record ADD_ExtTranslHeader;
     begin
         if ExtTranslNew.Get(ExtID, TargetLang) then
-            Page.RunModal(Page::ADD_ExtTranslSetupCard, ExtTranslNew);
+            Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
     end;
 }

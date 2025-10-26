@@ -19,7 +19,7 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
                     field("Copy From Extension ID"; CopyFromExtID)
                     {
                         Caption = 'Copy From Extension ID';
-                        TableRelation = ADD_ExtTranslSetupHeader."Extension ID";
+                        TableRelation = ADD_ExtTranslHeader."Extension ID";
                         trigger OnValidate()
                         begin
                             CopyFromTargetLang := '';
@@ -31,13 +31,13 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
                         trigger OnLookup(var Text: Text): Boolean
                         var
-                            ExtTransHead: Record ADD_ExtTranslSetupHeader;
+                            ExtTransHead: Record ADD_ExtTranslHeader;
                         begin
                             if IsNullGuid(CopyFromExtID) then
                                 exit(false);
                             ExtTransHead.SetRange("Extension ID", CopyFromExtID);
                             CopyFromTargetLang := '';
-                            if Page.RunModal(Page::ADD_ExtTranslSetupList, ExtTransHead) = Action::LookupOK then
+                            if Page.RunModal(Page::"ADD_ExtTranslList", ExtTransHead) = Action::LookupOK then
                                 CopyFromTargetLang := ExtTransHead."Target Language";
                         end;
                     }
@@ -67,10 +67,10 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
     trigger OnPostReport()
     var
-        ExtTranslNew: Record ADD_ExtTranslSetupHeader;
+        ExtTranslNew: Record ADD_ExtTranslHeader;
     begin
         if ExtTranslNew.Get(CopyFromExtID, CopyToTargetLang) then
-            Page.RunModal(Page::ADD_ExtTranslSetupCard, ExtTranslNew);
+            Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
     end;
 
     procedure SetReqPageParams(ExtID: Guid; TargetLang: Text[30])

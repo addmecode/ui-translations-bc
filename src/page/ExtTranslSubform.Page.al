@@ -1,10 +1,10 @@
-page 50102 "ADD_ExtTranslSetupSubform"
+page 50102 "ADD_ExtTranslSubform"
 {
     ApplicationArea = All;
-    Caption = 'Extension Translation Setup Subform';
+    Caption = 'Extension Translation Subform';
     Editable = true;
     PageType = ListPart;
-    SourceTable = ADD_ExtTranslSetupLine;
+    SourceTable = ADD_ExtTranslLine;
     InsertAllowed = false;
     DeleteAllowed = false;
 
