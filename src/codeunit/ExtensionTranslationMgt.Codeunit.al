@@ -145,7 +145,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 4");
             NewElTransl."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 5"));
-            ParseXliffNote(NewElTransl.GetXliffNotes(), NewElTransl."Object Type", NewElTransl."Object Name",
+            ParseXliffNote(TuId, XliffNote, NewElTransl."Object Type", NewElTransl."Object Name",
                            NewElTransl."Element Type", NewElTransl."Element Name");
 
             NewElTransl.SetSource(SourceTxt);
@@ -158,37 +158,85 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Progress.Close();
     end;
 
-    local procedure ParseXliffNote(XliffNote: Text; var ObjType: Text; var ObjName: Text; var ElementType: Text; var ElementName: Text)
+    local procedure ParseXliffNote(TransUnitId: Text; XliffNote: Text; var ObjType: Text; var ObjName: Text; var ElementType: Text; var ElementName: Text)
     var
         HyphenParts: List of [Text];
+        TuHyphenParts: List of [Text];
         HyphenCounter: Integer;
         ElemTypeStartPart: Integer;
+        ElemNameStartPart: Integer;
+        ElemTypeFirstWord: Text;
+        ElemNameFirstWord: Text;
     begin
-        // Page Contact List - Action NewSalesQuote - Property ToolTip
+        // e.g 1
+        // <trans-unit id="Page 1023993454 - Action 1376376002 - Property 1295455071" 
+        // <note from="Xliff Generator" annotates="general" priority="3">Page Contact List - Action NewSalesQuote - Property ToolTip</note>
         // ObjType = Page, ObjName = Contact List, ElementName = Action NewSalesQuote, ElementType = Property ToolTip
-        // Page ADD_ExtTranslSubform - Property Caption
-        // ObjType = Page, ObjName = ADD_ExtTranslSubform, ElementName = , ElementType = Property Caption
+        // e.g 2
+        // <trans-unit id="Codeunit 1151451258 - NamedType 2419749672"
+        // <note from="Xliff Generator" annotates="general" priority="3">Codeunit Cash Flow Wksh. - Register - NamedType RegisterWorksheetLinesQst</note>
+        // ObjType = Codeunit, ObjName = Cash Flow Wksh. - Register, ElementName = , ElementType = NamedType RegisterWorksheetLinesQst
+        // e.g 3
+        // <trans-unit id="Page 1007051012 - Control 4154341761 - Property 1295455071" 
+        // <note from="Xliff Generator" annotates="general" priority="3">Page Report Selection - VAT Stmt. - Control Sequence - Property ToolTip</note>
+        // ObjType = Page, ObjName = Report Selection - VAT Stmt., ElementName = Control Sequence, ElementType = Property ToolTip
+        // e.g 4
+        // <trans-unit id="Page 3259548000 - Control 2961552353 - Method 2126772001 - NamedType 1758523981"
+        // <note from="Xliff Generator" annotates="general" priority="3">Page CDS New Man. Int. Table Wizard - Control Name - Method OnValidate - NamedType IntegrationMappingNameExistErr</note>
+        // ObjType = Page, ObjName =  CDS New Man. Int. Table Wizard, ElementName = Control Name - Method OnValidate, ElementType = NamedType IntegrationMappingNameExistErr
 
-        //TODO : find all possible starting words after object name
-        //Codeunit Cash Flow Wksh. - Register - NamedType RegisterWorksheetLinesQst
-        //Cash Flow Wksh. - Register is the cu name
-
-        // Page Report Selection - VAT Stmt. - Control Sequence - Property ToolTip
-
-        HyphenParts := XliffNote.Split(' - ');
-        ObjType := GetTextPartBeforeSpace(HyphenParts.Get(1));
-        ObjName := GetTextPartAfterSpace(HyphenParts.Get(1));
-        ElementName := '';
-        ElemTypeStartPart := 2;
-        if HyphenParts.Count() > 2 then begin
-            ElementName := HyphenParts.Get(2);
-            ElemTypeStartPart := 3;
+        TuHyphenParts := TransUnitId.Split(' - ');
+        ObjType := GetTextPartBeforeSpace(TuHyphenParts.Get(1));
+        case TuHyphenParts.Count() of
+            4:
+                begin
+                    ElemNameFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(4));
+                end;
+            3:
+                begin
+                    ElemNameFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(3));
+                end;
+            2:
+                begin
+                    ElemNameFirstWord := '';
+                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                end;
+            else
+                Error('Found %1 parts in Trans unit id: %2', TuHyphenParts.Count(), TransUnitId);
         end;
-        ElementType := '';
-        for HyphenCounter := ElemTypeStartPart to HyphenParts.Count() do begin
-            if HyphenCounter > ElemTypeStartPart then
-                ElementType += ' ';
-            ElementType += HyphenParts.Get(HyphenCounter);
+        HyphenParts := XliffNote.Split(' - ');
+        ElemTypeStartPart := XliffNote.LastIndexOf(' - ' + ElemTypeFirstWord);
+        ElementType := XliffNote.Substring(ElemTypeStartPart + 3);
+        XliffNote := XliffNote.Substring(1, ElemTypeStartPart - 1);
+        if ElemNameFirstWord <> '' then begin
+            ElemNameStartPart := XliffNote.LastIndexOf(' - ' + ElemNameFirstWord);
+            ElementName := XliffNote.Substring(ElemNameStartPart + 3);
+            XliffNote := XliffNote.Substring(1, ElemNameStartPart - 1);
+        end;
+        ObjName := XliffNote.Substring(StrLen(ObjType) + 1);
+
+        // SetUniqElements(ElementName, ElementType); //TODO: delete
+    end;
+
+    local procedure SetUniqElements(ElemName: Text; ElemType: Text)
+    var
+        FirstWord: Text;
+    begin
+        if ElemName <> '' then begin
+            FirstWord := ElemName.Substring(1, ElemName.IndexOf(' '));
+            if FirstWord <> '' then begin
+                if not UniqElemNames.Contains(FirstWord) then
+                    UniqElemNames.Add(FirstWord);
+            end;
+        end;
+        if ElemType <> '' then begin
+            FirstWord := ElemType.Substring(1, ElemType.IndexOf(' '));
+            if FirstWord <> '' then begin
+                if not UniqElemTypes.Contains(FirstWord) then
+                    UniqElemTypes.Add(FirstWord);
+            end;
         end;
     end;
 
@@ -402,6 +450,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
         end;
     end;
+
+    var
+        UniqElemNames: List of [Text];
+        UniqElemTypes: List of [Text];
 
     // local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslHeader)
     // var

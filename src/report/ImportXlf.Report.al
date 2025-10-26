@@ -77,7 +77,7 @@ report 50100 "ADD_ImportXlf"
 
     trigger OnInitReport()
     begin
-        TargetLang := 'en-US'; //TOOD: delete
+        ImportTargetLang := true;
     end;
 
     trigger OnPreReport()
