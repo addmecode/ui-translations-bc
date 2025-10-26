@@ -113,6 +113,6 @@ page 50101 "ADD_ExtTranslCard"
 
     trigger OnAfterGetCurrRecord()
     begin
-        CurrPage.TranslationElements.Page.SetElemTargetCaptEditable(Rec."Source Language" <> Rec."Target Language");
+        CurrPage.TranslationElements.Page.SetNewTargetEditable(Rec."Source Language" <> Rec."Target Language");
     end;
 }

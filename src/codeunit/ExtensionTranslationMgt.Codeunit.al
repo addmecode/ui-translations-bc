@@ -132,18 +132,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ParseXliffNote(NewElTransl.GetXliffNotes(), NewElTransl."Object Type", NewElTransl."Object Name",
                            NewElTransl."Element Type", NewElTransl."Element Name");
 
-            TableFieldStartPos := 1;
-            NewElTransl."Element Source Caption 1" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 1"));
-            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 1");
-            NewElTransl."Element Source Caption 2" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 2"));
-            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 2");
-            NewElTransl."Element Source Caption 3" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 3"));
-            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 3");
-            NewElTransl."Element Source Caption 4" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 4"));
-            TableFieldStartPos += MaxStrLen(NewElTransl."Element Source Caption 4");
-            NewElTransl."Element Source Caption 5" := CopyStr(SourceTxt, TableFieldStartPos, MaxStrLen(NewElTransl."Element Source Caption 5"));
-
-            NewElTransl.SetElementTargetCaptions(TargetTxt);
+            NewElTransl.SetSource(SourceTxt);
+            NewElTransl.SetTarget(TargetTxt);
+            NewElTransl.SetNewTarget(TargetTxt);
 
             NewElTransl.Insert(false);
         end;
@@ -323,7 +314,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             TuId := TransUnitAttr.Value();
             if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then begin
                 if ExtTranslLine.Translated then begin
-                    TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetElementTargetCaptions());
+                    TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetNewTarget());
                     if TransUnitNode.SelectSingleNode('x:target', NsMgr, TargetNode) then
                         TargetNode.ReplaceWith(TargetElement)
                     else begin
@@ -355,38 +346,38 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslHeader)
-    var
-        ElTransl: Record ADD_ExtTranslLine;
-    begin
-        ElTransl.Init();
-        ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Trans Unit ID" := 'Table 1163407374 - Property 2879900210';
-        ElTransl."Object Type" := 'Table';
-        ElTransl."Object Name" := 'ADD_ElementTranslated';
-        ElTransl."Element Type" := 'Field';
-        ElTransl."Element Name" := 'Target Language';
-        ElTransl."Element Source Caption 1" := 'Target Language';
-        ElTransl.Insert(false);
+    // local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslHeader)
+    // var
+    //     ElTransl: Record ADD_ExtTranslLine;
+    // begin
+    //     ElTransl.Init();
+    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
+    //     ElTransl."Trans Unit ID" := 'Table 1163407374 - Property 2879900210';
+    //     ElTransl."Object Type" := 'Table';
+    //     ElTransl."Object Name" := 'ADD_ElementTranslated';
+    //     ElTransl."Element Type" := 'Field';
+    //     ElTransl."Element Name" := 'Target Language';
+    //     ElTransl."Element Source Caption 1" := 'Target Language';
+    //     ElTransl.Insert(false);
 
-        ElTransl.Init();
-        ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Trans Unit ID" := 'Table 1163407375 - Property 2879900211';
-        ElTransl."Object Type" := 'Table';
-        ElTransl."Object Name" := 'ADD_ElementTranslation';
-        ElTransl."Element Type" := 'Field';
-        ElTransl."Element Name" := 'Object ID';
-        ElTransl."Element Source Caption 1" := 'Object ID';
-        ElTransl.Insert(false);
+    //     ElTransl.Init();
+    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
+    //     ElTransl."Trans Unit ID" := 'Table 1163407375 - Property 2879900211';
+    //     ElTransl."Object Type" := 'Table';
+    //     ElTransl."Object Name" := 'ADD_ElementTranslation';
+    //     ElTransl."Element Type" := 'Field';
+    //     ElTransl."Element Name" := 'Object ID';
+    //     ElTransl."Element Source Caption 1" := 'Object ID';
+    //     ElTransl.Insert(false);
 
-        ElTransl.Init();
-        ElTransl."Extension ID" := ExtTransl."Extension ID";
-        ElTransl."Trans Unit ID" := 'Table 1163407376 - Property 2879900212';
-        ElTransl."Object Type" := 'Table';
-        ElTransl."Object Name" := 'ADD_ExtensionTranslation';
-        ElTransl."Element Type" := 'Field';
-        ElTransl."Element Name" := 'Publisher';
-        ElTransl."Element Source Caption 1" := 'Publisher';
-        ElTransl.Insert(false);
-    end;
+    //     ElTransl.Init();
+    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
+    //     ElTransl."Trans Unit ID" := 'Table 1163407376 - Property 2879900212';
+    //     ElTransl."Object Type" := 'Table';
+    //     ElTransl."Object Name" := 'ADD_ExtensionTranslation';
+    //     ElTransl."Element Type" := 'Field';
+    //     ElTransl."Element Name" := 'Publisher';
+    //     ElTransl."Element Source Caption 1" := 'Publisher';
+    //     ElTransl.Insert(false);
+    // end;
 }

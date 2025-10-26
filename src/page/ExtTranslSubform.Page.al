@@ -30,22 +30,27 @@ page 50102 "ADD_ExtTranslSubform"
                 {
                     ToolTip = 'Specifies the value of the Element Type field.', Comment = '%';
                 }
-                field("Element Source Caption"; Rec.GetElementSourceCaptions())
+                field(Source; Rec.GetSource())
                 {
-                    ToolTip = 'Specifies the value of the Element Source Caption fields.', Comment = '%';
+                    ToolTip = 'Specifies the value of the Source fields.', Comment = '%';
                     Editable = false;
                 }
                 field("Developer Note"; Rec.GetDeveloperNotes())
                 {
                     ToolTip = 'Specifies the value of the Developer Note fields.', Comment = 'Where am i';
                 }
-                field("Element Target Caption"; ElemTargetCapt)
+                field(Target; Rec.GetTarget())
                 {
-                    ToolTip = 'Specifies the value of the Element Target Caption fields.', Comment = '%';
-                    Editable = IsElemTargetCaptEditable;
+                    ToolTip = 'Specifies the value of the Target fields.', Comment = '%';
+                    Editable = false;
+                }
+                field("New Target"; NewTarget)
+                {
+                    ToolTip = 'Specifies the value of the New Target fields.', Comment = '%';
+                    Editable = IsNewTargetEditable;
                     trigger OnValidate()
                     begin
-                        Rec.SetElementTargetCaptions(ElemTargetCapt);
+                        Rec.SetNewTarget(NewTarget);
                     end;
                 }
                 field(Translated; Rec.Translated)
@@ -114,15 +119,15 @@ page 50102 "ADD_ExtTranslSubform"
 
     trigger OnAfterGetRecord()
     begin
-        ElemTargetCapt := Rec.GetElementTargetCaptions();
+        NewTarget := Rec.GetNewTarget();
     end;
 
-    procedure SetElemTargetCaptEditable(IsEditable: Boolean)
+    procedure SetNewTargetEditable(IsEditable: Boolean)
     begin
-        IsElemTargetCaptEditable := IsEditable;
+        IsNewTargetEditable := IsEditable;
     end;
 
     var
-        ElemTargetCapt: Text;
-        IsElemTargetCaptEditable: Boolean;
+        NewTarget: Text;
+        IsNewTargetEditable: Boolean;
 }
