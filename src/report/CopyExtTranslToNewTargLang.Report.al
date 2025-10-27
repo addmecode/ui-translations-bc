@@ -44,6 +44,17 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
                     field("Copy To Target Language"; CopyToTargetLang)
                     {
                         Caption = 'Copy To Target Language';
+                        Editable = false;
+
+                        trigger OnAssistEdit()
+                        var
+                            WindLang: Record "Windows Language";
+                        begin
+                            if Page.RunModal(Page::"Windows Languages", WindLang) = Action::LookupOK then
+                                CopyToTargetLang := WindLang."Language Tag"
+                            else
+                                CopyToTargetLang := '';
+                        end;
                     }
                 }
             }
@@ -60,7 +71,6 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
     var
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
-        // //TODO: validate copy to Lang
         ExtTranslMgt.CopyExtTranslToNewTargLang(CopyFromExtID, CopyFromTargetLang, CopyToTargetLang);
         commit();
     end;
