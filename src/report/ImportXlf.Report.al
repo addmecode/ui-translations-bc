@@ -85,6 +85,7 @@ report 50100 "ADD_ImportXlf"
         ExtVersion: Text;
         TargetLang: Text;
         ImportTargetLang: Boolean;
+        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
 
     trigger OnInitReport()
     begin
@@ -95,15 +96,12 @@ report 50100 "ADD_ImportXlf"
     var
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
-        ExtTranslMgt.ImportXlf(ExtID, ExtName, ExtPublisher, ExtVersion, ImportTargetLang, TargetLang);
+        ExtTranslMgt.ImportXlf(CreatedExtTranslHead, ExtID, ExtName, ExtPublisher, ExtVersion, ImportTargetLang, TargetLang);
         commit();
     end;
 
     trigger OnPostReport()
-    var
-        ExtTranslNew: Record ADD_ExtTranslHeader;
     begin
-        if ExtTranslNew.Get(ExtID, TargetLang) then
-            Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
+        Page.RunModal(Page::ADD_ExtTranslCard, CreatedExtTranslHead);
     end;
 }

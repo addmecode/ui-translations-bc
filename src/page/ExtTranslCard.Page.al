@@ -57,10 +57,10 @@ page 50101 "ADD_ExtTranslCard"
             {
                 Caption = 'Process';
                 Image = Action;
-                action("Copy to new target lang")
+                action(Copy)
                 {
                     ApplicationArea = All;
-                    Caption = 'Copy to new target lang';
+                    Caption = 'Copy';
                     Ellipsis = true;
                     Image = Copy;
                     Promoted = true;

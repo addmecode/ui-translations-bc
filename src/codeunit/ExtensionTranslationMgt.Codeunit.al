@@ -1,6 +1,6 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
-    procedure ImportXlf(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
+    procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
     var
         ElTranslHead: Record ADD_ExtTranslHeader;
         DelExtTranslQues: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?';
@@ -8,7 +8,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         InStr: InStream;
         OutStr: OutStream;
         ImportedFileName: text;
-        ExtTranslNew: Record ADD_ExtTranslHeader;
         TransUnitNodeList: XmlNodeList;
         NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
@@ -75,17 +74,17 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             TargetLang := FileAttr.Value();
         end;
 
-        ExtTranslNew.init();
-        ExtTranslNew."Extension ID" := ExtID;
-        ExtTranslNew."Target Language" := TargetLang;
-        ExtTranslNew."Extension Name" := ExtName;
-        ExtTranslNew."Extension Publisher" := ExtPublisher;
-        ExtTranslNew."Extension Version" := ExtVersion;
-        ExtTranslNew."Imported Xlf".CreateOutStream(OutStr);
+        CreatedExtTranslHead.init();
+        CreatedExtTranslHead."Extension ID" := ExtID;
+        CreatedExtTranslHead."Target Language" := TargetLang;
+        CreatedExtTranslHead."Extension Name" := ExtName;
+        CreatedExtTranslHead."Extension Publisher" := ExtPublisher;
+        CreatedExtTranslHead."Extension Version" := ExtVersion;
+        CreatedExtTranslHead."Imported Xlf".CreateOutStream(OutStr);
         CopyStream(OutStr, InStr);
-        ExtTranslNew."Imported FileName" := ImportedFileName;
-        ExtTranslNew."Source Language" := SourceLang;
-        ExtTranslNew.Insert(false);
+        CreatedExtTranslHead."Imported FileName" := ImportedFileName;
+        CreatedExtTranslHead."Source Language" := SourceLang;
+        CreatedExtTranslHead.Insert(false);
 
         XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
         TransUnitCounter := 0;
@@ -118,8 +117,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             end;
 
             NewElTransl.Init();
-            NewElTransl."Extension ID" := ExtTranslNew."Extension ID";
-            NewElTransl."Target Language" := ExtTranslNew."Target Language";
+            NewElTransl."Extension ID" := CreatedExtTranslHead."Extension ID";
+            NewElTransl."Target Language" := CreatedExtTranslHead."Target Language";
             NewElTransl."Trans Unit ID" := TuId;
             NewElTransl.Translated := false;
             TableFieldStartPos := 1;
