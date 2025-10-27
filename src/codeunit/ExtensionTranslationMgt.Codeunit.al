@@ -46,7 +46,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Error('Extension ID cannot be empty');
         if (not ImportTargetLang) and (TargetLang = '') then
             Error('Target Language must be specified when Import Target Language is set to false');
-        //TODO: validate Target Lang
 
         ElTranslHead.SetRange("Extension ID", ExtID);
         if ElTranslHead.FindSet() then begin
@@ -54,7 +53,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 exit;
             ElTranslHead.DeleteAll(true);
         end;
-        // CreateDemoElTransl(ExtTransl); // todo
 
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, InStr);
         if GuiAllowed then begin
@@ -455,38 +453,4 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         UniqElemNames: List of [Text];
         UniqElemTypes: List of [Text];
 
-    // local procedure CreateDemoElTransl(ExtTransl: Record ADD_ExtTranslHeader)
-    // var
-    //     ElTransl: Record ADD_ExtTranslLine;
-    // begin
-    //     ElTransl.Init();
-    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
-    //     ElTransl."Trans Unit ID" := 'Table 1163407374 - Property 2879900210';
-    //     ElTransl."Object Type" := 'Table';
-    //     ElTransl."Object Name" := 'ADD_ElementTranslated';
-    //     ElTransl."Element Type" := 'Field';
-    //     ElTransl."Element Name" := 'Target Language';
-    //     ElTransl."Element Source Caption 1" := 'Target Language';
-    //     ElTransl.Insert(false);
-
-    //     ElTransl.Init();
-    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
-    //     ElTransl."Trans Unit ID" := 'Table 1163407375 - Property 2879900211';
-    //     ElTransl."Object Type" := 'Table';
-    //     ElTransl."Object Name" := 'ADD_ElementTranslation';
-    //     ElTransl."Element Type" := 'Field';
-    //     ElTransl."Element Name" := 'Object ID';
-    //     ElTransl."Element Source Caption 1" := 'Object ID';
-    //     ElTransl.Insert(false);
-
-    //     ElTransl.Init();
-    //     ElTransl."Extension ID" := ExtTransl."Extension ID";
-    //     ElTransl."Trans Unit ID" := 'Table 1163407376 - Property 2879900212';
-    //     ElTransl."Object Type" := 'Table';
-    //     ElTransl."Object Name" := 'ADD_ExtensionTranslation';
-    //     ElTransl."Element Type" := 'Field';
-    //     ElTransl."Element Name" := 'Publisher';
-    //     ElTransl."Element Source Caption 1" := 'Publisher';
-    //     ElTransl.Insert(false);
-    // end;
 }

@@ -61,6 +61,17 @@ report 50100 "ADD_ImportXlf"
                     {
                         Caption = 'Target Language';
                         Enabled = not ImportTargetLang;
+                        Editable = false;
+
+                        trigger OnAssistEdit()
+                        var
+                            WindLang: Record "Windows Language";
+                        begin
+                            if Page.RunModal(Page::"Windows Languages", WindLang) = Action::LookupOK then
+                                TargetLang := WindLang."Language Tag"
+                            else
+                                TargetLang := '';
+                        end;
                     }
                 }
             }

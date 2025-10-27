@@ -18,11 +18,13 @@ table 50102 "ADD_ExtTranslHeader"
         {
             Caption = 'Target Language';
             Editable = false;
+            TableRelation = "Windows Language"."Language Tag";
         }
         field(3; "Source Language"; Text[250])
         {
             Caption = 'Source Language';
             Editable = false;
+            TableRelation = "Windows Language"."Language Tag";
         }
         field(4; "Extension Version"; Text[250])
         {
