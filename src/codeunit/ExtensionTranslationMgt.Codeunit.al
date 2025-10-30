@@ -94,6 +94,15 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLine."Source 5" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 5"));
     end;
 
+    procedure SelectLangTag(): Text
+    var
+        WindLang: Record "Windows Language";
+    begin
+        if Page.RunModal(Page::"Windows Languages", WindLang) = Action::LookupOK then
+            exit(WindLang."Language Tag");
+        exit('');
+    end;
+
     procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
     var
         ElTranslHead: Record ADD_ExtTranslHeader;

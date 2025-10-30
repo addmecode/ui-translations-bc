@@ -7,8 +7,6 @@ report 50100 "ADD_ImportXlf"
 
     requestpage
     {
-        AboutTitle = 'Teaching tip title'; //todo
-        AboutText = 'Teaching tip content';
         layout
         {
             area(Content)
@@ -20,6 +18,7 @@ report 50100 "ADD_ImportXlf"
                     {
                         Caption = 'Extension ID';
                         TableRelation = "NAV App Installed App"."App ID";
+
                         trigger OnValidate()
                         var
                             NavAppInstalledApp: Record "NAV App Installed App";
@@ -51,6 +50,7 @@ report 50100 "ADD_ImportXlf"
                     field("Import Target Language"; ImportTargetLang)
                     {
                         Caption = 'Import Target Language';
+
                         trigger OnValidate()
                         begin
                             if ImportTargetLang then
@@ -65,12 +65,9 @@ report 50100 "ADD_ImportXlf"
 
                         trigger OnAssistEdit()
                         var
-                            WindLang: Record "Windows Language";
+                            ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                         begin
-                            if Page.RunModal(Page::"Windows Languages", WindLang) = Action::LookupOK then
-                                TargetLang := WindLang."Language Tag"
-                            else
-                                TargetLang := '';
+                            TargetLang := ExtTranslMgt.SelectLangTag();
                         end;
                     }
                 }

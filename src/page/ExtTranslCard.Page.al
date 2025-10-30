@@ -5,6 +5,7 @@ page 50101 "ADD_ExtTranslCard"
     PageType = Card;
     SourceTable = ADD_ExtTranslHeader;
     InsertAllowed = false;
+
     layout
     {
         area(Content)
@@ -65,7 +66,7 @@ page 50101 "ADD_ExtTranslCard"
                     Image = Copy;
                     Promoted = true;
                     PromotedCategory = Process;
-                    PromotedIsBig = true;
+                    PromotedIsBig = true; //TODO: move it to action ref
 
                     trigger OnAction()
                     var

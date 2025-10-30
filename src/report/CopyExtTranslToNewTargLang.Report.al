@@ -7,8 +7,6 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
     requestpage
     {
-        AboutTitle = 'Teaching tip title'; //todo
-        AboutText = 'Teaching tip content';
         layout
         {
             area(Content)
@@ -48,12 +46,9 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
                         trigger OnAssistEdit()
                         var
-                            WindLang: Record "Windows Language";
+                            ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                         begin
-                            if Page.RunModal(Page::"Windows Languages", WindLang) = Action::LookupOK then
-                                CopyToTargetLang := WindLang."Language Tag"
-                            else
-                                CopyToTargetLang := '';
+                            CopyToTargetLang := ExtTranslMgt.SelectLangTag();
                         end;
                     }
                 }

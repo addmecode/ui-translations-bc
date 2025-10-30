@@ -57,7 +57,7 @@ page 50100 "ADD_ExtTranslList"
                     Image = Import;
                     Promoted = true;
                     PromotedCategory = Process;
-                    PromotedIsBig = true;
+                    PromotedIsBig = true; //TODO: move to action ref
                     RunObject = Report ADD_ImportXlf;
                 }
             }
