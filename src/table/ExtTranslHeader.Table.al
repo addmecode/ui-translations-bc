@@ -1,6 +1,6 @@
 table 50102 "ADD_ExtTranslHeader"
 {
-    Caption = 'Extension Translation  Header';
+    Caption = 'Extension Translation Header';
     DataClassification = ToBeClassified;
     DrillDownPageID = ADD_ExtTranslCard;
     LookupPageId = ADD_ExtTranslCard;
@@ -61,11 +61,8 @@ table 50102 "ADD_ExtTranslHeader"
 
     trigger OnDelete()
     var
-        ExtTransLine: Record ADD_ExtTranslLine;
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
-        ExtTransLine.SetRange("Extension ID", Rec."Extension ID");
-        ExtTransLine.SetRange("Target Language", Rec."Target Language");
-        if ExtTransLine.FindSet() then
-            ExtTransLine.DeleteAll(true);
+        ExtTranslMgt.DeleteAllExtTranslHeadLines(Rec);
     end;
 }

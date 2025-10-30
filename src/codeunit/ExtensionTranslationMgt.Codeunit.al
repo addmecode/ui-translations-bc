@@ -1,5 +1,99 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
+
+    procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
+    var
+        ExtTransLine: Record ADD_ExtTranslLine;
+    begin
+        ExtTransLine.SetRange("Extension ID", ExtTranslHead."Extension ID");
+        ExtTransLine.SetRange("Target Language", ExtTranslHead."Target Language");
+        ExtTransLine.DeleteAll(true);
+    end;
+
+    procedure GetExtTransLineDeveloperNotes(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    begin
+        exit(ExtTranslLine."Developer Note 1" +
+            ExtTranslLine."Developer Note 2" +
+            ExtTranslLine."Developer Note 3" +
+            ExtTranslLine."Developer Note 4" +
+            ExtTranslLine."Developer Note 5");
+    end;
+
+    procedure GetExtTransLineSource(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    begin
+        exit(ExtTranslLine."Source 1" +
+            ExtTranslLine."Source 2" +
+            ExtTranslLine."Source 3" +
+            ExtTranslLine."Source 4" +
+            ExtTranslLine."Source 5");
+    end;
+
+    procedure GetExtTransLineTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    begin
+        exit(ExtTranslLine."Target 1" +
+            ExtTranslLine."Target 2" +
+            ExtTranslLine."Target 3" +
+            ExtTranslLine."Target 4" +
+            ExtTranslLine."Target 5");
+    end;
+
+    procedure GetExtTransLineNewTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    begin
+        exit(ExtTranslLine."New Target 1" +
+            ExtTranslLine."New Target 2" +
+            ExtTranslLine."New Target 3" +
+            ExtTranslLine."New Target 4" +
+            ExtTranslLine."New Target 5");
+    end;
+
+    procedure SetExtTransLineNewTarget(ExtTranslLine: Record ADD_ExtTranslLine; NewTarget: Text)
+    var
+        TableFieldStartPos: Integer;
+    begin
+        TableFieldStartPos := 1;
+        ExtTranslLine."New Target 1" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 1"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 1");
+        ExtTranslLine."New Target 2" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 2"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 2");
+        ExtTranslLine."New Target 3" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 3"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 3");
+        ExtTranslLine."New Target 4" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 4"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 4");
+        ExtTranslLine."New Target 5" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 5"));
+    end;
+
+    procedure SetExtTransLineTarget(ExtTranslLine: Record ADD_ExtTranslLine; Target: Text)
+    var
+        TableFieldStartPos: Integer;
+    begin
+        TableFieldStartPos := 1;
+        ExtTranslLine."Target 1" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 1"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 1");
+        ExtTranslLine."Target 2" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 2"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 2");
+        ExtTranslLine."Target 3" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 3"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 3");
+        ExtTranslLine."Target 4" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 4"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 4");
+        ExtTranslLine."Target 5" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 5"));
+    end;
+
+    procedure SetExtTransLineSource(ExtTranslLine: Record ADD_ExtTranslLine; Source: Text)
+    var
+        TableFieldStartPos: Integer;
+    begin
+        TableFieldStartPos := 1;
+        ExtTranslLine."Source 1" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 1"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 1");
+        ExtTranslLine."Source 2" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 2"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 2");
+        ExtTranslLine."Source 3" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 3"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 3");
+        ExtTranslLine."Source 4" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 4"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 4");
+        ExtTranslLine."Source 5" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 5"));
+    end;
+
     procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
     var
         ElTranslHead: Record ADD_ExtTranslHeader;
