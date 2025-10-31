@@ -84,27 +84,27 @@ report 50100 "ADD_ImportXlf"
     var
         CreatedExtTranslHead: Record ADD_ExtTranslHeader;
         ExtID: Guid;
-        ExtName: Text;
-        ExtPublisher: Text;
-        ExtVersion: Text;
-        TargetLang: Text;
+        ExtName: Text[250];
+        ExtPublisher: Text[250];
+        ExtVersion: Text[250];
+        TargetLang: Text[80];
         ImportTargetLang: Boolean;
 
     trigger OnInitReport()
     begin
-        ImportTargetLang := true;
+        this.ImportTargetLang := true;
     end;
 
     trigger OnPreReport()
     var
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
-        ExtTranslMgt.ImportXlf(CreatedExtTranslHead, ExtID, ExtName, ExtPublisher, ExtVersion, ImportTargetLang, TargetLang);
+        ExtTranslMgt.ImportXlf(this.CreatedExtTranslHead, this.ExtID, this.ExtName, this.ExtPublisher, this.ExtVersion, this.ImportTargetLang, this.TargetLang);
         commit();
     end;
 
     trigger OnPostReport()
     begin
-        Page.RunModal(Page::ADD_ExtTranslCard, CreatedExtTranslHead);
+        Page.RunModal(Page::ADD_ExtTranslCard, this.CreatedExtTranslHead);
     end;
 }

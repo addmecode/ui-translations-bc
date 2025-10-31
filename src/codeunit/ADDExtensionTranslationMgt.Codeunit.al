@@ -103,14 +103,15 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit('');
     end;
 
-    procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; ImportTargetLang: Boolean; TargetLang: Text)
+    procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
         ElTranslHead: Record ADD_ExtTranslHeader;
-        DelExtTranslQues: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?';
+        NewElTransl: Record ADD_ExtTranslLine;
+        DelExtTranslQst: Label 'Extension Translations already exist for %1 Extension ID. Do you want to delete them and continue?', Comment = '%1 is Extension ID value';
         XmlDoc: XmlDocument;
         InStr: InStream;
         OutStr: OutStream;
-        ImportedFileName: text;
+        ImportedFileName: Text;
         TransUnitNodeList: XmlNodeList;
         NoteNodeList: XmlNodeList;
         NsMgr: XmlNamespaceManager;
@@ -125,7 +126,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileAttr: XmlAttribute;
         Root: XmlElement;
         NsUri: Text;
-        NewElTransl: Record ADD_ExtTranslLine;
         SourceNode: XmlNode;
         TargetNode: XmlNode;
         SourceTxt: text;
@@ -136,9 +136,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FileNode: XmlNode;
         SourceLang: Text;
         Progress: Dialog;
-        ProgressMsg: Label '#1 \#2';
-        FirstProgrStepMsg: Label 'Importing File: %1';
-        SecProgrStepMsg: Label 'Importing Lines: %1 of %2';
+        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
+        FirstProgrStepMsg: Label 'Importing File: %1', Comment = '%1 is file name';
+        SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         TransUnitCounter: Integer;
         PROGR_UPD_PERC: Decimal;
         ProgrUpdBatch: Integer;
@@ -151,7 +151,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         ElTranslHead.SetRange("Extension ID", ExtID);
         if ElTranslHead.FindSet() then begin
-            if not Confirm(DelExtTranslQues, false, ExtID) then
+            if not Confirm(DelExtTranslQst, false, ExtID) then
                 exit;
             ElTranslHead.DeleteAll(true);
         end;
@@ -179,14 +179,14 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         CreatedExtTranslHead.init();
         CreatedExtTranslHead."Extension ID" := ExtID;
-        CreatedExtTranslHead."Target Language" := TargetLang;
+        CreatedExtTranslHead."Target Language" := CopyStr(TargetLang, 1, MaxStrLen(CreatedExtTranslHead."Target Language"));
         CreatedExtTranslHead."Extension Name" := ExtName;
         CreatedExtTranslHead."Extension Publisher" := ExtPublisher;
         CreatedExtTranslHead."Extension Version" := ExtVersion;
         CreatedExtTranslHead."Imported Xlf".CreateOutStream(OutStr);
         CopyStream(OutStr, InStr);
-        CreatedExtTranslHead."Imported FileName" := ImportedFileName;
-        CreatedExtTranslHead."Source Language" := SourceLang;
+        CreatedExtTranslHead."Imported FileName" := CopyStr(ImportedFileName, 1, MaxStrLen(CreatedExtTranslHead."Imported FileName"));
+        CreatedExtTranslHead."Source Language" := CopyStr(SourceLang, 1, MaxStrLen(CreatedExtTranslHead."Source Language"));
         CreatedExtTranslHead.Insert(false);
 
         XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
@@ -222,7 +222,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl.Init();
             NewElTransl."Extension ID" := CreatedExtTranslHead."Extension ID";
             NewElTransl."Target Language" := CreatedExtTranslHead."Target Language";
+#pragma warning disable AA0139
             NewElTransl."Trans Unit ID" := TuId;
+#pragma warning restore AA0139
             NewElTransl.Translated := false;
             TableFieldStartPos := 1;
             NewElTransl."Developer Note 1" := CopyStr(DeveloperNote, TableFieldStartPos, MaxStrLen(NewElTransl."Developer Note 1"));
@@ -245,7 +247,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             NewElTransl."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 4"));
             TableFieldStartPos += MaxStrLen(NewElTransl."Xliff Note 4");
             NewElTransl."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(NewElTransl."Xliff Note 5"));
-            ParseXliffNote(TuId, XliffNote, NewElTransl."Object Type", NewElTransl."Object Name",
+            this.ParseXliffNote(TuId, XliffNote, NewElTransl."Object Type", NewElTransl."Object Name",
                            NewElTransl."Element Type", NewElTransl."Element Name");
 
             NewElTransl.SetSource(SourceTxt);
@@ -258,11 +260,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Progress.Close();
     end;
 
-    local procedure ParseXliffNote(TransUnitId: Text; XliffNote: Text; var ObjType: Text; var ObjName: Text; var ElementType: Text; var ElementName: Text)
+    local procedure ParseXliffNote(TransUnitId: Text; XliffNote: Text; var ObjType: Text[30]; var ObjName: Text[250]; var ElementType: Text[250]; var ElementName: Text[250])
     var
         HyphenParts: List of [Text];
         TuHyphenParts: List of [Text];
-        HyphenCounter: Integer;
         ElemTypeStartPart: Integer;
         ElemNameStartPart: Integer;
         ElemTypeFirstWord: Text;
@@ -286,63 +287,44 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         // ObjType = Page, ObjName =  CDS New Man. Int. Table Wizard, ElementName = Control Name - Method OnValidate, ElementType = NamedType IntegrationMappingNameExistErr
 
         TuHyphenParts := TransUnitId.Split(' - ');
-        ObjType := GetTextPartBeforeSpace(TuHyphenParts.Get(1));
+#pragma warning disable AA0139
+        ObjType := this.GetTextPartBeforeSpace(TuHyphenParts.Get(1));
+#pragma warning restore AA0139
         case TuHyphenParts.Count() of
             4:
                 begin
-                    ElemNameFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
-                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(4));
+                    ElemNameFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(4));
                 end;
             3:
                 begin
-                    ElemNameFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
-                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(3));
+                    ElemNameFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(3));
                 end;
             2:
                 begin
                     ElemNameFirstWord := '';
-                    ElemTypeFirstWord := GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
                 end;
             else
                 Error('Found %1 parts in Trans unit id: %2', TuHyphenParts.Count(), TransUnitId);
         end;
         HyphenParts := XliffNote.Split(' - ');
         ElemTypeStartPart := XliffNote.LastIndexOf(' - ' + ElemTypeFirstWord);
+#pragma warning disable AA0139
         ElementType := XliffNote.Substring(ElemTypeStartPart + 3);
+#pragma warning restore AA0139
         XliffNote := XliffNote.Substring(1, ElemTypeStartPart - 1);
         if ElemNameFirstWord <> '' then begin
             ElemNameStartPart := XliffNote.LastIndexOf(' - ' + ElemNameFirstWord);
+#pragma warning disable AA0139
             ElementName := XliffNote.Substring(ElemNameStartPart + 3);
+#pragma warning restore AA0139
             XliffNote := XliffNote.Substring(1, ElemNameStartPart - 1);
         end;
+#pragma warning disable AA0139
         ObjName := XliffNote.Substring(StrLen(ObjType) + 1);
-
-        // SetUniqElements(ElementName, ElementType); //TODO: delete
-    end;
-
-    local procedure SetUniqElements(ElemName: Text; ElemType: Text)
-    var
-        FirstWord: Text;
-    begin
-        if ElemName <> '' then begin
-            FirstWord := ElemName.Substring(1, ElemName.IndexOf(' '));
-            if FirstWord <> '' then begin
-                if not UniqElemNames.Contains(FirstWord) then
-                    UniqElemNames.Add(FirstWord);
-            end;
-        end;
-        if ElemType <> '' then begin
-            FirstWord := ElemType.Substring(1, ElemType.IndexOf(' '));
-            if FirstWord <> '' then begin
-                if not UniqElemTypes.Contains(FirstWord) then
-                    UniqElemTypes.Add(FirstWord);
-            end;
-        end;
-    end;
-
-    local procedure GetTextPartAfterSpace(InputText: Text): Text
-    begin
-        exit(InputText.Substring(InputText.IndexOf(' ') + 1));
+#pragma warning restore AA0139
     end;
 
     local procedure GetTextPartBeforeSpace(InputText: Text): Text
@@ -364,15 +346,15 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
         AllObj.SetRange("Object Name", ElemTransl."Object Name");
         if AllObj.FindFirst() then begin
-            RunObject(AllObj."Object Type", AllObj."Object ID");
-            Exit;
+            this.RunObject(AllObj."Object Type", AllObj."Object ID");
+            exit;
         end;
 
         AllObj.SetRange("Object Name", '');
         AllObj.SetRange("Object Caption", ElemTransl."Object Name");
         if AllObj.FindFirst() then begin
-            RunObject(AllObj."Object Type", AllObj."Object ID");
-            Exit;
+            this.RunObject(AllObj."Object Type", AllObj."Object ID");
+            exit;
         end;
     end;
 
@@ -383,8 +365,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
         ExtTranslLineCopyTo: Record ADD_ExtTranslLine;
         Progress: Dialog;
-        ProgressMsg: Label '#1 \#2';
-        FirstProgrStepMsg: Label 'Copying Lines: %1 of %2';
+        ProgressMsg: Label '#1', Comment = '#1 is first step label';
+        FirstProgrStepMsg: Label 'Copying Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         LinesCounter: Integer;
         LinesNumber: Integer;
         PROGR_UPD_PERC: Decimal;
@@ -410,7 +392,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         LinesCounter := 0;
         LinesNumber := ExtTranslLineCopyFrom.Count();
         ProgrUpdBatch := Round(LinesNumber * PROGR_UPD_PERC, 1, '>');
-        if ExtTranslLineCopyFrom.FindSet(true) then begin
+        if ExtTranslLineCopyFrom.FindSet(false) then
             repeat
                 LinesCounter += 1;
                 if GuiAllowed and (LinesCounter mod ProgrUpdBatch = 0) then
@@ -422,7 +404,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLineCopyTo.Translated := false;
                 ExtTranslLineCopyTo.Insert(True);
             until ExtTranslLineCopyFrom.Next() = 0;
-        end;
         if GuiAllowed then
             Progress.Close();
     end;
@@ -435,13 +416,16 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslHead.Get(ExtensionID, TargetLanguage);
         ExtTranslHead.CalcFields("Imported Xlf");
         ExtTranslHead."Imported Xlf".CreateInStream(InStr);
+#pragma warning disable AA0139
         DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
+#pragma warning restore AA0139
     end;
 
     internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[80])
     var
         ExtTranslHead: Record ADD_ExtTranslHeader;
         ExtTranslLine: Record ADD_ExtTranslLine;
+        TempBlob: Codeunit "Temp Blob";
         InStr: InStream;
         OutStr: OutStream;
         XmlDoc: XmlDocument;
@@ -457,19 +441,16 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         TuId: Text;
         SourceNode: XmlNode;
         TargetElement: XmlElement;
-        TempBlob: Codeunit "Temp Blob";
         TranslatedFileName: Text;
-        Ind: Integer;
         IndentBeforeTarget: XmlNode;
-        IndentAfterTarget: XmlNode;
         CR: Char;
         LF: Char;
         NewLineText: Text;
         TargetNode: XmlNode;
         Progress: Dialog;
-        ProgressMsg: Label '#1 \#2';
-        FirstProgrStepMsg: Label 'Downloading File: %1';
-        SecProgrStepMsg: Label 'Processing Lines: %1 of %2';
+        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
+        FirstProgrStepMsg: Label 'Downloading File: %1', Comment = '%1 is file name';
+        SecProgrStepMsg: Label 'Processing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         TransUnitCounter: Integer;
         PROGR_UPD_PERC: Decimal;
         ProgrUpdBatch: Integer;
@@ -516,7 +497,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
             TransUnitAttributes.Get('id', TransUnitAttr);
             TuId := TransUnitAttr.Value();
-            if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then begin
+            if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then
                 if ExtTranslLine.Translated then begin
                     TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetNewTarget());
                     if TransUnitNode.SelectSingleNode('x:target', NsMgr, TargetNode) then
@@ -528,7 +509,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                         IndentBeforeTarget.AddAfterSelf(TargetElement);
                     end;
                 end;
-            end;
         end;
 
         TempBlob.CreateOutStream(OutStr);
@@ -550,9 +530,4 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
         end;
     end;
-
-    var
-        UniqElemNames: List of [Text];
-        UniqElemTypes: List of [Text];
-
 }
