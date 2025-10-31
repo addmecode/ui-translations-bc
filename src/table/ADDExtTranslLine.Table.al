@@ -231,4 +231,18 @@ table 50100 "ADD_ExtTranslLine"
     begin
         ExtTranslHead.SetExtTransLineSource(Rec, Source);
     end;
+
+    procedure SetDevNote(DevNote: Text)
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.SetExtTransLineDevNote(Rec, DevNote);
+    end;
+
+    procedure SetXliffNote(XliffNote: Text)
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.SetExtTransLineXliffNote(Rec, XliffNote);
+    end;
 }
