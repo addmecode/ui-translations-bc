@@ -62,6 +62,7 @@ page 50101 "ADD_ExtTranslCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Copy';
+                    ToolTip = 'Copy';
                     Ellipsis = true;
                     Image = Copy;
                     Promoted = true;
@@ -80,6 +81,7 @@ page 50101 "ADD_ExtTranslCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Download Imported';
+                    ToolTip = 'Download Imported';
                     Image = Download;
                     Promoted = true;
                     PromotedCategory = Process;
@@ -96,6 +98,7 @@ page 50101 "ADD_ExtTranslCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Download Translated';
+                    ToolTip = 'Download Translated';
                     Image = Download;
                     Promoted = true;
                     PromotedCategory = Process;

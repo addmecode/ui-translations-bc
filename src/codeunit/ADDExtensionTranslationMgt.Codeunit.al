@@ -94,7 +94,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLine."Source 5" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 5"));
     end;
 
-    procedure SelectLangTag(): Text
+    procedure SelectLangTag(): Text[80]
     var
         WindLang: Record "Windows Language";
     begin
@@ -376,7 +376,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    internal procedure CopyExtTranslToNewTargLang(CopyFromExtID: Guid; CopyFromTargetLang: Text[30]; CopyToTargetLang: Text[30])
+    internal procedure CopyExtTranslToNewTargLang(CopyFromExtID: Guid; CopyFromTargetLang: Text[80]; CopyToTargetLang: Text[80])
     var
         ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader;
         ExtTranslHeadCopyTo: Record ADD_ExtTranslHeader;
@@ -427,7 +427,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Progress.Close();
     end;
 
-    internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[30])
+    internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[80])
     var
         ExtTranslHead: Record ADD_ExtTranslHeader;
         InStr: InStream;
@@ -438,7 +438,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
     end;
 
-    internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[30])
+    internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[80])
     var
         ExtTranslHead: Record ADD_ExtTranslHeader;
         ExtTranslLine: Record ADD_ExtTranslLine;

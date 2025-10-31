@@ -17,6 +17,7 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
                     field("Copy From Extension ID"; CopyFromExtID)
                     {
                         Caption = 'Copy From Extension ID';
+                        ToolTip = 'Copy From Extension ID';
                         TableRelation = ADD_ExtTranslHeader."Extension ID";
                         trigger OnValidate()
                         begin
@@ -26,6 +27,7 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
                     field("Copy From Target Language"; CopyFromTargetLang)
                     {
                         Caption = 'Copy From Target Language';
+                        ToolTip = 'Copy From Target Language';
 
                         trigger OnLookup(var Text: Text): Boolean
                         var
@@ -42,6 +44,7 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
                     field("Copy To Target Language"; CopyToTargetLang)
                     {
                         Caption = 'Copy To Target Language';
+                        ToolTip = 'Copy To Target Language';
                         Editable = false;
 
                         trigger OnAssistEdit()
@@ -58,8 +61,8 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
     var
         CopyFromExtID: Guid;
-        CopyFromTargetLang: Text[30];
-        CopyToTargetLang: Text[30];
+        CopyFromTargetLang: Text[80];
+        CopyToTargetLang: Text[80];
 
 
     trigger OnPreReport()
@@ -78,7 +81,7 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
             Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
     end;
 
-    procedure SetReqPageParams(ExtID: Guid; TargetLang: Text[30])
+    procedure SetReqPageParams(ExtID: Guid; TargetLang: Text[80])
     begin
         CopyFromExtID := ExtID;
         CopyFromTargetLang := TargetLang;

@@ -14,13 +14,13 @@ table 50102 "ADD_ExtTranslHeader"
             TableRelation = "NAV App Installed App"."App ID";
             ValidateTableRelation = false;
         }
-        field(2; "Target Language"; Text[30])
+        field(2; "Target Language"; Text[80])
         {
             Caption = 'Target Language';
             Editable = false;
             TableRelation = "Windows Language"."Language Tag";
         }
-        field(3; "Source Language"; Text[250])
+        field(3; "Source Language"; Text[80])
         {
             Caption = 'Source Language';
             Editable = false;

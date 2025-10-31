@@ -32,20 +32,24 @@ page 50102 "ADD_ExtTranslSubform"
                 }
                 field(Source; Rec.GetSource())
                 {
+                    Caption = 'Source';
                     ToolTip = 'Specifies the value of the Source fields.', Comment = '%';
                     Editable = false;
                 }
                 field("Developer Note"; Rec.GetDeveloperNotes())
                 {
+                    Caption = 'Developer Note';
                     ToolTip = 'Specifies the value of the Developer Note fields.', Comment = 'Where am i';
                 }
                 field(Target; Rec.GetTarget())
                 {
+                    Caption = 'Target';
                     ToolTip = 'Specifies the value of the Target fields.', Comment = '%';
                     Editable = false;
                 }
                 field("New Target"; NewTarget)
                 {
+                    Caption = 'New Target';
                     ToolTip = 'Specifies the value of the New Target fields.', Comment = '%';
                     Editable = IsNewTargetEditable;
                     trigger OnValidate()
@@ -68,6 +72,7 @@ page 50102 "ADD_ExtTranslSubform"
             {
                 ApplicationArea = All;
                 Caption = 'Run Object';
+                ToolTip = 'Run Object';
                 Image = Process;
                 trigger OnAction()
                 var
@@ -80,6 +85,7 @@ page 50102 "ADD_ExtTranslSubform"
             {
                 ApplicationArea = All;
                 Caption = 'Show All';
+                ToolTip = 'Show All';
                 Image = ClearFilter;
                 trigger OnAction()
                 begin
@@ -90,6 +96,7 @@ page 50102 "ADD_ExtTranslSubform"
             {
                 ApplicationArea = All;
                 Caption = 'Show Translated';
+                ToolTip = 'Show Translated';
                 Image = FilterLines;
                 trigger OnAction()
                 begin
@@ -100,6 +107,7 @@ page 50102 "ADD_ExtTranslSubform"
             {
                 ApplicationArea = All;
                 Caption = 'Hide Translated';
+                ToolTip = 'Hide Translated';
                 Image = FilterLines;
                 trigger OnAction()
                 begin

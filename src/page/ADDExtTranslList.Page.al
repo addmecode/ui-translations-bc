@@ -53,6 +53,7 @@ page 50100 "ADD_ExtTranslList"
                 {
                     ApplicationArea = All;
                     Caption = 'Import Xlf';
+                    ToolTip = 'Import Xlf';
                     Ellipsis = true;
                     Image = Import;
                     Promoted = true;

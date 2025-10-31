@@ -17,6 +17,7 @@ report 50100 "ADD_ImportXlf"
                     field("Extension ID"; ExtID)
                     {
                         Caption = 'Extension ID';
+                        ToolTip = 'Extension ID';
                         TableRelation = "NAV App Installed App"."App ID";
 
                         trigger OnValidate()
@@ -38,18 +39,22 @@ report 50100 "ADD_ImportXlf"
                     field("Extension Name"; ExtName)
                     {
                         Caption = 'Extension Name';
+                        ToolTip = 'Extension Name';
                     }
                     field("Extension Publisher"; ExtPublisher)
                     {
                         Caption = 'Extension Publisher';
+                        ToolTip = 'Extension Publisher';
                     }
                     field("Extension Version"; ExtVersion)
                     {
                         Caption = 'Extension Version';
+                        ToolTip = 'Extension Version';
                     }
                     field("Import Target Language"; ImportTargetLang)
                     {
                         Caption = 'Import Target Language';
+                        ToolTip = 'Import Target Language';
 
                         trigger OnValidate()
                         begin
@@ -60,6 +65,7 @@ report 50100 "ADD_ImportXlf"
                     field("Target Language"; TargetLang)
                     {
                         Caption = 'Target Language';
+                        ToolTip = 'Target Language';
                         Enabled = not ImportTargetLang;
                         Editable = false;
 
@@ -76,13 +82,13 @@ report 50100 "ADD_ImportXlf"
     }
 
     var
+        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
         ExtID: Guid;
         ExtName: Text;
         ExtPublisher: Text;
         ExtVersion: Text;
         TargetLang: Text;
         ImportTargetLang: Boolean;
-        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
 
     trigger OnInitReport()
     begin

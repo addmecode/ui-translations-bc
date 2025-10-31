@@ -17,7 +17,7 @@ table 50100 "ADD_ExtTranslLine"
             Caption = 'Trans Unit ID';
             Editable = false;
         }
-        field(3; "Target Language"; Text[30])
+        field(3; "Target Language"; Text[80])
         {
             Caption = 'Target Language';
             TableRelation = ADD_ExtTranslHeader."Target Language";
