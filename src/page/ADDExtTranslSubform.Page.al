@@ -75,10 +75,8 @@ page 50102 "ADD_ExtTranslSubform"
                 ToolTip = 'Run Object';
                 Image = Process;
                 trigger OnAction()
-                var
-                    ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                 begin
-                    ExtTranslMgt.RunObject(Rec);
+                    Rec.RunObject();
                 end;
             }
             action("Show All")

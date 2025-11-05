@@ -67,9 +67,10 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
 
     trigger OnPreReport()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader;
     begin
-        ExtTranslMgt.CopyExtTranslToNewTargLang(CopyFromExtID, CopyFromTargetLang, CopyToTargetLang);
+        ExtTranslHeadCopyFrom.Get(this.CopyFromExtID, this.CopyFromTargetLang);
+        ExtTranslHeadCopyFrom.CopyExtTranslHeadAndLinesToNewTargetLang(this.CopyToTargetLang);
         commit();
     end;
 
@@ -77,13 +78,13 @@ report 50101 "ADD_CopyExtTranslToNewTargLang"
     var
         ExtTranslNew: Record ADD_ExtTranslHeader;
     begin
-        if ExtTranslNew.Get(CopyFromExtID, CopyToTargetLang) then
+        if ExtTranslNew.Get(this.CopyFromExtID, this.CopyToTargetLang) then
             Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
     end;
 
     procedure SetReqPageParams(ExtID: Guid; TargetLang: Text[80])
     begin
-        CopyFromExtID := ExtID;
-        CopyFromTargetLang := TargetLang;
+        this.CopyFromExtID := ExtID;
+        this.CopyFromTargetLang := TargetLang;
     end;
 }

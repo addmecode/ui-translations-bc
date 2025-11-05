@@ -1,7 +1,7 @@
 codeunit 50100 "ADD_ExtensionTranslationMgt"
 {
 
-    procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
+    internal procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
         ExtTransLine: Record ADD_ExtTranslLine;
     begin
@@ -10,7 +10,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTransLine.DeleteAll(true);
     end;
 
-    procedure GetExtTransLineDeveloperNotes(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    internal procedure GetExtTransLineDeveloperNotes(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
         exit(ExtTranslLine."Developer Note 1" +
             ExtTranslLine."Developer Note 2" +
@@ -19,7 +19,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ExtTranslLine."Developer Note 5");
     end;
 
-    procedure GetExtTransLineSource(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    internal procedure GetExtTransLineSource(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
         exit(ExtTranslLine."Source 1" +
             ExtTranslLine."Source 2" +
@@ -28,7 +28,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ExtTranslLine."Source 5");
     end;
 
-    procedure GetExtTransLineTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    internal procedure GetExtTransLineTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
         exit(ExtTranslLine."Target 1" +
             ExtTranslLine."Target 2" +
@@ -37,7 +37,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ExtTranslLine."Target 5");
     end;
 
-    procedure GetExtTransLineNewTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    internal procedure GetExtTransLineNewTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
         exit(ExtTranslLine."New Target 1" +
             ExtTranslLine."New Target 2" +
@@ -46,7 +46,16 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ExtTranslLine."New Target 5");
     end;
 
-    procedure SetExtTransLineNewTarget(var ExtTranslLine: Record ADD_ExtTranslLine; NewTarget: Text)
+    internal procedure GetExtTransLineXliffNote(ExtTranslLine: Record ADD_ExtTranslLine): Text
+    begin
+        exit(ExtTranslLine."Xliff Note 1" +
+            ExtTranslLine."Xliff Note 2" +
+            ExtTranslLine."Xliff Note 3" +
+            ExtTranslLine."Xliff Note 4" +
+            ExtTranslLine."Xliff Note 5");
+    end;
+
+    internal procedure SetExtTransLineNewTarget(var ExtTranslLine: Record ADD_ExtTranslLine; NewTarget: Text)
     var
         TableFieldStartPos: Integer;
     begin
@@ -62,7 +71,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLine."New Target 5" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 5"));
     end;
 
-    procedure SetExtTransLineTarget(var ExtTranslLine: Record ADD_ExtTranslLine; Target: Text)
+    internal procedure SetExtTransLineTarget(var ExtTranslLine: Record ADD_ExtTranslLine; Target: Text)
     var
         TableFieldStartPos: Integer;
     begin
@@ -78,7 +87,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLine."Target 5" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 5"));
     end;
 
-    procedure SetExtTransLineSource(var ExtTranslLine: Record ADD_ExtTranslLine; Source: Text)
+    internal procedure SetExtTransLineSource(var ExtTranslLine: Record ADD_ExtTranslLine; Source: Text)
     var
         TableFieldStartPos: Integer;
     begin
@@ -94,7 +103,69 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslLine."Source 5" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 5"));
     end;
 
-    procedure SelectLangTag(): Text[80]
+    internal procedure SetExtTransLineDevNote(var ExtTranslLine: Record ADD_ExtTranslLine; DevNote: Text)
+    var
+        TableFieldStartPos: Integer;
+    begin
+        TableFieldStartPos := 1;
+        ExtTranslLine."Developer Note 1" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 1"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 1");
+        ExtTranslLine."Developer Note 2" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 2"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 2");
+        ExtTranslLine."Developer Note 3" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 3"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 3");
+        ExtTranslLine."Developer Note 4" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 4"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 4");
+        ExtTranslLine."Developer Note 5" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 5"));
+    end;
+
+    internal procedure SetExtTransLineXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine; XliffNote: Text)
+    var
+        TableFieldStartPos: Integer;
+    begin
+        TableFieldStartPos := 1;
+        ExtTranslLine."Xliff Note 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 1"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 1");
+        ExtTranslLine."Xliff Note 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 2"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 2");
+        ExtTranslLine."Xliff Note 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 3"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 3");
+        ExtTranslLine."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 4"));
+        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 4");
+        ExtTranslLine."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 5"));
+    end;
+
+    internal procedure RunObject(ElemTransl: Record ADD_ExtTranslLine)
+    var
+        AllObj: Record AllObjWithCaption;
+        ObjTypeNotSuppErr: Label 'Object Type %1 is not supported', Comment = '%1 is object type';
+    begin
+        case UpperCase(ElemTransl."Object Type") of
+            'TABLE':
+                AllObj.SetRange("Object Type", AllObj."Object Type"::Table);
+            'PAGE':
+                AllObj.SetRange("Object Type", AllObj."Object Type"::Page);
+            else
+                Error(ObjTypeNotSuppErr, ElemTransl."Object Type");
+        end;
+        AllObj.SetRange("Object Name", ElemTransl."Object Name");
+        AllObj.FindFirst();
+        this.RunObject(AllObj."Object Type", AllObj."Object ID");
+    end;
+
+    local procedure RunObject(ObjType: Integer; ObjectId: Integer)
+    var
+        AllObj: Record AllObjWithCaption;
+    begin
+        case ObjType of
+            AllObj."Object Type"::Page:
+                PAGE.Run(ObjectId);
+            AllObj."Object Type"::Table:
+                Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
+        end;
+    end;
+
+    internal procedure SelectLangTag(): Text[80]
     var
         WindLang: Record "Windows Language";
     begin
@@ -103,40 +174,36 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit('');
     end;
 
-    procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
+    internal procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
+        CreatedExtTranslLine: Record ADD_ExtTranslLine;
         XmlDoc: XmlDocument;
+        NsMgr: XmlNamespaceManager;
+        TransUnitNodeList: XmlNodeList;
+        TransUnitNode: XmlNode;
         ImportedXlfInStr: InStream;
         ImportedFileName: Text;
-        TransUnitNodeList: XmlNodeList;
-        NsMgr: XmlNamespaceManager;
         TuId: Text;
-        TransUnitNode: XmlNode;
         SourceTxt: text;
         TargetTxt: text;
         DeveloperNote: Text;
         XliffNote: Text;
         SourceLang: Text;
-        TransUnitCounter: Integer;
-        PROGR_UPD_PERC: Decimal;
-        ProgrUpdBatch: Integer;
         TargetLangFromXlf: Text;
+        TransUnitCounter: Integer;
+        ProgrUpdBatch: Integer;
+        PROGR_UPD_PERC: Decimal;
         NS_PREFIX: Text;
         Progress: Dialog;
         ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
         FirstProgrStepMsg: Label 'Importing File: %1', Comment = '%1 is file name';
         SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
-        EmptyExtIdErr: Label 'Extension ID cannot be empty';
-        EmptyTargetLangErr: Label 'Target Language must be specified when Import Target Language is set to false';
     begin
         PROGR_UPD_PERC := 0.1;
         NS_PREFIX := 'x';
-        if IsNullGuid(ExtID) then
-            Error(EmptyExtIdErr);
-        if (not ImportTargetLang) and (TargetLang = '') then
-            Error(EmptyTargetLangErr);
+        TransUnitCounter := 0;
+        this.ImportXlfValidateParams(ExtID, ImportTargetLang, TargetLang);
         this.DeleteAllExtTranslHeadWithExtIdIfConf(ExtID);
-
         UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, ImportedXlfInStr);
         if GuiAllowed then begin
             Progress.Open(ProgressMsg);
@@ -146,21 +213,30 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         this.GetTargetAndSourceLangFromXlf(XmlDoc, NsMgr, NS_PREFIX, SourceLang, TargetLangFromXlf);
         if ImportTargetLang then
             TargetLang := TargetLangFromXlf;
-        this.CreateExtTranslHead(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang, ImportedXlfInStr, ImportedFileName, SourceLang);
+        CreatedExtTranslHead.CreateExtTranslHead(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang, ImportedXlfInStr, ImportedFileName, SourceLang);
 
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
-        TransUnitCounter := 0;
-        ProgrUpdBatch := Round(TransUnitNodeList.Count() * PROGR_UPD_PERC, 1, '>');
+        ProgrUpdBatch := this.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
                 Progress.Update(2, StrSubstNo(SecProgrStepMsg, TransUnitCounter, TransUnitNodeList.Count()));
             this.ParseTransUnitIdNode(TransUnitNode, NsMgr, NS_PREFIX, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
-            this.CreateExtTranslLine(ExtID, TargetLang, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
+            CreatedExtTranslLine.CreateExtTranslLine(ExtID, TargetLang, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
         end;
-
         if GuiAllowed then
             Progress.Close();
+    end;
+
+    local procedure ImportXlfValidateParams(ExtID: Guid; ImportTargetLang: Boolean; TargetLang: Text)
+    var
+        EmptyExtIdErr: Label 'Extension ID cannot be empty';
+        EmptyTargetLangErr: Label 'Target Language must be specified when Import Target Language is set to false';
+    begin
+        if IsNullGuid(ExtID) then
+            Error(EmptyExtIdErr);
+        if (not ImportTargetLang) and (TargetLang = '') then
+            Error(EmptyTargetLangErr);
     end;
 
     local procedure DeleteAllExtTranslHeadWithExtIdIfConf(var ExtID: Guid)
@@ -181,6 +257,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         Root: XmlElement;
         NsUri: Text;
     begin
+        //todo utilities
         XmlDocument.ReadFrom(ImportedXlfInStr, XmlDoc);
         XmlDoc.GetRoot(Root);
         NsUri := Root.NamespaceUri();
@@ -194,22 +271,22 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     begin
         XmlDoc.SelectSingleNode('//' + NsPrefix + ':file', NsMgr, FileNode);
         FileAttributes := FileNode.AsXmlElement().Attributes();
-        SourceLang := this.GetAttrValue(FileAttributes, 'source-language');
-        TargetLang := this.GetAttrValue(FileAttributes, 'target-language');
+        SourceLang := this.GetAttrValueFromCollection(FileAttributes, 'source-language');
+        TargetLang := this.GetAttrValueFromCollection(FileAttributes, 'target-language');
     end;
 
-    local procedure GetAttrValue(FileAttributes: XmlAttributeCollection; AttrName: Text): Text
+    local procedure GetAttrValueFromCollection(AttrColl: XmlAttributeCollection; AttrName: Text): Text
     var
         Attr: XmlAttribute;
     begin
-        FileAttributes.Get(AttrName, Attr);
+        //todo utilities
+        AttrColl.Get(AttrName, Attr);
         exit(Attr.Value());
     end;
 
-    local procedure CreateExtTranslHead(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text;
-                                        TargetLang: Text; ImportedXlfInStr: InStream; ImportedFileName: Text; SourceLang: Text)
+    internal procedure CreateExtTranslHead(var NewExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text;
+                                           ExtVersion: Text; TargetLang: Text; ImportedXlfInStr: InStream; ImportedFileName: Text; SourceLang: Text)
     var
-        NewExtTranslHead: Record ADD_ExtTranslHeader;
         OutStr: OutStream;
     begin
 #pragma warning disable AA0139
@@ -236,45 +313,83 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                             NsMgr, TransUnitNodeList);
     end;
 
+    local procedure GetUpdProgrBatch(TotalRowsNumber: Integer; ProgrUpdPerc: Decimal): Integer
+    begin
+        //todo utilities
+        exit(Round(TotalRowsNumber * ProgrUpdPerc, 1, '>'));
+    end;
+
     local procedure ParseTransUnitIdNode(TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; var TuId: Text; var SourceTxt: text; var TargetTxt: text; var DeveloperNote: Text; var XliffNote: Text)
     var
         NoteNodeList: XmlNodeList;
         NoteNode: XmlNode;
-        TransUnitAttributes: XmlAttributeCollection;
-        NoteAttributes: XmlAttributeCollection;
-        TransUnitAttr: XmlAttribute;
-        NoteAttr: XmlAttribute;
         SourceNode: XmlNode;
         TargetNode: XmlNode;
     begin
-        TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
-        TransUnitAttributes.Get('id', TransUnitAttr);
-        TuId := TransUnitAttr.Value();
-
-        TransUnitNode.SelectSingleNode(NsPrefix + ':source', NsMgr, SourceNode);
+        TuId := this.GetTransUnitIdFromTransUnitNode(TransUnitNode);
+        this.GetSourceFromTransUnit(SourceNode, TransUnitNode, NsMgr, NsPrefix);
         SourceTxt := SourceNode.AsXmlElement().InnerText();
-
         TargetTxt := '';
-        if TransUnitNode.SelectSingleNode(NsPrefix + ':target', NsMgr, TargetNode) then
+        if this.GetTargetFromTransUnit(TargetNode, TransUnitNode, NsMgr, NsPrefix) then
             TargetTxt := TargetNode.AsXmlElement().InnerText();
 
         TransUnitNode.SelectNodes(NsPrefix + ':note', NsMgr, NoteNodeList);
-        foreach NoteNode in NoteNodeList do begin
-            NoteAttributes := NoteNode.AsXmlElement().Attributes();
-            NoteAttributes.Get('from', NoteAttr);
-            case NoteAttr.Value() of
-                'Developer':
+        foreach NoteNode in NoteNodeList do
+            case (true) of
+                this.IsDeveloperNoteNode(NoteNode):
                     DeveloperNote := NoteNode.AsXmlElement().InnerText();
-                'Xliff Generator':
+                this.IsXliffGeneratorNoteNode(NoteNode):
                     XliffNote := NoteNode.AsXmlElement().InnerText();
             end;
-        end;
     end;
 
-    local procedure CreateExtTranslLine(ExtId: Text; TargetLang: Text; TuId: Text; SourceTxt: text;
-                                        TargetTxt: text; DeveloperNote: Text; XliffNote: Text)
+    local procedure GetTransUnitIdFromTransUnitNode(var TransUnitNode: XmlNode): Text
     var
-        NewElTransl: Record ADD_ExtTranslLine;
+        TransUnitAttributes: XmlAttributeCollection;
+        TransUnitAttr: XmlAttribute;
+    begin
+        TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
+        TransUnitAttributes.Get('id', TransUnitAttr);
+        exit(TransUnitAttr.Value());
+    end;
+
+    local procedure GetSourceFromTransUnit(var SourceNode: XmlNode; TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text): Boolean
+    begin
+        exit(TransUnitNode.SelectSingleNode(NsPrefix + ':source', NsMgr, SourceNode));
+    end;
+
+    local procedure GetTargetFromTransUnit(var TargetNode: XmlNode; TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text): Boolean
+    begin
+        exit(TransUnitNode.SelectSingleNode(NsPrefix + ':target', NsMgr, TargetNode));
+    end;
+
+    local procedure IsDeveloperNoteNode(NoteNode: XmlNode): Boolean
+    var
+        NoteAttr: XmlAttribute;
+    begin
+        this.GetElementAttribute(NoteAttr, 'from', NoteNode);
+        exit(NoteAttr.Value() = 'Developer');
+    end;
+
+    local procedure GetElementAttribute(var NoteAttr: XmlAttribute; AttributeName: Text; NoteNode: XmlNode)
+    var
+        NoteAttributes: XmlAttributeCollection;
+    begin
+        //TODO: utilities
+        NoteAttributes := NoteNode.AsXmlElement().Attributes();
+        NoteAttributes.Get(AttributeName, NoteAttr);
+    end;
+
+    local procedure IsXliffGeneratorNoteNode(NoteNode: XmlNode): Boolean
+    var
+        NoteAttr: XmlAttribute;
+    begin
+        this.GetElementAttribute(NoteAttr, 'from', NoteNode);
+        exit(NoteAttr.Value() = 'Xliff Generator');
+    end;
+
+    internal procedure CreateExtTranslLine(var NewElTransl: Record ADD_ExtTranslLine; ExtId: Text; TargetLang: Text; TuId: Text;
+                                           SourceTxt: text; TargetTxt: text; DeveloperNote: Text; XliffNote: Text)
     begin
 #pragma warning disable AA0139
         NewElTransl.Init();
@@ -282,18 +397,17 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         NewElTransl."Target Language" := TargetLang;
         NewElTransl."Trans Unit ID" := TuId;
         NewElTransl.Translated := false;
-        this.ParseXliffNote(TuId, XliffNote, NewElTransl."Object Type", NewElTransl."Object Name",
-                       NewElTransl."Element Type", NewElTransl."Element Name");
+        NewElTransl.SetXliffNote(XliffNote);
         NewElTransl.SetSource(SourceTxt);
         NewElTransl.SetTarget(TargetTxt);
         NewElTransl.SetNewTarget(TargetTxt);
         NewElTransl.SetDevNote(DeveloperNote);
-        NewElTransl.SetXliffNote(XliffNote);
+        NewElTransl.ParseXliffNote();
         NewElTransl.Insert(false);
 #pragma warning restore AA0139
     end;
 
-    local procedure ParseXliffNote(TransUnitId: Text; XliffNote: Text; var ObjType: Text[30]; var ObjName: Text[250]; var ElementType: Text[250]; var ElementName: Text[250])
+    internal procedure ParseXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine)
     var
         FoundUnhandledTransUnitPartErr: Label 'Found %1 parts in Trans unit id: %2', Comment = '%1 is " - " parts number, %2 is trans unit id value';
         HyphenParts: List of [Text];
@@ -302,6 +416,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElemNameStartPart: Integer;
         ElemTypeFirstWord: Text;
         ElemNameFirstWord: Text;
+        XliffNote: Text;
         SPLIT_BY: Text;
     begin
         // e.g 1
@@ -323,194 +438,131 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
 #pragma warning disable AA0139
         SPLIT_BY := ' - ';
-        TuHyphenParts := TransUnitId.Split(SPLIT_BY);
-        ObjType := this.GetTextPartBeforeSpace(TuHyphenParts.Get(1));
+        TuHyphenParts := ExtTranslLine."Trans Unit ID".Split(SPLIT_BY);
+        ExtTranslLine."Object Type" := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(1));
         case TuHyphenParts.Count() of
             4:
                 begin
-                    ElemNameFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
-                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(4));
+                    ElemNameFirstWord := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(4));
                 end;
             3:
                 begin
-                    ElemNameFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
-                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(3));
+                    ElemNameFirstWord := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(3));
                 end;
             2:
                 begin
                     ElemNameFirstWord := '';
-                    ElemTypeFirstWord := this.GetTextPartBeforeSpace(TuHyphenParts.Get(2));
+                    ElemTypeFirstWord := this.GetTextPartBeforeFirstSpace(TuHyphenParts.Get(2));
                 end;
             else
-                Error(FoundUnhandledTransUnitPartErr, TuHyphenParts.Count(), TransUnitId);
+                Error(FoundUnhandledTransUnitPartErr, TuHyphenParts.Count(), ExtTranslLine."Trans Unit ID");
         end;
+        XliffNote := ExtTranslLine.GetXliffNote();
         HyphenParts := XliffNote.Split(' - ');
         ElemTypeStartPart := XliffNote.LastIndexOf(' - ' + ElemTypeFirstWord);
-        ElementType := XliffNote.Substring(ElemTypeStartPart + StrLen(SPLIT_BY));
+        ExtTranslLine."Element Type" := XliffNote.Substring(ElemTypeStartPart + StrLen(SPLIT_BY));
         XliffNote := XliffNote.Substring(1, ElemTypeStartPart - 1);
         if ElemNameFirstWord <> '' then begin
             ElemNameStartPart := XliffNote.LastIndexOf(' - ' + ElemNameFirstWord);
-            ElementName := XliffNote.Substring(ElemNameStartPart + StrLen(SPLIT_BY));
+            ExtTranslLine."Element Name" := XliffNote.Substring(ElemNameStartPart + StrLen(SPLIT_BY));
             XliffNote := XliffNote.Substring(1, ElemNameStartPart - 1);
         end;
-        ObjName := XliffNote.Substring(StrLen(ObjType) + 1);
+        ExtTranslLine."Object Name" := XliffNote.Substring(StrLen(ExtTranslLine."Object Type") + 1);
 #pragma warning restore AA0139
     end;
 
-    procedure SetExtTransLineDevNote(var ExtTranslLine: Record ADD_ExtTranslLine; DevNote: Text)
-    var
-        TableFieldStartPos: Integer;
-    begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."Developer Note 1" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 1");
-        ExtTranslLine."Developer Note 2" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 2");
-        ExtTranslLine."Developer Note 3" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 3");
-        ExtTranslLine."Developer Note 4" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 4");
-        ExtTranslLine."Developer Note 5" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 5"));
-    end;
-
-    procedure SetExtTransLineXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine; XliffNote: Text)
-    var
-        TableFieldStartPos: Integer;
-    begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."Xliff Note 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 1");
-        ExtTranslLine."Xliff Note 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 2");
-        ExtTranslLine."Xliff Note 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 3");
-        ExtTranslLine."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 4");
-        ExtTranslLine."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 5"));
-    end;
-
-    local procedure GetTextPartBeforeSpace(InputText: Text): Text
+    local procedure GetTextPartBeforeFirstSpace(InputText: Text): Text
     begin
         exit(InputText.Substring(1, InputText.IndexOf(' ') - 1));
     end;
 
-    // TODO: ->
-
-    procedure RunObject(ElemTransl: Record ADD_ExtTranslLine)
+    internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text[80])
     var
-        AllObj: Record AllObjWithCaption;
-    begin
-        case UpperCase(ElemTransl."Object Type") of
-            'TABLE':
-                AllObj.SetRange("Object Type", AllObj."Object Type"::Table);
-            'PAGE':
-                AllObj.SetRange("Object Type", AllObj."Object Type"::Page);
-            else
-                Error('Object Type %1 is not supported', ElemTransl."Object Type");
-        end;
-        AllObj.SetRange("Object Name", ElemTransl."Object Name");
-        if AllObj.FindFirst() then begin
-            this.RunObject(AllObj."Object Type", AllObj."Object ID");
-            exit;
-        end;
-
-        AllObj.SetRange("Object Name", '');
-        AllObj.SetRange("Object Caption", ElemTransl."Object Name");
-        if AllObj.FindFirst() then begin
-            this.RunObject(AllObj."Object Type", AllObj."Object ID");
-            exit;
-        end;
-    end;
-
-    internal procedure CopyExtTranslToNewTargLang(CopyFromExtID: Guid; CopyFromTargetLang: Text[80]; CopyToTargetLang: Text[80])
-    var
-        ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader;
-        ExtTranslHeadCopyTo: Record ADD_ExtTranslHeader;
         ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
-        ExtTranslLineCopyTo: Record ADD_ExtTranslLine;
         Progress: Dialog;
-        ProgressMsg: Label '#1', Comment = '#1 is first step label';
-        FirstProgrStepMsg: Label 'Copying Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         LinesCounter: Integer;
         LinesNumber: Integer;
         PROGR_UPD_PERC: Decimal;
         ProgrUpdBatch: Integer;
+        ProgressMsg: Label '#1', Comment = '#1 is first step label';
+        FirstProgrStepMsg: Label 'Copying Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
     begin
-        if (IsNullGuid(CopyFromExtID)) or (CopyFromTargetLang = '') or (CopyToTargetLang = '') then
-            Error('Extension ID, Target Language and Source Language cannot be empty');
-        if CopyFromTargetLang = CopyToTargetLang then
-            Error('The target language to copy to must be different from the source language');
-
         PROGR_UPD_PERC := 0.1;
+        LinesCounter := 0;
         if GuiAllowed then
             Progress.Open(ProgressMsg);
-        ExtTranslHeadCopyFrom.Get(CopyFromExtID, CopyFromTargetLang);
-        ExtTranslHeadCopyTo.Init();
-        ExtTranslHeadCopyFrom.CalcFields("Imported Xlf");
-        ExtTranslHeadCopyTo.TransferFields(ExtTranslHeadCopyFrom);
-        ExtTranslHeadCopyTo."Target Language" := CopyToTargetLang;
-        ExtTranslHeadCopyTo.Insert(True);
-
-        ExtTranslLineCopyFrom.SetRange("Extension ID", ExtTranslHeadCopyFrom."Extension ID");
-        ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslHeadCopyFrom."Target Language");
-        LinesCounter := 0;
+        this.CopyExtTranslHeadAndLinesToNewTargLangValidateParams(ExtTranslHeadCopyFrom, CopyToTargetLang);
+        ExtTranslHeadCopyFrom.CopyExtTranslHeadToNewTargetLang(CopyToTargetLang);
+        ExtTranslHeadCopyFrom.FilterExtTranslLines(ExtTranslLineCopyFrom);
         LinesNumber := ExtTranslLineCopyFrom.Count();
-        ProgrUpdBatch := Round(LinesNumber * PROGR_UPD_PERC, 1, '>');
-        if ExtTranslLineCopyFrom.FindSet(false) then
+        ProgrUpdBatch := this.GetUpdProgrBatch(LinesNumber, PROGR_UPD_PERC);
+        if ExtTranslLineCopyFrom.FindSet() then
             repeat
                 LinesCounter += 1;
                 if GuiAllowed and (LinesCounter mod ProgrUpdBatch = 0) then
                     Progress.Update(1, StrSubstNo(FirstProgrStepMsg, LinesCounter, LinesNumber));
-
-                ExtTranslLineCopyTo.Init();
-                ExtTranslLineCopyTo.TransferFields(ExtTranslLineCopyFrom);
-                ExtTranslLineCopyTo."Target Language" := CopyToTargetLang;
-                ExtTranslLineCopyTo.Translated := false;
-                ExtTranslLineCopyTo.Insert(True);
+                ExtTranslLineCopyFrom.CopyToNewTargetLang(CopyToTargetLang);
             until ExtTranslLineCopyFrom.Next() = 0;
-        if GuiAllowed then
-            Progress.Close();
+        if GuiAllowed then Progress.Close();
     end;
 
-    internal procedure DownloadImported(ExtensionID: Guid; TargetLanguage: Text[80])
+    local procedure CopyExtTranslHeadAndLinesToNewTargLangValidateParams(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text)
     var
         ExtTranslHead: Record ADD_ExtTranslHeader;
-        InStr: InStream;
+        EmptyCopyToTargetLangErr: Label 'Target Language cannot be empty';
+        TheSameNewTargetLangErr: Label 'The target language to copy to must be different from the source language';
+        ExtTranslHeadWithNewTargetLangExistsErr: Label '%1 with %2 = %3 and %4 = %5 already exists',
+                                                 Comment = '%1 is Extension Translation Header caption, %2 is Extension ID field caption, %3 is Extension ID value, %4 is Target Language field caption, %5 is Target Language value';
     begin
-        ExtTranslHead.Get(ExtensionID, TargetLanguage);
-        ExtTranslHead.CalcFields("Imported Xlf");
-        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
-#pragma warning disable AA0139
-        DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
-#pragma warning restore AA0139
+        if (CopyToTargetLang = '') then
+            Error(EmptyCopyToTargetLangErr);
+        if ExtTranslHeadCopyFrom."Target Language" = CopyToTargetLang then
+            Error(TheSameNewTargetLangErr);
+        if ExtTranslHead.Get(ExtTranslHeadCopyFrom."Extension ID", CopyToTargetLang) then
+            Error(ExtTranslHeadWithNewTargetLangExistsErr, ExtTranslHead.TableCaption(),
+                  ExtTranslHead.FieldCaption("Extension ID"), ExtTranslHead."Extension ID",
+                  ExtTranslHead.FieldCaption("Target Language"), ExtTranslHead."Target Language");
     end;
 
-    internal procedure DownloadTranslated(ExtensionID: Guid; TargetLanguage: Text[80])
+    internal procedure CopyExtTranslHeadToNewTargetLang(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text[80])
     var
-        ExtTranslHead: Record ADD_ExtTranslHeader;
-        ExtTranslLine: Record ADD_ExtTranslLine;
-        TempBlob: Codeunit "Temp Blob";
+        ExtTranslHeadCopyTo: Record ADD_ExtTranslHeader;
+    begin
+        ExtTranslHeadCopyTo.Init();
+        ExtTranslHeadCopyFrom.CalcFields("Imported Xlf");
+        ExtTranslHeadCopyTo.TransferFields(ExtTranslHeadCopyFrom);
+        ExtTranslHeadCopyTo."Target Language" := CopyToTargetLang;
+        ExtTranslHeadCopyTo.Insert(true);
+    end;
+
+    internal procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record ADD_ExtTranslLine; ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader)
+    begin
+        ExtTranslLineCopyFrom.SetRange("Extension ID", ExtTranslHeadCopyFrom."Extension ID");
+        ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslLineCopyFrom."Target Language");
+    end;
+
+    internal procedure CopyExtTranslLineToNewTargetLang(ExtTranslLineCopyFrom: Record ADD_ExtTranslLine; CopyToTargetLang: Text[80])
+    var
+        ExtTranslLineCopyTo: Record ADD_ExtTranslLine;
+    begin
+        ExtTranslLineCopyTo.Init();
+        ExtTranslLineCopyTo.TransferFields(ExtTranslLineCopyFrom);
+        ExtTranslLineCopyTo."Target Language" := CopyToTargetLang;
+        ExtTranslLineCopyTo.Translated := false;
+        ExtTranslLineCopyTo.Insert(true);
+    end;
+
+    internal procedure DownloadTranslated(ExtTranslHead: Record ADD_ExtTranslHeader)
+    var
         InStr: InStream;
-        OutStr: OutStream;
         XmlDoc: XmlDocument;
-        Root: XmlElement;
-        NsUri: Text;
         NsMgr: XmlNamespaceManager;
-        FileNode: XmlNode;
-        FileAttributes: XmlAttributeCollection;
         TransUnitNodeList: XmlNodeList;
         TransUnitNode: XmlNode;
-        TransUnitAttributes: XmlAttributeCollection;
-        TransUnitAttr: XmlAttribute;
         TuId: Text;
-        SourceNode: XmlNode;
-        TargetElement: XmlElement;
         TranslatedFileName: Text;
-        IndentBeforeTarget: XmlNode;
-        CR: Char;
-        LF: Char;
-        NewLineText: Text;
-        TargetNode: XmlNode;
         Progress: Dialog;
         ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
         FirstProgrStepMsg: Label 'Downloading File: %1', Comment = '%1 is file name';
@@ -518,80 +570,169 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         TransUnitCounter: Integer;
         PROGR_UPD_PERC: Decimal;
         ProgrUpdBatch: Integer;
+        NS_PREFIX: Text;
     begin
         PROGR_UPD_PERC := 0.1;
-        CR := 13; // \r
-        LF := 10; // \n
-        NewLineText := Format(CR) + Format(LF) + '          ';
+        NS_PREFIX := 'x';
+        TransUnitCounter := 0;
 
-        ExtTranslHead.Get(ExtensionID, TargetLanguage);
-        ExtTranslLine.SetRange("Extension ID", ExtensionID);
-        ExtTranslLine.SetRange("Target Language", TargetLanguage);
-        if ExtTranslLine.IsEmpty() then
-            Error('No lines exist');
-        ExtTranslLine.SetRange(Translated, false);
-        if not ExtTranslLine.IsEmpty() then
-            if not Confirm('No all lines are marked as translated. Do you want to download the file anyway?', true) then
-                exit;
-        TranslatedFileName := ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf';
+        ExtTranslHead.ValidateExtTranslLinesExist();
+        if not this.ShouldDownloadIfNotAllLinesAreTranslated(ExtTranslHead) then
+            exit;
+        TranslatedFileName := ExtTranslHead.GetTranslatedFileName();
         if GuiAllowed then begin
-            Progress.Open(ProgressMsg); //TODO: add guiallowed
+            Progress.Open(ProgressMsg);
             Progress.Update(1, StrSubstNo(FirstProgrStepMsg, TranslatedFileName));
         end;
-
-        ExtTranslHead.CalcFields("Imported Xlf");
-        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
-        XmlDocument.ReadFrom(InStr, XmlDoc);
-        XmlDoc.GetRoot(Root);
-        NsUri := Root.NamespaceUri();
-        NsMgr.AddNamespace('x', NsUri);
-
-        XmlDoc.SelectSingleNode('//x:file', NsMgr, FileNode);
-        FileAttributes := FileNode.AsXmlElement().Attributes();
-        FileAttributes.Set('target-language', ExtTranslHead."Target Language");
-
-        XmlDoc.SelectNodes('//x:file/x:body/x:group/x:trans-unit', NsMgr, TransUnitNodeList);
-        TransUnitCounter := 0;
-        ProgrUpdBatch := Round(TransUnitNodeList.Count() * PROGR_UPD_PERC, 1, '>');
+        ExtTranslHead.GetImportedXlfInStream(InStr);
+        this.GetXmlDocAndNsMgrFromInStr(InStr, NS_PREFIX, XmlDoc, NsMgr);
+        this.SetTargetLangInXlfDoc(XmlDoc, NsMgr, NS_PREFIX, ExtTranslHead."Target Language");
+        this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
+        ProgrUpdBatch := this.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
                 Progress.Update(2, StrSubstNo(SecProgrStepMsg, TransUnitCounter, TransUnitNodeList.Count()));
-
-            TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
-            TransUnitAttributes.Get('id', TransUnitAttr);
-            TuId := TransUnitAttr.Value();
-            if ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then
-                if ExtTranslLine.Translated then begin
-                    TargetElement := XmlElement.Create('target', NsUri, ExtTranslLine.GetNewTarget());
-                    if TransUnitNode.SelectSingleNode('x:target', NsMgr, TargetNode) then
-                        TargetNode.ReplaceWith(TargetElement)
-                    else begin
-                        TransUnitNode.SelectSingleNode('x:source', NsMgr, SourceNode);
-                        IndentBeforeTarget := XmlText.Create(NewLineText).AsXmlNode();
-                        SourceNode.AddAfterSelf(IndentBeforeTarget);
-                        IndentBeforeTarget.AddAfterSelf(TargetElement);
-                    end;
-                end;
+            TuId := this.GetTransUnitIdFromTransUnitNode(TransUnitNode);
+            this.ReplaceOrAddTargetInTransUnitNode(TransUnitNode, TuId, ExtTranslHead, NsMgr, NS_PREFIX);
         end;
 
-        TempBlob.CreateOutStream(OutStr);
-        XmlDoc.WriteTo(OutStr);
-        TempBlob.CreateInStream(InStr);
-        DownloadFromStream(InStr, '', '', '', TranslatedFileName);
+        this.DownloadXmlDoc(XmlDoc, TranslatedFileName);
         if GuiAllowed then
             Progress.Close();
     end;
 
-    local procedure RunObject(ObjType: Integer; ObjectId: Integer)
+    internal procedure ValidateExtTranslLinesExist(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
-        AllObj: Record AllObjWithCaption;
+        ExtTransLinesDontExistErr: Label 'No lines exist for: %1 with filters: %2',
+                                   Comment = '%1 is table caption, %2 is filters';
     begin
-        case ObjType of
-            AllObj."Object Type"::Page:
-                PAGE.Run(ObjectId);
-            AllObj."Object Type"::Table:
-                Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
-        end;
+        if not this.AreExtTranslLinesExist(ExtTranslHead) then
+            Error(ExtTransLinesDontExistErr, ExtTranslHead.TableCaption(), ExtTranslHead.GetView());
+    end;
+
+    local procedure AreExtTranslLinesExist(ExtTranslHead: Record ADD_ExtTranslHeader): Boolean
+    var
+        ExtTranslLine: Record ADD_ExtTranslLine;
+    begin
+        ExtTranslLine.SetRange("Extension ID", ExtTranslHead."Extension ID");
+        ExtTranslLine.SetRange("Target Language", ExtTranslHead."Target Language");
+        exit(not ExtTranslLine.IsEmpty());
+    end;
+
+    local procedure ShouldDownloadIfNotAllLinesAreTranslated(ExtTranslHead: Record ADD_ExtTranslHeader): Boolean
+    var
+        DownloadIfNotAllLinesAreTranslatedQst: Label 'No all lines are marked as translated. Do you want to download the file anyway?';
+    begin
+        if ExtTranslHead.AreAllLinesTranslated() then
+            exit(true);
+        exit(Confirm(DownloadIfNotAllLinesAreTranslatedQst, true));
+    end;
+
+    internal procedure AreAllLinesTranslated(ExtTranslHead: Record ADD_ExtTranslHeader): Boolean
+    var
+        ExtTranslLine: Record ADD_ExtTranslLine;
+    begin
+        ExtTranslLine.SetRange("Extension ID", ExtTranslHead."Extension ID");
+        ExtTranslLine.SetRange("Target Language", ExtTranslHead."Target Language");
+        ExtTranslLine.SetRange(Translated, false);
+        exit(ExtTranslLine.IsEmpty());
+    end;
+
+
+    internal procedure DownloadImported(ExtTranslHead: Record ADD_ExtTranslHeader)
+    var
+        InStr: InStream;
+    begin
+#pragma warning disable AA0139
+        ExtTranslHead.GetImportedXlfInStream(InStr);
+        DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
+#pragma warning restore AA0139
+    end;
+
+    internal procedure GetImportedXlfInStream(var InStr: InStream; ExtTranslHead: Record ADD_ExtTranslHeader)
+    begin
+        ExtTranslHead.CalcFields("Imported Xlf");
+        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
+    end;
+
+    internal procedure GetTranslatedFileName(ExtTranslHead: Record ADD_ExtTranslHeader): Text
+    begin
+        exit(ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf');
+    end;
+
+    local procedure SetTargetLangInXlfDoc(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetLang: Text)
+    var
+        FileNode: XmlNode;
+        FileAttributes: XmlAttributeCollection;
+    begin
+        XmlDoc.SelectSingleNode('//' + NsPrefix + ':file', NsMgr, FileNode);
+        FileAttributes := FileNode.AsXmlElement().Attributes();
+        FileAttributes.Set('target-language', TargetLang);
+    end;
+
+    local procedure ReplaceOrAddTargetInTransUnitNode(var TransUnitNode: XmlNode; TuId: Text; ExtTranslHead: Record ADD_ExtTranslHeader; NsMgr: XmlNamespaceManager; NsPrefix: Text)
+    var
+        ExtTranslLine: Record ADD_ExtTranslLine;
+        TargetElement: XmlElement;
+        TargetNode: XmlNode;
+    begin
+        if not this.GetTranslatedExtTranslLine(ExtTranslLine, ExtTranslHead, TuId) then
+            exit;
+        this.CreateTargetForTransUnit(TargetElement, NsMgr, NsPrefix, ExtTranslLine.GetNewTarget());
+        if this.GetTargetFromTransUnit(TargetNode, TransUnitNode, NsMgr, NsPrefix) then
+            TargetNode.ReplaceWith(TargetElement)
+        else
+            this.AddTargetToTransUnit(TransUnitNode, NsMgr, NsPrefix, TargetElement);
+    end;
+
+    local procedure GetTranslatedExtTranslLine(var ExtTranslLine: Record ADD_ExtTranslLine; ExtTranslHead: Record ADD_ExtTranslHeader; TuId: Text): Boolean
+    begin
+        if not ExtTranslLine.Get(ExtTranslHead."Extension ID", TuId, ExtTranslHead."Target Language") then
+            exit(false);
+        if not ExtTranslLine.Translated then
+            exit(false);
+    end;
+
+    local procedure CreateTargetForTransUnit(var TargetElement: XmlElement; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetContent: Text)
+    var
+        NsUri: Text;
+    begin
+        NsMgr.LookupNamespace(NsPrefix, NsUri);
+        TargetElement := XmlElement.Create('target', NsUri, TargetContent);
+    end;
+
+    local procedure AddTargetToTransUnit(var TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetElement: XmlElement)
+    var
+        SourceNode: XmlNode;
+        NewLineNode: XmlNode;
+    begin
+        this.GetSourceFromTransUnit(SourceNode, TransUnitNode, NsMgr, NsPrefix);
+        this.CreateNewLineNode(NewLineNode);
+        SourceNode.AddAfterSelf(NewLineNode);
+        NewLineNode.AddAfterSelf(TargetElement);
+    end;
+
+    local procedure CreateNewLineNode(var NewLineNode: XmlNode)
+    var
+        TypeHelper: Codeunit "Type Helper";
+        NewLineText: text;
+    begin
+        //TODO: utilities
+        NewLineText := TypeHelper.CRLFSeparator() + '          ';
+        NewLineNode := XmlText.Create(NewLineText).AsXmlNode();
+    end;
+
+    local procedure DownloadXmlDoc(XmlDoc: XmlDocument; DownloadToFileName: Text)
+    var
+        TempBlob: Codeunit "Temp Blob";
+        OutStr: OutStream;
+        InStr: InStream;
+    begin
+        //TODO: utilities
+        TempBlob.CreateOutStream(OutStr);
+        XmlDoc.WriteTo(OutStr);
+        TempBlob.CreateInStream(InStr);
+        DownloadFromStream(InStr, '', '', '', DownloadToFileName);
     end;
 }

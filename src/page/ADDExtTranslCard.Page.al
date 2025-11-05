@@ -88,10 +88,8 @@ page 50101 "ADD_ExtTranslCard"
                     PromotedIsBig = true;
 
                     trigger OnAction()
-                    var
-                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                     begin
-                        ExtTranslMgt.DownloadImported(Rec."Extension ID", Rec."Target Language");
+                        Rec.DownloadImported();
                     end;
                 }
                 action("Download Translated")
@@ -105,10 +103,8 @@ page 50101 "ADD_ExtTranslCard"
                     PromotedIsBig = true;
 
                     trigger OnAction()
-                    var
-                        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                     begin
-                        ExtTranslMgt.DownloadTranslated(Rec."Extension ID", Rec."Target Language");
+                        Rec.DownloadTranslated();
                     end;
                 }
             }

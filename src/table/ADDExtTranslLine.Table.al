@@ -211,6 +211,13 @@ table 50100 "ADD_ExtTranslLine"
         exit(ExtTranslHead.GetExtTransLineNewTarget(Rec));
     end;
 
+    procedure GetXliffNote(): Text
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        exit(ExtTranslHead.GetExtTransLineXliffNote(Rec));
+    end;
+
     procedure SetNewTarget(NewTarget: Text)
     var
         ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
@@ -244,5 +251,34 @@ table 50100 "ADD_ExtTranslLine"
         ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
     begin
         ExtTranslHead.SetExtTransLineXliffNote(Rec, XliffNote);
+    end;
+
+    procedure CopyToNewTargetLang(CopyToTargetLang: Text[80])
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.CopyExtTranslLineToNewTargetLang(Rec, CopyToTargetLang);
+    end;
+
+    procedure CreateExtTranslLine(ExtId: Text; TargetLang: Text; TuId: Text; SourceTxt: text;
+                                  TargetTxt: text; DeveloperNote: Text; XliffNote: Text)
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.CreateExtTranslLine(Rec, ExtId, TargetLang, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
+    end;
+
+    procedure ParseXliffNote()
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.ParseXliffNote(Rec);
+    end;
+
+    procedure RunObject()
+    var
+        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslHead.RunObject(Rec);
     end;
 }

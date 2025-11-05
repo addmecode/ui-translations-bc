@@ -65,4 +65,77 @@ table 50102 "ADD_ExtTranslHeader"
     begin
         ExtTranslMgt.DeleteAllExtTranslHeadLines(Rec);
     end;
+
+    procedure GetTranslatedFileName(): Text
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        exit(ExtTranslMgt.GetTranslatedFileName(Rec));
+    end;
+
+    procedure ValidateExtTranslLinesExist()
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.ValidateExtTranslLinesExist(Rec);
+    end;
+
+    procedure AreAllLinesTranslated(): Boolean
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        exit(ExtTranslMgt.AreAllLinesTranslated(Rec));
+    end;
+
+    procedure GetImportedXlfInStream(InStr: InStream)
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.GetImportedXlfInStream(InStr, Rec);
+    end;
+
+    procedure DownloadImported()
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.DownloadImported(Rec);
+    end;
+
+    procedure DownloadTranslated()
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.DownloadTranslated(Rec);
+    end;
+
+    procedure CopyExtTranslHeadAndLinesToNewTargetLang(CopyToTargetLang: Text[80])
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.CopyExtTranslHeadAndLinesToNewTargetLang(Rec, CopyToTargetLang);
+    end;
+
+    procedure CopyExtTranslHeadToNewTargetLang(CopyToTargetLang: Text[80])
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.CopyExtTranslHeadToNewTargetLang(Rec, CopyToTargetLang);
+    end;
+
+    procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record ADD_ExtTranslLine)
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.FilterExtTranslLines(ExtTranslLineCopyFrom, Rec);
+    end;
+
+    procedure CreateExtTranslHead(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; TargetLang: Text;
+                                  ImportedXlfInStr: InStream; ImportedFileName: Text; SourceLang: Text)
+    var
+        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+    begin
+        ExtTranslMgt.CreateExtTranslHead(Rec, ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang,
+                                         ImportedXlfInStr, ImportedFileName, SourceLang)
+    end;
+
 }
