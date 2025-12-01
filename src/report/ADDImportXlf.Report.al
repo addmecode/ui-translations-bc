@@ -18,22 +18,20 @@ report 50100 "ADD_ImportXlf"
                     {
                         Caption = 'Extension ID';
                         ToolTip = 'Extension ID';
-                        TableRelation = "NAV App Installed App"."App ID";
 
-                        trigger OnValidate()
+                        trigger OnLookup(var Text: Text): Boolean
                         var
                             NavAppInstalledApp: Record "NAV App Installed App";
                         begin
-                            if IsNullGuid(ExtID) then
-                                exit;
-                            if not NavAppInstalledApp.Get(ExtID) then
-                                exit;
-                            ExtName := NavAppInstalledApp.Name;
-                            ExtPublisher := NavAppInstalledApp.Publisher;
-                            ExtVersion := Format(NavAppInstalledApp."Version Major") + '.' +
-                                                       Format(NavAppInstalledApp."Version Minor") + '.' +
-                                                       Format(NavAppInstalledApp."Version Build") + '.' +
-                                                       Format(NavAppInstalledApp."Version Revision");
+                            if Page.RunModal(Page::"ADD_NavAppInstalledApp", NavAppInstalledApp) = Action::LookupOK then begin
+                                ExtID := NavAppInstalledApp."App ID";
+                                ValidateExtID();
+                            end;
+                        end;
+
+                        trigger OnValidate()
+                        begin
+                            ValidateExtID();
                         end;
                     }
                     field("Extension Name"; ExtName)
@@ -106,5 +104,21 @@ report 50100 "ADD_ImportXlf"
     trigger OnPostReport()
     begin
         Page.RunModal(Page::ADD_ExtTranslCard, this.CreatedExtTranslHead);
+    end;
+
+    local procedure ValidateExtID()
+    var
+        NavAppInstalledApp: Record "NAV App Installed App";
+    begin
+        if IsNullGuid(ExtID) then
+            exit;
+        if not NavAppInstalledApp.Get(ExtID) then
+            exit;
+        ExtName := NavAppInstalledApp.Name;
+        ExtPublisher := NavAppInstalledApp.Publisher;
+        ExtVersion := Format(NavAppInstalledApp."Version Major") + '.' +
+                                   Format(NavAppInstalledApp."Version Minor") + '.' +
+                                   Format(NavAppInstalledApp."Version Build") + '.' +
+                                   Format(NavAppInstalledApp."Version Revision");
     end;
 }
