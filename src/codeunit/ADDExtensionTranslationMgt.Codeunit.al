@@ -540,7 +540,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     internal procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record ADD_ExtTranslLine; ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader)
     begin
         ExtTranslLineCopyFrom.SetRange("Extension ID", ExtTranslHeadCopyFrom."Extension ID");
-        ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslLineCopyFrom."Target Language");
+        ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslHeadCopyFrom."Target Language");
     end;
 
     internal procedure CopyExtTranslLineToNewTargetLang(ExtTranslLineCopyFrom: Record ADD_ExtTranslLine; CopyToTargetLang: Text[80])
@@ -584,7 +584,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Progress.Open(ProgressMsg);
             Progress.Update(1, StrSubstNo(FirstProgrStepMsg, TranslatedFileName));
         end;
-        ExtTranslHead.GetImportedXlfInStream(InStr);
+
+        ExtTranslHead.CalcFields("Imported Xlf");
+        ExtTranslHead."Imported Xlf".CreateInStream(InStr);
         this.GetXmlDocAndNsMgrFromInStr(InStr, NS_PREFIX, XmlDoc, NsMgr);
         this.SetTargetLangInXlfDoc(XmlDoc, NsMgr, NS_PREFIX, ExtTranslHead."Target Language");
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
@@ -645,15 +647,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         InStr: InStream;
     begin
 #pragma warning disable AA0139
-        ExtTranslHead.GetImportedXlfInStream(InStr);
-        DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
-#pragma warning restore AA0139
-    end;
-
-    internal procedure GetImportedXlfInStream(var InStr: InStream; ExtTranslHead: Record ADD_ExtTranslHeader)
-    begin
         ExtTranslHead.CalcFields("Imported Xlf");
         ExtTranslHead."Imported Xlf".CreateInStream(InStr);
+        DownloadFromStream(InStr, '', '', '', ExtTranslHead."Imported FileName");
+#pragma warning restore AA0139
     end;
 
     internal procedure GetTranslatedFileName(ExtTranslHead: Record ADD_ExtTranslHeader): Text
@@ -692,6 +689,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             exit(false);
         if not ExtTranslLine.Translated then
             exit(false);
+        exit(true);
     end;
 
     local procedure CreateTargetForTransUnit(var TargetElement: XmlElement; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetContent: Text)

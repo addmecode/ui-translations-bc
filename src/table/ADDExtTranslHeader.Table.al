@@ -87,13 +87,6 @@ table 50102 "ADD_ExtTranslHeader"
         exit(ExtTranslMgt.AreAllLinesTranslated(Rec));
     end;
 
-    procedure GetImportedXlfInStream(InStr: InStream)
-    var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
-    begin
-        ExtTranslMgt.GetImportedXlfInStream(InStr, Rec);
-    end;
-
     procedure DownloadImported()
     var
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
