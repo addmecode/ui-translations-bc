@@ -1,4 +1,4 @@
-codeunit 50100 "ADD_ExtensionTranslationMgt"
+codeunit 50110 "ADD_ExtensionTranslationMgt"
 {
 
     internal procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
@@ -177,6 +177,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     internal procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
         CreatedExtTranslLine: Record ADD_ExtTranslLine;
+        XmlUtilities: codeunit ADD_XmlUtilities;
+        Utilities: codeunit ADD_Utilities;
         XmlDoc: XmlDocument;
         NsMgr: XmlNamespaceManager;
         TransUnitNodeList: XmlNodeList;
@@ -209,14 +211,14 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             Progress.Open(ProgressMsg);
             Progress.Update(1, StrSubstNo(FirstProgrStepMsg, ImportedFileName));
         end;
-        this.GetXmlDocAndNsMgrFromInStr(ImportedXlfInStr, NS_PREFIX, XmlDoc, NsMgr);
+        XmlUtilities.GetXmlDocAndNsMgrFromInStr(ImportedXlfInStr, NS_PREFIX, XmlDoc, NsMgr);
         this.GetTargetAndSourceLangFromXlf(XmlDoc, NsMgr, NS_PREFIX, SourceLang, TargetLangFromXlf);
         if ImportTargetLang then
             TargetLang := TargetLangFromXlf;
         CreatedExtTranslHead.CreateExtTranslHead(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang, ImportedXlfInStr, ImportedFileName, SourceLang);
 
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
-        ProgrUpdBatch := this.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
@@ -252,36 +254,16 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
     end;
 
-    local procedure GetXmlDocAndNsMgrFromInStr(ImportedXlfInStr: InStream; NsPrefix: Text; var XmlDoc: XmlDocument; var NsMgr: XmlNamespaceManager)
-    var
-        Root: XmlElement;
-        NsUri: Text;
-    begin
-        //todo utilities
-        XmlDocument.ReadFrom(ImportedXlfInStr, XmlDoc);
-        XmlDoc.GetRoot(Root);
-        NsUri := Root.NamespaceUri();
-        NsMgr.AddNamespace(NsPrefix, NsUri);
-    end;
-
     local procedure GetTargetAndSourceLangFromXlf(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; var SourceLang: Text; var TargetLang: Text)
     var
+        XmlUtilities: codeunit ADD_XmlUtilities;
         FileAttributes: XmlAttributeCollection;
         FileNode: XmlNode;
     begin
         XmlDoc.SelectSingleNode('//' + NsPrefix + ':file', NsMgr, FileNode);
         FileAttributes := FileNode.AsXmlElement().Attributes();
-        SourceLang := this.GetAttrValueFromCollection(FileAttributes, 'source-language');
-        TargetLang := this.GetAttrValueFromCollection(FileAttributes, 'target-language');
-    end;
-
-    local procedure GetAttrValueFromCollection(AttrColl: XmlAttributeCollection; AttrName: Text): Text
-    var
-        Attr: XmlAttribute;
-    begin
-        //todo utilities
-        AttrColl.Get(AttrName, Attr);
-        exit(Attr.Value());
+        SourceLang := XmlUtilities.GetAttrValueFromCollection(FileAttributes, 'source-language');
+        TargetLang := XmlUtilities.GetAttrValueFromCollection(FileAttributes, 'target-language');
     end;
 
     internal procedure CreateExtTranslHead(var NewExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text; ExtPublisher: Text;
@@ -311,12 +293,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                             NsPrefix + ':group/' +
                             NsPrefix + ':trans-unit',
                             NsMgr, TransUnitNodeList);
-    end;
-
-    local procedure GetUpdProgrBatch(TotalRowsNumber: Integer; ProgrUpdPerc: Decimal): Integer
-    begin
-        //todo utilities
-        exit(Round(TotalRowsNumber * ProgrUpdPerc, 1, '>'));
     end;
 
     local procedure ParseTransUnitIdNode(TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; var TuId: Text; var SourceTxt: text; var TargetTxt: text; var DeveloperNote: Text; var XliffNote: Text)
@@ -365,26 +341,19 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     local procedure IsDeveloperNoteNode(NoteNode: XmlNode): Boolean
     var
+        XmlUtilities: codeunit ADD_XmlUtilities;
         NoteAttr: XmlAttribute;
     begin
-        this.GetElementAttribute(NoteAttr, 'from', NoteNode);
+        XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
         exit(NoteAttr.Value() = 'Developer');
-    end;
-
-    local procedure GetElementAttribute(var NoteAttr: XmlAttribute; AttributeName: Text; NoteNode: XmlNode)
-    var
-        NoteAttributes: XmlAttributeCollection;
-    begin
-        //TODO: utilities
-        NoteAttributes := NoteNode.AsXmlElement().Attributes();
-        NoteAttributes.Get(AttributeName, NoteAttr);
     end;
 
     local procedure IsXliffGeneratorNoteNode(NoteNode: XmlNode): Boolean
     var
+        XmlUtilities: codeunit ADD_XmlUtilities;
         NoteAttr: XmlAttribute;
     begin
-        this.GetElementAttribute(NoteAttr, 'from', NoteNode);
+        XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
         exit(NoteAttr.Value() = 'Xliff Generator');
     end;
 
@@ -481,6 +450,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
+        Utilities: codeunit ADD_Utilities;
         Progress: Dialog;
         LinesCounter: Integer;
         LinesNumber: Integer;
@@ -497,7 +467,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslHeadCopyFrom.CopyExtTranslHeadToNewTargetLang(CopyToTargetLang);
         ExtTranslHeadCopyFrom.FilterExtTranslLines(ExtTranslLineCopyFrom);
         LinesNumber := ExtTranslLineCopyFrom.Count();
-        ProgrUpdBatch := this.GetUpdProgrBatch(LinesNumber, PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdProgrBatch(LinesNumber, PROGR_UPD_PERC);
         if ExtTranslLineCopyFrom.FindSet() then
             repeat
                 LinesCounter += 1;
@@ -556,6 +526,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     internal procedure DownloadTranslated(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
+        XmlUtilities: codeunit ADD_XmlUtilities;
+        Utilities: codeunit ADD_Utilities;
         InStr: InStream;
         XmlDoc: XmlDocument;
         NsMgr: XmlNamespaceManager;
@@ -587,10 +559,10 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
         ExtTranslHead.CalcFields("Imported Xlf");
         ExtTranslHead."Imported Xlf".CreateInStream(InStr);
-        this.GetXmlDocAndNsMgrFromInStr(InStr, NS_PREFIX, XmlDoc, NsMgr);
+        XmlUtilities.GetXmlDocAndNsMgrFromInStr(InStr, NS_PREFIX, XmlDoc, NsMgr);
         this.SetTargetLangInXlfDoc(XmlDoc, NsMgr, NS_PREFIX, ExtTranslHead."Target Language");
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
-        ProgrUpdBatch := this.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdProgrBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
@@ -599,7 +571,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             this.ReplaceOrAddTargetInTransUnitNode(TransUnitNode, TuId, ExtTranslHead, NsMgr, NS_PREFIX);
         end;
 
-        this.DownloadXmlDoc(XmlDoc, TranslatedFileName);
+        XmlUtilities.DownloadXmlDoc(XmlDoc, TranslatedFileName);
         if GuiAllowed then
             Progress.Close();
     end;
@@ -702,35 +674,13 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     local procedure AddTargetToTransUnit(var TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetElement: XmlElement)
     var
+        XmlUtilities: codeunit ADD_XmlUtilities;
         SourceNode: XmlNode;
         NewLineNode: XmlNode;
     begin
         this.GetSourceFromTransUnit(SourceNode, TransUnitNode, NsMgr, NsPrefix);
-        this.CreateNewLineNode(NewLineNode);
+        XmlUtilities.CreateNewLineNode(NewLineNode);
         SourceNode.AddAfterSelf(NewLineNode);
         NewLineNode.AddAfterSelf(TargetElement);
-    end;
-
-    local procedure CreateNewLineNode(var NewLineNode: XmlNode)
-    var
-        TypeHelper: Codeunit "Type Helper";
-        NewLineText: text;
-    begin
-        //TODO: utilities
-        NewLineText := TypeHelper.CRLFSeparator() + '          ';
-        NewLineNode := XmlText.Create(NewLineText).AsXmlNode();
-    end;
-
-    local procedure DownloadXmlDoc(XmlDoc: XmlDocument; DownloadToFileName: Text)
-    var
-        TempBlob: Codeunit "Temp Blob";
-        OutStr: OutStream;
-        InStr: InStream;
-    begin
-        //TODO: utilities
-        TempBlob.CreateOutStream(OutStr);
-        XmlDoc.WriteTo(OutStr);
-        TempBlob.CreateInStream(InStr);
-        DownloadFromStream(InStr, '', '', '', DownloadToFileName);
     end;
 }
