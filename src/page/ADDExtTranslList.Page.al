@@ -43,22 +43,24 @@ page 50100 "ADD_ExtTranslList"
     }
     actions
     {
+        area(Promoted)
+        {
+            actionref(ImportXlfPromoted; ImportXlfAction)
+            { }
+        }
         area(Processing)
         {
             group(Xlf)
             {
                 Caption = 'Xlf';
                 Image = Import;
-                action("Import Xlf")
+                action(ImportXlfAction)
                 {
                     ApplicationArea = All;
                     Caption = 'Import Xlf';
                     ToolTip = 'Import Xlf';
                     Ellipsis = true;
                     Image = Import;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true; //TODO: move to action ref
                     RunObject = Report ADD_ImportXlf;
                 }
             }

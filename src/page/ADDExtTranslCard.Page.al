@@ -52,22 +52,28 @@ page 50101 "ADD_ExtTranslCard"
     }
     actions
     {
+        area(Promoted)
+        {
+            actionref(CopyPromoted; CopyAction)
+            { }
+            actionref(DownloadImportedPromoted; DownloadImportedAction)
+            { }
+            actionref(DownloadTranslatedPromoted; DownloadTranslatedAction)
+            { }
+        }
         area(Processing)
         {
             group(Process)
             {
                 Caption = 'Process';
                 Image = Action;
-                action(Copy)
+                action(CopyAction)
                 {
                     ApplicationArea = All;
                     Caption = 'Copy';
                     ToolTip = 'Copy';
                     Ellipsis = true;
                     Image = Copy;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true; //TODO: move it to action ref
 
                     trigger OnAction()
                     var
@@ -77,30 +83,24 @@ page 50101 "ADD_ExtTranslCard"
                         CopyExtTranslToNewTargLang.Run();
                     end;
                 }
-                action("Download Imported")
+                action(DownloadImportedAction)
                 {
                     ApplicationArea = All;
                     Caption = 'Download Imported';
                     ToolTip = 'Download Imported';
                     Image = Download;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
 
                     trigger OnAction()
                     begin
                         Rec.DownloadImported();
                     end;
                 }
-                action("Download Translated")
+                action(DownloadTranslatedAction)
                 {
                     ApplicationArea = All;
                     Caption = 'Download Translated';
                     ToolTip = 'Download Translated';
                     Image = Download;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
 
                     trigger OnAction()
                     begin
