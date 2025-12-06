@@ -1,16 +1,16 @@
-table 50100 "ADD_ExtTranslLine"
+table 50100 ADD_ExtTranslLine
 {
     Caption = 'Element Translation Line';
-    DataClassification = ToBeClassified;
+    DataClassification = CustomerContent;
 
     fields
     {
         field(1; "Extension ID"; Guid)
         {
             Caption = 'Extension ID';
+            Editable = false;
             TableRelation = ADD_ExtTranslHeader."Extension ID";
             ValidateTableRelation = true;
-            Editable = false;
         }
         field(2; "Trans Unit ID"; Text[250])
         {
@@ -20,9 +20,9 @@ table 50100 "ADD_ExtTranslLine"
         field(3; "Target Language"; Text[80])
         {
             Caption = 'Target Language';
+            Editable = false;
             TableRelation = ADD_ExtTranslHeader."Target Language";
             ValidateTableRelation = true;
-            Editable = false;
         }
         field(4; "Object Type"; Text[30])
         {
@@ -260,8 +260,8 @@ table 50100 "ADD_ExtTranslLine"
         ExtTranslHead.CopyExtTranslLineToNewTargetLang(Rec, CopyToTargetLang);
     end;
 
-    procedure CreateExtTranslLine(ExtId: Text; TargetLang: Text; TuId: Text; SourceTxt: text;
-                                  TargetTxt: text; DeveloperNote: Text; XliffNote: Text)
+    procedure CreateExtTranslLine(ExtId: Text; TargetLang: Text; TuId: Text; SourceTxt: Text;
+                                  TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     var
         ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
     begin

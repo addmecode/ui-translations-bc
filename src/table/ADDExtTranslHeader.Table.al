@@ -1,8 +1,8 @@
-table 50102 "ADD_ExtTranslHeader"
+table 50102 ADD_ExtTranslHeader
 {
     Caption = 'Extension Translation Header';
-    DataClassification = ToBeClassified;
-    DrillDownPageID = ADD_ExtTranslCard;
+    DataClassification = CustomerContent;
+    DrillDownPageId = ADD_ExtTranslCard;
     LookupPageId = ADD_ExtTranslCard;
 
     fields
@@ -130,5 +130,4 @@ table 50102 "ADD_ExtTranslHeader"
         ExtTranslMgt.CreateExtTranslHead(Rec, ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang,
                                          ImportedXlfInStr, ImportedFileName, SourceLang)
     end;
-
 }

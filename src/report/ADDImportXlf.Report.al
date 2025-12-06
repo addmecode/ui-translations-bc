@@ -1,9 +1,9 @@
-report 50100 "ADD_ImportXlf"
+report 50100 ADD_ImportXlf
 {
-    UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
-    ProcessingOnly = true;
     Caption = 'Import Xlf';
+    ProcessingOnly = true;
+    UsageCategory = ReportsAndAnalysis;
 
     requestpage
     {
@@ -16,41 +16,46 @@ report 50100 "ADD_ImportXlf"
                     Caption = 'Options';
                     field("Extension ID"; ExtID)
                     {
+                        ApplicationArea = All;
                         Caption = 'Extension ID';
                         ToolTip = 'Extension ID';
-
-                        trigger OnLookup(var Text: Text): Boolean
-                        var
-                            NavAppInstalledApp: Record "NAV App Installed App";
-                        begin
-                            if Page.RunModal(Page::"ADD_NavAppInstalledApp", NavAppInstalledApp) = Action::LookupOK then begin
-                                ExtID := NavAppInstalledApp."App ID";
-                                ValidateExtID();
-                            end;
-                        end;
 
                         trigger OnValidate()
                         begin
                             ValidateExtID();
                         end;
+
+                        trigger OnLookup(var Text: Text): Boolean
+                        var
+                            NavAppInstalledApp: Record "NAV App Installed App";
+                        begin
+                            if Page.RunModal(Page::ADD_NavAppInstalledApp, NavAppInstalledApp) = Action::LookupOK then begin
+                                ExtID := NavAppInstalledApp."App ID";
+                                ValidateExtID();
+                            end;
+                        end;
                     }
                     field("Extension Name"; ExtName)
                     {
+                        ApplicationArea = All;
                         Caption = 'Extension Name';
                         ToolTip = 'Extension Name';
                     }
                     field("Extension Publisher"; ExtPublisher)
                     {
+                        ApplicationArea = All;
                         Caption = 'Extension Publisher';
                         ToolTip = 'Extension Publisher';
                     }
                     field("Extension Version"; ExtVersion)
                     {
+                        ApplicationArea = All;
                         Caption = 'Extension Version';
                         ToolTip = 'Extension Version';
                     }
                     field("Import Target Language"; ImportTargetLang)
                     {
+                        ApplicationArea = All;
                         Caption = 'Import Target Language';
                         ToolTip = 'Import Target Language';
 
@@ -62,10 +67,11 @@ report 50100 "ADD_ImportXlf"
                     }
                     field("Target Language"; TargetLang)
                     {
+                        ApplicationArea = All;
                         Caption = 'Target Language';
-                        ToolTip = 'Target Language';
-                        Enabled = not ImportTargetLang;
                         Editable = false;
+                        Enabled = not ImportTargetLang;
+                        ToolTip = 'Target Language';
 
                         trigger OnAssistEdit()
                         var
@@ -79,15 +85,6 @@ report 50100 "ADD_ImportXlf"
         }
     }
 
-    var
-        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
-        ExtID: Guid;
-        ExtName: Text[250];
-        ExtPublisher: Text[250];
-        ExtVersion: Text[250];
-        TargetLang: Text[80];
-        ImportTargetLang: Boolean;
-
     trigger OnInitReport()
     begin
         this.ImportTargetLang := true;
@@ -98,13 +95,22 @@ report 50100 "ADD_ImportXlf"
         ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
     begin
         ExtTranslMgt.ImportXlf(this.CreatedExtTranslHead, this.ExtID, this.ExtName, this.ExtPublisher, this.ExtVersion, this.ImportTargetLang, this.TargetLang);
-        commit();
+        Commit();
     end;
 
     trigger OnPostReport()
     begin
         Page.RunModal(Page::ADD_ExtTranslCard, this.CreatedExtTranslHead);
     end;
+
+    var
+        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
+        ImportTargetLang: Boolean;
+        ExtID: Guid;
+        TargetLang: Text[80];
+        ExtName: Text[250];
+        ExtPublisher: Text[250];
+        ExtVersion: Text[250];
 
     local procedure ValidateExtID()
     var

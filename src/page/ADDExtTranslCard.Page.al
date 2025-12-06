@@ -1,10 +1,10 @@
-page 50101 "ADD_ExtTranslCard"
+page 50101 ADD_ExtTranslCard
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Card';
+    InsertAllowed = false;
     PageType = Card;
     SourceTable = ADD_ExtTranslHeader;
-    InsertAllowed = false;
 
     layout
     {
@@ -42,7 +42,6 @@ page 50101 "ADD_ExtTranslCard"
             }
             part(TranslationElements; ADD_ExtTranslSubform)
             {
-                ApplicationArea = All;
                 Enabled = true;
                 SubPageLink = "Extension ID" = field("Extension ID"),
                               "Target Language" = field("Target Language");
@@ -54,12 +53,9 @@ page 50101 "ADD_ExtTranslCard"
     {
         area(Promoted)
         {
-            actionref(CopyPromoted; CopyAction)
-            { }
-            actionref(DownloadImportedPromoted; DownloadImportedAction)
-            { }
-            actionref(DownloadTranslatedPromoted; DownloadTranslatedAction)
-            { }
+            actionref(CopyPromoted; CopyAction) { }
+            actionref(DownloadImportedPromoted; DownloadImportedAction) { }
+            actionref(DownloadTranslatedPromoted; DownloadTranslatedAction) { }
         }
         area(Processing)
         {
@@ -69,11 +65,10 @@ page 50101 "ADD_ExtTranslCard"
                 Image = Action;
                 action(CopyAction)
                 {
-                    ApplicationArea = All;
                     Caption = 'Copy';
-                    ToolTip = 'Copy';
                     Ellipsis = true;
                     Image = Copy;
+                    ToolTip = 'Copy';
 
                     trigger OnAction()
                     var
@@ -85,10 +80,9 @@ page 50101 "ADD_ExtTranslCard"
                 }
                 action(DownloadImportedAction)
                 {
-                    ApplicationArea = All;
                     Caption = 'Download Imported';
-                    ToolTip = 'Download Imported';
                     Image = Download;
+                    ToolTip = 'Download Imported';
 
                     trigger OnAction()
                     begin
@@ -97,10 +91,9 @@ page 50101 "ADD_ExtTranslCard"
                 }
                 action(DownloadTranslatedAction)
                 {
-                    ApplicationArea = All;
                     Caption = 'Download Translated';
-                    ToolTip = 'Download Translated';
                     Image = Download;
+                    ToolTip = 'Download Translated';
 
                     trigger OnAction()
                     begin

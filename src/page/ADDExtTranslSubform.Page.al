@@ -1,12 +1,12 @@
-page 50102 "ADD_ExtTranslSubform"
+page 50102 ADD_ExtTranslSubform
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Subform';
+    DeleteAllowed = false;
     Editable = true;
+    InsertAllowed = false;
     PageType = ListPart;
     SourceTable = ADD_ExtTranslLine;
-    InsertAllowed = false;
-    DeleteAllowed = false;
 
     layout
     {
@@ -14,6 +14,7 @@ page 50102 "ADD_ExtTranslSubform"
         {
             repeater(General)
             {
+                Caption = 'General';
                 field("Object Type"; Rec."Object Type")
                 {
                     ToolTip = 'Specifies the value of the Object Type field.', Comment = '%';
@@ -33,8 +34,8 @@ page 50102 "ADD_ExtTranslSubform"
                 field(Source; Rec.GetSource())
                 {
                     Caption = 'Source';
-                    ToolTip = 'Specifies the value of the Source fields.', Comment = '%';
                     Editable = false;
+                    ToolTip = 'Specifies the value of the Source fields.', Comment = '%';
                 }
                 field("Developer Note"; Rec.GetDeveloperNotes())
                 {
@@ -44,14 +45,14 @@ page 50102 "ADD_ExtTranslSubform"
                 field(Target; Rec.GetTarget())
                 {
                     Caption = 'Target';
-                    ToolTip = 'Specifies the value of the Target fields.', Comment = '%';
                     Editable = false;
+                    ToolTip = 'Specifies the value of the Target fields.', Comment = '%';
                 }
                 field("New Target"; NewTarget)
                 {
                     Caption = 'New Target';
-                    ToolTip = 'Specifies the value of the New Target fields.', Comment = '%';
                     Editable = IsNewTargetEditable;
+                    ToolTip = 'Specifies the value of the New Target fields.', Comment = '%';
                     trigger OnValidate()
                     begin
                         Rec.SetNewTarget(NewTarget);
@@ -70,10 +71,9 @@ page 50102 "ADD_ExtTranslSubform"
         {
             action("Run Object")
             {
-                ApplicationArea = All;
                 Caption = 'Run Object';
-                ToolTip = 'Run Object';
                 Image = Process;
+                ToolTip = 'Run Object';
                 trigger OnAction()
                 begin
                     Rec.RunObject();
@@ -81,10 +81,9 @@ page 50102 "ADD_ExtTranslSubform"
             }
             action("Show All")
             {
-                ApplicationArea = All;
                 Caption = 'Show All';
-                ToolTip = 'Show All';
                 Image = ClearFilter;
+                ToolTip = 'Show All';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Translated);
@@ -92,10 +91,9 @@ page 50102 "ADD_ExtTranslSubform"
             }
             action("Show Translated")
             {
-                ApplicationArea = All;
                 Caption = 'Show Translated';
-                ToolTip = 'Show Translated';
                 Image = FilterLines;
+                ToolTip = 'Show Translated';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Translated, true);
@@ -103,10 +101,9 @@ page 50102 "ADD_ExtTranslSubform"
             }
             action("Hide Translated")
             {
-                ApplicationArea = All;
                 Caption = 'Hide Translated';
-                ToolTip = 'Hide Translated';
                 Image = FilterLines;
+                ToolTip = 'Hide Translated';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Translated, false);
@@ -120,12 +117,12 @@ page 50102 "ADD_ExtTranslSubform"
         NewTarget := Rec.GetNewTarget();
     end;
 
+    var
+        IsNewTargetEditable: Boolean;
+        NewTarget: Text;
+
     procedure SetNewTargetEditable(IsEditable: Boolean)
     begin
         IsNewTargetEditable := IsEditable;
     end;
-
-    var
-        NewTarget: Text;
-        IsNewTargetEditable: Boolean;
 }

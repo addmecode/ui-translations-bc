@@ -1,6 +1,5 @@
-codeunit 50110 "ADD_ExtensionTranslationMgt"
+codeunit 50110 ADD_ExtensionTranslationMgt
 {
-
     internal procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
         ExtTransLine: Record ADD_ExtTranslLine;
@@ -159,7 +158,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
     begin
         case ObjType of
             AllObj."Object Type"::Page:
-                PAGE.Run(ObjectId);
+                Page.Run(ObjectId);
             AllObj."Object Type"::Table:
                 Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
         end;
@@ -177,29 +176,29 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
     internal procedure ImportXlf(var CreatedExtTranslHead: Record ADD_ExtTranslHeader; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
         CreatedExtTranslLine: Record ADD_ExtTranslLine;
-        XmlUtilities: codeunit ADD_XmlUtilities;
-        Utilities: codeunit ADD_Utilities;
+        Utilities: Codeunit ADD_Utilities;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
+        PROGR_UPD_PERC: Decimal;
+        Progress: Dialog;
+        ImportedXlfInStr: InStream;
+        ProgrUpdBatch: Integer;
+        TransUnitCounter: Integer;
+        FirstProgrStepMsg: Label 'Importing File: %1', Comment = '%1 is file name';
+        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
+        SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
+        DeveloperNote: Text;
+        ImportedFileName: Text;
+        NS_PREFIX: Text;
+        SourceLang: Text;
+        SourceTxt: Text;
+        TargetLangFromXlf: Text;
+        TargetTxt: Text;
+        TuId: Text;
+        XliffNote: Text;
         XmlDoc: XmlDocument;
         NsMgr: XmlNamespaceManager;
-        TransUnitNodeList: XmlNodeList;
         TransUnitNode: XmlNode;
-        ImportedXlfInStr: InStream;
-        ImportedFileName: Text;
-        TuId: Text;
-        SourceTxt: text;
-        TargetTxt: text;
-        DeveloperNote: Text;
-        XliffNote: Text;
-        SourceLang: Text;
-        TargetLangFromXlf: Text;
-        TransUnitCounter: Integer;
-        ProgrUpdBatch: Integer;
-        PROGR_UPD_PERC: Decimal;
-        NS_PREFIX: Text;
-        Progress: Dialog;
-        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
-        FirstProgrStepMsg: Label 'Importing File: %1', Comment = '%1 is file name';
-        SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
+        TransUnitNodeList: XmlNodeList;
     begin
         PROGR_UPD_PERC := 0.1;
         NS_PREFIX := 'x';
@@ -256,7 +255,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure GetTargetAndSourceLangFromXlf(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; var SourceLang: Text; var TargetLang: Text)
     var
-        XmlUtilities: codeunit ADD_XmlUtilities;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
         FileAttributes: XmlAttributeCollection;
         FileNode: XmlNode;
     begin
@@ -272,7 +271,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
         OutStr: OutStream;
     begin
 #pragma warning disable AA0139
-        NewExtTranslHead.init();
+        NewExtTranslHead.Init();
         NewExtTranslHead."Extension ID" := ExtID;
         NewExtTranslHead."Target Language" := TargetLang;
         NewExtTranslHead."Extension Name" := ExtName;
@@ -295,12 +294,12 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
                             NsMgr, TransUnitNodeList);
     end;
 
-    local procedure ParseTransUnitIdNode(TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; var TuId: Text; var SourceTxt: text; var TargetTxt: text; var DeveloperNote: Text; var XliffNote: Text)
+    local procedure ParseTransUnitIdNode(TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; var TuId: Text; var SourceTxt: Text; var TargetTxt: Text; var DeveloperNote: Text; var XliffNote: Text)
     var
-        NoteNodeList: XmlNodeList;
         NoteNode: XmlNode;
         SourceNode: XmlNode;
         TargetNode: XmlNode;
+        NoteNodeList: XmlNodeList;
     begin
         TuId := this.GetTransUnitIdFromTransUnitNode(TransUnitNode);
         this.GetSourceFromTransUnit(SourceNode, TransUnitNode, NsMgr, NsPrefix);
@@ -321,8 +320,8 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure GetTransUnitIdFromTransUnitNode(var TransUnitNode: XmlNode): Text
     var
-        TransUnitAttributes: XmlAttributeCollection;
         TransUnitAttr: XmlAttribute;
+        TransUnitAttributes: XmlAttributeCollection;
     begin
         TransUnitAttributes := TransUnitNode.AsXmlElement().Attributes();
         TransUnitAttributes.Get('id', TransUnitAttr);
@@ -341,7 +340,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure IsDeveloperNoteNode(NoteNode: XmlNode): Boolean
     var
-        XmlUtilities: codeunit ADD_XmlUtilities;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
         NoteAttr: XmlAttribute;
     begin
         XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
@@ -350,7 +349,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure IsXliffGeneratorNoteNode(NoteNode: XmlNode): Boolean
     var
-        XmlUtilities: codeunit ADD_XmlUtilities;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
         NoteAttr: XmlAttribute;
     begin
         XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
@@ -358,7 +357,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
     end;
 
     internal procedure CreateExtTranslLine(var NewElTransl: Record ADD_ExtTranslLine; ExtId: Text; TargetLang: Text; TuId: Text;
-                                           SourceTxt: text; TargetTxt: text; DeveloperNote: Text; XliffNote: Text)
+                                           SourceTxt: Text; TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     begin
 #pragma warning disable AA0139
         NewElTransl.Init();
@@ -378,18 +377,18 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     internal procedure ParseXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine)
     var
+        ElemNameStartPart: Integer;
+        ElemTypeStartPart: Integer;
         FoundUnhandledTransUnitPartErr: Label 'Found %1 parts in Trans unit id: %2', Comment = '%1 is " - " parts number, %2 is trans unit id value';
         HyphenParts: List of [Text];
         TuHyphenParts: List of [Text];
-        ElemTypeStartPart: Integer;
-        ElemNameStartPart: Integer;
-        ElemTypeFirstWord: Text;
         ElemNameFirstWord: Text;
-        XliffNote: Text;
+        ElemTypeFirstWord: Text;
         SPLIT_BY: Text;
+        XliffNote: Text;
     begin
         // e.g 1
-        // <trans-unit id="Page 1023993454 - Action 1376376002 - Property 1295455071" 
+        // <trans-unit id="Page 1023993454 - Action 1376376002 - Property 1295455071"
         // <note from="Xliff Generator" annotates="general" priority="3">Page Contact List - Action NewSalesQuote - Property ToolTip</note>
         // ObjType = Page, ObjName = Contact List, ElementName = Action NewSalesQuote, ElementType = Property ToolTip
         // e.g 2
@@ -397,7 +396,7 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
         // <note from="Xliff Generator" annotates="general" priority="3">Codeunit Cash Flow Wksh. - Register - NamedType RegisterWorksheetLinesQst</note>
         // ObjType = Codeunit, ObjName = Cash Flow Wksh. - Register, ElementName = , ElementType = NamedType RegisterWorksheetLinesQst
         // e.g 3
-        // <trans-unit id="Page 1007051012 - Control 4154341761 - Property 1295455071" 
+        // <trans-unit id="Page 1007051012 - Control 4154341761 - Property 1295455071"
         // <note from="Xliff Generator" annotates="general" priority="3">Page Report Selection - VAT Stmt. - Control Sequence - Property ToolTip</note>
         // ObjType = Page, ObjName = Report Selection - VAT Stmt., ElementName = Control Sequence, ElementType = Property ToolTip
         // e.g 4
@@ -450,14 +449,14 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
     internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
-        Utilities: codeunit ADD_Utilities;
+        Utilities: Codeunit ADD_Utilities;
+        PROGR_UPD_PERC: Decimal;
         Progress: Dialog;
         LinesCounter: Integer;
         LinesNumber: Integer;
-        PROGR_UPD_PERC: Decimal;
         ProgrUpdBatch: Integer;
-        ProgressMsg: Label '#1', Comment = '#1 is first step label';
         FirstProgrStepMsg: Label 'Copying Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
+        ProgressMsg: Label '#1', Comment = '#1 is first step label';
     begin
         PROGR_UPD_PERC := 0.1;
         LinesCounter := 0;
@@ -475,16 +474,17 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
                     Progress.Update(1, StrSubstNo(FirstProgrStepMsg, LinesCounter, LinesNumber));
                 ExtTranslLineCopyFrom.CopyToNewTargetLang(CopyToTargetLang);
             until ExtTranslLineCopyFrom.Next() = 0;
-        if GuiAllowed then Progress.Close();
+        if GuiAllowed then
+            Progress.Close();
     end;
 
     local procedure CopyExtTranslHeadAndLinesToNewTargLangValidateParams(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text)
     var
         ExtTranslHead: Record ADD_ExtTranslHeader;
         EmptyCopyToTargetLangErr: Label 'Target Language cannot be empty';
-        TheSameNewTargetLangErr: Label 'The target language to copy to must be different from the source language';
         ExtTranslHeadWithNewTargetLangExistsErr: Label '%1 with %2 = %3 and %4 = %5 already exists',
                                                  Comment = '%1 is Extension Translation Header caption, %2 is Extension ID field caption, %3 is Extension ID value, %4 is Target Language field caption, %5 is Target Language value';
+        TheSameNewTargetLangErr: Label 'The target language to copy to must be different from the source language';
     begin
         if (CopyToTargetLang = '') then
             Error(EmptyCopyToTargetLangErr);
@@ -526,23 +526,23 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     internal procedure DownloadTranslated(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
-        XmlUtilities: codeunit ADD_XmlUtilities;
-        Utilities: codeunit ADD_Utilities;
+        Utilities: Codeunit ADD_Utilities;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
+        PROGR_UPD_PERC: Decimal;
+        Progress: Dialog;
         InStr: InStream;
+        ProgrUpdBatch: Integer;
+        TransUnitCounter: Integer;
+        FirstProgrStepMsg: Label 'Downloading File: %1', Comment = '%1 is file name';
+        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
+        SecProgrStepMsg: Label 'Processing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
+        NS_PREFIX: Text;
+        TranslatedFileName: Text;
+        TuId: Text;
         XmlDoc: XmlDocument;
         NsMgr: XmlNamespaceManager;
-        TransUnitNodeList: XmlNodeList;
         TransUnitNode: XmlNode;
-        TuId: Text;
-        TranslatedFileName: Text;
-        Progress: Dialog;
-        ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
-        FirstProgrStepMsg: Label 'Downloading File: %1', Comment = '%1 is file name';
-        SecProgrStepMsg: Label 'Processing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
-        TransUnitCounter: Integer;
-        PROGR_UPD_PERC: Decimal;
-        ProgrUpdBatch: Integer;
-        NS_PREFIX: Text;
+        TransUnitNodeList: XmlNodeList;
     begin
         PROGR_UPD_PERC := 0.1;
         NS_PREFIX := 'x';
@@ -613,7 +613,6 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
         exit(ExtTranslLine.IsEmpty());
     end;
 
-
     internal procedure DownloadImported(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
         InStr: InStream;
@@ -632,8 +631,8 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure SetTargetLangInXlfDoc(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetLang: Text)
     var
-        FileNode: XmlNode;
         FileAttributes: XmlAttributeCollection;
+        FileNode: XmlNode;
     begin
         XmlDoc.SelectSingleNode('//' + NsPrefix + ':file', NsMgr, FileNode);
         FileAttributes := FileNode.AsXmlElement().Attributes();
@@ -674,9 +673,9 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
 
     local procedure AddTargetToTransUnit(var TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetElement: XmlElement)
     var
-        XmlUtilities: codeunit ADD_XmlUtilities;
-        SourceNode: XmlNode;
+        XmlUtilities: Codeunit ADD_XmlUtilities;
         NewLineNode: XmlNode;
+        SourceNode: XmlNode;
     begin
         this.GetSourceFromTransUnit(SourceNode, TransUnitNode, NsMgr, NsPrefix);
         XmlUtilities.CreateNewLineNode(NewLineNode);

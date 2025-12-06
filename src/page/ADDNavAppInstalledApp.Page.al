@@ -1,10 +1,10 @@
-page 50103 "ADD_NavAppInstalledApp"
+page 50103 ADD_NavAppInstalledApp
 {
+    ApplicationArea = All;
     Caption = 'Nav App Installed App List';
     Editable = false;
     PageType = List;
     SourceTable = "NAV App Installed App";
-    ApplicationArea = All;
 
     layout
     {
@@ -12,6 +12,7 @@ page 50103 "ADD_NavAppInstalledApp"
         {
             repeater(General)
             {
+                Caption = 'General';
                 field("App ID"; Rec."App ID")
                 {
                     ToolTip = 'Specifies the value of the App ID field.', Comment = '%';
@@ -20,11 +21,11 @@ page 50103 "ADD_NavAppInstalledApp"
                 {
                     ToolTip = 'Specifies the value of the Package ID field.', Comment = '%';
                 }
-                field(Name; Rec."Name")
+                field(Name; Rec.Name)
                 {
                     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
                 }
-                field(Publisher; Rec."Publisher")
+                field(Publisher; Rec.Publisher)
                 {
                     ToolTip = 'Specifies the value of the Publisher field.', Comment = '%';
                 }
@@ -64,7 +65,6 @@ page 50103 "ADD_NavAppInstalledApp"
                 {
                     ToolTip = 'Specifies the value of the Published As fields.', Comment = '%';
                 }
-
             }
         }
     }

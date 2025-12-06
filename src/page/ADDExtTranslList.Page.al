@@ -1,8 +1,8 @@
-page 50100 "ADD_ExtTranslList"
+page 50100 ADD_ExtTranslList
 {
     ApplicationArea = All;
     Caption = 'Extension Translations';
-    CardPageID = ADD_ExtTranslCard;
+    CardPageId = ADD_ExtTranslCard;
     Editable = false;
     PageType = List;
     SourceTable = ADD_ExtTranslHeader;
@@ -14,6 +14,7 @@ page 50100 "ADD_ExtTranslList"
         {
             repeater(General)
             {
+                Caption = 'General';
                 field("Extension ID"; Rec."Extension ID")
                 {
                     ToolTip = 'Specifies the value of the Extension ID field.', Comment = '%';
@@ -45,8 +46,7 @@ page 50100 "ADD_ExtTranslList"
     {
         area(Promoted)
         {
-            actionref(ImportXlfPromoted; ImportXlfAction)
-            { }
+            actionref(ImportXlfPromoted; ImportXlfAction) { }
         }
         area(Processing)
         {
@@ -56,12 +56,11 @@ page 50100 "ADD_ExtTranslList"
                 Image = Import;
                 action(ImportXlfAction)
                 {
-                    ApplicationArea = All;
                     Caption = 'Import Xlf';
-                    ToolTip = 'Import Xlf';
                     Ellipsis = true;
                     Image = Import;
-                    RunObject = Report ADD_ImportXlf;
+                    RunObject = report ADD_ImportXlf;
+                    ToolTip = 'Import Xlf';
                 }
             }
         }
