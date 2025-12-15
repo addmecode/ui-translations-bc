@@ -1,4 +1,4 @@
-codeunit 50110 ADD_ExtensionTranslationMgt
+codeunit 50110 "ADD_ExtensionTranslationMgt"
 {
     internal procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record ADD_ExtTranslHeader)
     var
@@ -627,6 +627,84 @@ codeunit 50110 ADD_ExtensionTranslationMgt
     internal procedure GetTranslatedFileName(ExtTranslHead: Record ADD_ExtTranslHeader): Text
     begin
         exit(ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf');
+    end;
+
+    internal procedure TranslateElemSrcUsingDeepL(Rec: Record ADD_ExtTranslLine)
+    var
+        TextToTranslate: Text;
+        TranslatedText: Text;
+        Response: HttpResponseMessage;
+        BodyText: Text;
+        TargetLang: Text;
+    begin
+        TextToTranslate := 'Hello my dear friend';
+        TargetLang := 'PL';
+
+        BodyText := this.CreateDeepLBody(TextToTranslate, TargetLang);
+        this.PostDeepL(Response, BodyText);
+        TranslatedText := this.GetTranslatedTextFromDeepLResponse(Response);
+
+        Message(TranslatedText);
+    end;
+
+    local procedure CreateDeepLBody(TextToTranslate: Text; TargetLang: Text): Text
+    var
+        BodyJson: JsonObject;
+        TextArray: JsonArray;
+        BodyText: Text;
+    begin
+        TextArray.Add(TextToTranslate);
+        BodyJson.Add('text', TextArray);
+        BodyJson.Add('target_lang', TargetLang);
+        BodyJson.WriteTo(BodyText);
+        exit(BodyText);
+    end;
+
+    local procedure PostDeepL(var Response: HttpResponseMessage; BodyText: Text)
+    var
+        DeepLSetup: Record ADD_DeepLSetup;
+        Client: HttpClient;
+        Content: HttpContent;
+        ContentHeaders: HttpHeaders;
+        Url: Text;
+        PostErr: Label 'DeepL error (%1 %2): %3', Comment = '%1 is Response Http Status Code, %2 is Response Reason Phrase, %3 is Response body';
+    begin
+        DeepLSetup.Get();
+        Url := DeepLSetup."Base Url" + '/translate'; //TODO handle /
+
+        Content.GetHeaders(ContentHeaders);
+        Content.WriteFrom(BodyText);
+        ContentHeaders.Remove('Content-Type');
+        ContentHeaders.Add('Content-Type', 'application/json');
+        Client.Clear();
+        Client.DefaultRequestHeaders().Add('Authorization', StrSubstNo('DeepL-Auth-Key %1', DeepLSetup."API Key"));
+        Client.DefaultRequestHeaders().Add('Accept', 'application/json');
+        Client.Post(Url, Content, Response);
+
+        if not Response.IsSuccessStatusCode() then begin
+            Response.Content.ReadAs(BodyText);
+            Error(PostErr, Response.HttpStatusCode, Response.ReasonPhrase, BodyText);
+        end;
+    end;
+
+    local procedure GetTranslatedTextFromDeepLResponse(var Response: HttpResponseMessage): Text
+    var
+        ResponseJson: JsonObject;
+        TranslationsToken: JsonToken;
+        TranslToken: JsonToken;
+        TranslationsArray: JsonArray;
+        TranslationObj: JsonObject;
+        TextToken: JsonToken;
+        BodyText: Text;
+    begin
+        Response.Content.ReadAs(BodyText);
+        ResponseJson.ReadFrom(BodyText);
+        ResponseJson.Get('translations', TranslationsToken);
+        TranslationsArray := TranslationsToken.AsArray();
+        TranslationsArray.Get(0, TranslToken);
+        TranslationObj := TranslToken.AsObject();
+        TranslationObj.Get('text', TextToken);
+        exit(TextToken.AsValue().AsText());
     end;
 
     local procedure SetTargetLangInXlfDoc(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetLang: Text)

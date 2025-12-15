@@ -1,4 +1,4 @@
-page 50102 ADD_ExtTranslSubform
+page 50102 "ADD_ExtTranslSubform"
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Subform';
@@ -107,6 +107,18 @@ page 50102 ADD_ExtTranslSubform
                 trigger OnAction()
                 begin
                     Rec.SetRange(Translated, false);
+                end;
+            }
+            action("Translate Source Using Api")
+            {
+                Caption = 'Translate Source Using Api';
+                Image = Web;
+                ToolTip = 'Translate Source Using Api';
+                trigger OnAction()
+                var
+                    ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                begin
+                    ExtTranslMgt.TranslateElemSrcUsingDeepL(Rec);
                 end;
             }
         }
