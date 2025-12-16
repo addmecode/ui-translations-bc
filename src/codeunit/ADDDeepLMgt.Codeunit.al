@@ -34,7 +34,7 @@ codeunit 50111 "ADD_DeepLMgt"
         ApiKeyPrefixTxt: Label 'DeepL-Auth-Key %1', Locked = true;
     begin
         DeepLSetup.Get();
-        Url := DeepLSetup."Base Url" + '/translate'; //TODO handle /
+        Url := DeepLSetup."Base Url" + '/translate';
 
         Content.GetHeaders(ContentHeaders);
         Content.WriteFrom(BodyText);

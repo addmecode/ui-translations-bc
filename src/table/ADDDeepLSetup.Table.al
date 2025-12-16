@@ -18,8 +18,10 @@ table 50103 "ADD_DeepLSetup"
             var
                 WebRequestHelper: Codeunit "Web Request Helper";
             begin
-                if Rec."Base Url" <> '' then
+                if Rec."Base Url" <> '' then begin
+                    Rec."Base Url" := Rec."Base Url".TrimEnd('/');
                     WebRequestHelper.IsHttpUrl(Rec."Base Url");
+                end;
             end;
         }
         field(3; "API Key"; Text[250])
