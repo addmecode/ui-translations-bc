@@ -72,7 +72,12 @@ codeunit 50111 "ADD_DeepLMgt"
     end;
 
     internal procedure GetDeepLLangFromLangTag(LangTag: Text[80]): Text
+    var
+        WindLang: Record "Windows Language";
+        Lang: Codeunit Language;
     begin
-        exit(LangTag.Split('-').Get(1));
+        WindLang.SetRange("Language Tag", LangTag);
+        WindLang.FindFirst();
+        exit(Lang.GetTwoLetterISOLanguageName(WindLang."Language ID"));
     end;
 }
