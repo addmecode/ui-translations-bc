@@ -116,9 +116,11 @@ page 50102 "ADD_ExtTranslSubform"
                 ToolTip = 'Translate Source Using Api';
                 trigger OnAction()
                 var
+                    ExtTranslLine: Record ADD_ExtTranslLine;
                     ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
                 begin
-                    ExtTranslMgt.TranslateElemSrcUsingDeepL(Rec);
+                    CurrPage.SetSelectionFilter(ExtTranslLine);
+                    ExtTranslMgt.TranslateElemSrcsUsingDeepL(ExtTranslLine);
                 end;
             }
         }

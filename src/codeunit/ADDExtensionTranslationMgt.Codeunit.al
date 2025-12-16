@@ -629,22 +629,23 @@ codeunit 50110 "ADD_ExtensionTranslationMgt"
         exit(ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf');
     end;
 
-    internal procedure TranslateElemSrcUsingDeepL(Rec: Record ADD_ExtTranslLine)
+    internal procedure TranslateElemSrcsUsingDeepL(var ExtTranslLine: Record ADD_ExtTranslLine)
     var
-        TextToTranslate: Text;
-        TranslatedText: Text;
         Response: HttpResponseMessage;
         BodyText: Text;
-        TargetLang: Text;
     begin
-        TextToTranslate := 'Hello my dear friend';
-        TargetLang := 'PL';
+        if ExtTranslLine.FindSet() then
+            repeat
+                BodyText := this.CreateDeepLBody(ExtTranslLine.GetSource(), this.GetDeepLLangFromLangTag(ExtTranslLine."Target Language"));
+                this.PostDeepL(Response, BodyText);
+                ExtTranslLine.SetNewTarget(this.GetTranslatedTextFromDeepLResponse(Response));
+                ExtTranslLine.Modify(false);
+            until ExtTranslLine.Next() = 0;
+    end;
 
-        BodyText := this.CreateDeepLBody(TextToTranslate, TargetLang);
-        this.PostDeepL(Response, BodyText);
-        TranslatedText := this.GetTranslatedTextFromDeepLResponse(Response);
-
-        Message(TranslatedText);
+    local procedure GetDeepLLangFromLangTag(LangTag: Text[80]): Text
+    begin
+        exit(LangTag.Split('-').Get(1));
     end;
 
     local procedure CreateDeepLBody(TextToTranslate: Text; TargetLang: Text): Text
