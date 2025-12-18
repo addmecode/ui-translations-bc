@@ -41,7 +41,7 @@ codeunit 50111 "ADD_DeepLMgt"
         ContentHeaders.Remove('Content-Type');
         ContentHeaders.Add('Content-Type', 'application/json');
         Client.Clear();
-        Client.DefaultRequestHeaders().Add('Authorization', StrSubstNo(ApiKeyPrefixTxt, DeepLSetup."API Key"));
+        Client.DefaultRequestHeaders().Add('Authorization', SecretStrSubstNo(ApiKeyPrefixTxt, DeepLSetup.GetApiKey()));
         Client.DefaultRequestHeaders().Add('Accept', 'application/json');
         Client.Post(Url, Content, Response);
 

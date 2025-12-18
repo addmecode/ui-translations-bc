@@ -21,11 +21,17 @@ page 50104 ADDDeepLSetup
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies the value of the Base Url field.', Comment = '%';
                 }
-                field("API Key"; Rec."API Key")
+                field("API Key"; this.ApiKey)
                 {
                     ApplicationArea = Basic, Suite;
                     ExtendedDatatype = Masked;
-                    ToolTip = 'Specifies the value of the API Key field.', Comment = '%';
+                    Caption = 'API Key';
+                    ToolTip = 'Specifies the value of the API Key.', Comment = '%';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.SetApiKey(this.ApiKey);
+                    end;
                 }
             }
         }
@@ -37,5 +43,11 @@ page 50104 ADDDeepLSetup
             Rec.Init();
             Rec.Insert();
         end;
+        if Rec.IsApiKeySet() then
+            this.ApiKey := '****';
     end;
+
+    var
+        [NonDebuggable]
+        ApiKey: Text;
 }

@@ -19,16 +19,10 @@ table 50103 "ADD_DeepLSetup"
                 WebRequestHelper: Codeunit "Web Request Helper";
             begin
                 if Rec."Base Url" <> '' then begin
-                    Rec."Base Url" := Rec."Base Url".TrimEnd('/');
+                    Rec."Base Url" := CopyStr(Rec."Base Url".TrimEnd('/'), 1, MaxStrLen(Rec."Base Url"));
                     WebRequestHelper.IsHttpUrl(Rec."Base Url");
                 end;
             end;
-        }
-        field(3; "API Key"; Text[250])
-        {
-            Caption = 'API Key';
-            ExtendedDatatype = Masked;
-            DataClassification = EndUserIdentifiableInformation;
         }
     }
     keys
@@ -38,4 +32,36 @@ table 50103 "ADD_DeepLSetup"
             Clustered = true;
         }
     }
+
+    internal procedure SetApiKey(NewApiKey: SecretText)
+    var
+        OverwriteApiKeyQst: Label 'The Api key is already set. Do you want to overwrite it?';
+    begin
+        if this.IsApiKeySet() and GuiAllowed() then
+            if not Confirm(OverwriteApiKeyQst) then
+                exit;
+
+        if EncryptionEnabled() then
+            IsolatedStorage.SetEncrypted(this.GetStorageKey(), NewApiKey, DataScope::Module)
+        else
+            IsolatedStorage.Set(this.GetStorageKey(), NewApiKey, DataScope::Module);
+    end;
+
+    internal procedure GetApiKey(): SecretText
+    var
+        ApiKey: SecretText;
+    begin
+        IsolatedStorage.Get(this.GetStorageKey(), DataScope::Module, ApiKey);
+        exit(ApiKey);
+    end;
+
+    internal procedure IsApiKeySet(): Boolean
+    begin
+        exit(IsolatedStorage.Contains(this.GetStorageKey(), DataScope::Module));
+    end;
+
+    local procedure GetStorageKey(): Text
+    begin
+        exit('fcff6d29-3b98-4a92-9562-b80bab0d5d8d');
+    end;
 }
