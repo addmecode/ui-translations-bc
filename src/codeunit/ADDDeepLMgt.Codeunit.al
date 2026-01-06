@@ -1,4 +1,4 @@
-codeunit 50111 "ADD_DeepLMgt"
+codeunit 50101 "ADD_DeepLMgt"
 {
     internal procedure Translate(TextToTranslate: Text; TargetLang: Text): Text
     var

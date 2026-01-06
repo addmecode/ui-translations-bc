@@ -1,4 +1,4 @@
-table 50103 "ADD_DeepLSetup"
+table 50102 "ADD_DeepLSetup"
 {
     Caption = 'DeepL Setup';
     DataClassification = CustomerContent;

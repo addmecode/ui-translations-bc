@@ -1,4 +1,4 @@
-table 50102 ADD_ExtTranslHeader
+table 50101 ADD_ExtTranslHeader
 {
     Caption = 'Extension Translation Header';
     DataClassification = CustomerContent;
