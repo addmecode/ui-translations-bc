@@ -11,127 +11,296 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     internal procedure GetExtTransLineDeveloperNotes(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
-        exit(ExtTranslLine."Developer Note 1" +
-            ExtTranslLine."Developer Note 2" +
-            ExtTranslLine."Developer Note 3" +
-            ExtTranslLine."Developer Note 4" +
-            ExtTranslLine."Developer Note 5");
+        exit(this.GetConcatenatedFields(ExtTranslLine, 'Developer Note', 5));
     end;
 
     internal procedure GetExtTransLineSource(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
-        exit(ExtTranslLine."Source 1" +
-            ExtTranslLine."Source 2" +
-            ExtTranslLine."Source 3" +
-            ExtTranslLine."Source 4" +
-            ExtTranslLine."Source 5");
+        exit(this.GetConcatenatedFields(ExtTranslLine, 'Source', 5));
     end;
 
     internal procedure GetExtTransLineTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
-        exit(ExtTranslLine."Target 1" +
-            ExtTranslLine."Target 2" +
-            ExtTranslLine."Target 3" +
-            ExtTranslLine."Target 4" +
-            ExtTranslLine."Target 5");
+        exit(this.GetConcatenatedFields(ExtTranslLine, 'Target', 5));
     end;
 
     internal procedure GetExtTransLineNewTarget(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
-        exit(ExtTranslLine."New Target 1" +
-            ExtTranslLine."New Target 2" +
-            ExtTranslLine."New Target 3" +
-            ExtTranslLine."New Target 4" +
-            ExtTranslLine."New Target 5");
+        exit(this.GetConcatenatedFields(ExtTranslLine, 'New Target', 5));
     end;
 
     internal procedure GetExtTransLineXliffNote(ExtTranslLine: Record ADD_ExtTranslLine): Text
     begin
-        exit(ExtTranslLine."Xliff Note 1" +
-            ExtTranslLine."Xliff Note 2" +
-            ExtTranslLine."Xliff Note 3" +
-            ExtTranslLine."Xliff Note 4" +
-            ExtTranslLine."Xliff Note 5");
+        exit(this.GetConcatenatedFields(ExtTranslLine, 'Xliff Note', 5));
+    end;
+
+    local procedure GetConcatenatedFields(ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; NumberOfFields: Integer): Text
+    var
+        Result: Text;
+        FieldValue: Text;
+        i: Integer;
+    begin
+        for i := 1 to NumberOfFields do begin
+            FieldValue := this.GetFieldValue(ExtTranslLine, FieldPrefix, i);
+            Result += FieldValue;
+        end;
+        exit(Result);
+    end;
+
+    local procedure GetFieldValue(ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; Index: Integer): Text
+    begin
+        case UpperCase(FieldPrefix) of
+            'DEVELOPER NOTE':
+                case Index of
+                    1:
+                        exit(ExtTranslLine."Developer Note 1");
+                    2:
+                        exit(ExtTranslLine."Developer Note 2");
+                    3:
+                        exit(ExtTranslLine."Developer Note 3");
+                    4:
+                        exit(ExtTranslLine."Developer Note 4");
+                    5:
+                        exit(ExtTranslLine."Developer Note 5");
+                end;
+            'SOURCE':
+                case Index of
+                    1:
+                        exit(ExtTranslLine."Source 1");
+                    2:
+                        exit(ExtTranslLine."Source 2");
+                    3:
+                        exit(ExtTranslLine."Source 3");
+                    4:
+                        exit(ExtTranslLine."Source 4");
+                    5:
+                        exit(ExtTranslLine."Source 5");
+                end;
+            'TARGET':
+                case Index of
+                    1:
+                        exit(ExtTranslLine."Target 1");
+                    2:
+                        exit(ExtTranslLine."Target 2");
+                    3:
+                        exit(ExtTranslLine."Target 3");
+                    4:
+                        exit(ExtTranslLine."Target 4");
+                    5:
+                        exit(ExtTranslLine."Target 5");
+                end;
+            'NEW TARGET':
+                case Index of
+                    1:
+                        exit(ExtTranslLine."New Target 1");
+                    2:
+                        exit(ExtTranslLine."New Target 2");
+                    3:
+                        exit(ExtTranslLine."New Target 3");
+                    4:
+                        exit(ExtTranslLine."New Target 4");
+                    5:
+                        exit(ExtTranslLine."New Target 5");
+                end;
+            'XLIFF NOTE':
+                case Index of
+                    1:
+                        exit(ExtTranslLine."Xliff Note 1");
+                    2:
+                        exit(ExtTranslLine."Xliff Note 2");
+                    3:
+                        exit(ExtTranslLine."Xliff Note 3");
+                    4:
+                        exit(ExtTranslLine."Xliff Note 4");
+                    5:
+                        exit(ExtTranslLine."Xliff Note 5");
+                end;
+        end;
+        exit('');
     end;
 
     internal procedure SetExtTransLineNewTarget(var ExtTranslLine: Record ADD_ExtTranslLine; NewTarget: Text)
-    var
-        TableFieldStartPos: Integer;
     begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."New Target 1" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 1");
-        ExtTranslLine."New Target 2" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 2");
-        ExtTranslLine."New Target 3" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 3");
-        ExtTranslLine."New Target 4" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."New Target 4");
-        ExtTranslLine."New Target 5" := CopyStr(NewTarget, TableFieldStartPos, MaxStrLen(ExtTranslLine."New Target 5"));
+        this.SetConcatenatedFields(ExtTranslLine, 'New Target', NewTarget, 5);
     end;
 
     internal procedure SetExtTransLineTarget(var ExtTranslLine: Record ADD_ExtTranslLine; Target: Text)
-    var
-        TableFieldStartPos: Integer;
     begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."Target 1" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 1");
-        ExtTranslLine."Target 2" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 2");
-        ExtTranslLine."Target 3" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 3");
-        ExtTranslLine."Target 4" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Target 4");
-        ExtTranslLine."Target 5" := CopyStr(Target, TableFieldStartPos, MaxStrLen(ExtTranslLine."Target 5"));
+        this.SetConcatenatedFields(ExtTranslLine, 'Target', Target, 5);
     end;
 
     internal procedure SetExtTransLineSource(var ExtTranslLine: Record ADD_ExtTranslLine; Source: Text)
-    var
-        TableFieldStartPos: Integer;
     begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."Source 1" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 1");
-        ExtTranslLine."Source 2" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 2");
-        ExtTranslLine."Source 3" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 3");
-        ExtTranslLine."Source 4" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Source 4");
-        ExtTranslLine."Source 5" := CopyStr(Source, TableFieldStartPos, MaxStrLen(ExtTranslLine."Source 5"));
+        this.SetConcatenatedFields(ExtTranslLine, 'Source', Source, 5);
     end;
 
     internal procedure SetExtTransLineDevNote(var ExtTranslLine: Record ADD_ExtTranslLine; DevNote: Text)
-    var
-        TableFieldStartPos: Integer;
     begin
-        TableFieldStartPos := 1;
-        ExtTranslLine."Developer Note 1" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 1");
-        ExtTranslLine."Developer Note 2" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 2");
-        ExtTranslLine."Developer Note 3" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 3");
-        ExtTranslLine."Developer Note 4" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Developer Note 4");
-        ExtTranslLine."Developer Note 5" := CopyStr(DevNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Developer Note 5"));
+        this.SetConcatenatedFields(ExtTranslLine, 'Developer Note', DevNote, 5);
     end;
 
     internal procedure SetExtTransLineXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine; XliffNote: Text)
+    begin
+        this.SetConcatenatedFields(ExtTranslLine, 'Xliff Note', XliffNote, 5);
+    end;
+
+    local procedure SetConcatenatedFields(var ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; Value: Text; NumberOfFields: Integer)
     var
         TableFieldStartPos: Integer;
+        FieldLength: Integer;
+        i: Integer;
     begin
         TableFieldStartPos := 1;
-        ExtTranslLine."Xliff Note 1" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 1"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 1");
-        ExtTranslLine."Xliff Note 2" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 2"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 2");
-        ExtTranslLine."Xliff Note 3" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 3"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 3");
-        ExtTranslLine."Xliff Note 4" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 4"));
-        TableFieldStartPos += MaxStrLen(ExtTranslLine."Xliff Note 4");
-        ExtTranslLine."Xliff Note 5" := CopyStr(XliffNote, TableFieldStartPos, MaxStrLen(ExtTranslLine."Xliff Note 5"));
+        for i := 1 to NumberOfFields do begin
+            FieldLength := this.GetFieldMaxLength(FieldPrefix, i);
+            this.SetFieldValue(ExtTranslLine, FieldPrefix, i, CopyStr(Value, TableFieldStartPos, FieldLength));
+            TableFieldStartPos += FieldLength;
+        end;
+    end;
+
+    local procedure GetFieldMaxLength(FieldPrefix: Text; Index: Integer): Integer
+    var
+        ExtTranslLine: Record ADD_ExtTranslLine;
+    begin
+        case UpperCase(FieldPrefix) of
+            'DEVELOPER NOTE':
+                case Index of
+                    1:
+                        exit(MaxStrLen(ExtTranslLine."Developer Note 1"));
+                    2:
+                        exit(MaxStrLen(ExtTranslLine."Developer Note 2"));
+                    3:
+                        exit(MaxStrLen(ExtTranslLine."Developer Note 3"));
+                    4:
+                        exit(MaxStrLen(ExtTranslLine."Developer Note 4"));
+                    5:
+                        exit(MaxStrLen(ExtTranslLine."Developer Note 5"));
+                end;
+            'SOURCE':
+                case Index of
+                    1:
+                        exit(MaxStrLen(ExtTranslLine."Source 1"));
+                    2:
+                        exit(MaxStrLen(ExtTranslLine."Source 2"));
+                    3:
+                        exit(MaxStrLen(ExtTranslLine."Source 3"));
+                    4:
+                        exit(MaxStrLen(ExtTranslLine."Source 4"));
+                    5:
+                        exit(MaxStrLen(ExtTranslLine."Source 5"));
+                end;
+            'TARGET':
+                case Index of
+                    1:
+                        exit(MaxStrLen(ExtTranslLine."Target 1"));
+                    2:
+                        exit(MaxStrLen(ExtTranslLine."Target 2"));
+                    3:
+                        exit(MaxStrLen(ExtTranslLine."Target 3"));
+                    4:
+                        exit(MaxStrLen(ExtTranslLine."Target 4"));
+                    5:
+                        exit(MaxStrLen(ExtTranslLine."Target 5"));
+                end;
+            'NEW TARGET':
+                case Index of
+                    1:
+                        exit(MaxStrLen(ExtTranslLine."New Target 1"));
+                    2:
+                        exit(MaxStrLen(ExtTranslLine."New Target 2"));
+                    3:
+                        exit(MaxStrLen(ExtTranslLine."New Target 3"));
+                    4:
+                        exit(MaxStrLen(ExtTranslLine."New Target 4"));
+                    5:
+                        exit(MaxStrLen(ExtTranslLine."New Target 5"));
+                end;
+            'XLIFF NOTE':
+                case Index of
+                    1:
+                        exit(MaxStrLen(ExtTranslLine."Xliff Note 1"));
+                    2:
+                        exit(MaxStrLen(ExtTranslLine."Xliff Note 2"));
+                    3:
+                        exit(MaxStrLen(ExtTranslLine."Xliff Note 3"));
+                    4:
+                        exit(MaxStrLen(ExtTranslLine."Xliff Note 4"));
+                    5:
+                        exit(MaxStrLen(ExtTranslLine."Xliff Note 5"));
+                end;
+        end;
+        exit(0);
+    end;
+
+    local procedure SetFieldValue(var ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; Index: Integer; Value: Text)
+    begin
+        case UpperCase(FieldPrefix) of
+            'DEVELOPER NOTE':
+                case Index of
+                    1:
+                        ExtTranslLine."Developer Note 1" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Developer Note 1"));
+                    2:
+                        ExtTranslLine."Developer Note 2" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Developer Note 2"));
+                    3:
+                        ExtTranslLine."Developer Note 3" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Developer Note 3"));
+                    4:
+                        ExtTranslLine."Developer Note 4" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Developer Note 4"));
+                    5:
+                        ExtTranslLine."Developer Note 5" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Developer Note 5"));
+                end;
+            'SOURCE':
+                case Index of
+                    1:
+                        ExtTranslLine."Source 1" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Source 1"));
+                    2:
+                        ExtTranslLine."Source 2" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Source 2"));
+                    3:
+                        ExtTranslLine."Source 3" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Source 3"));
+                    4:
+                        ExtTranslLine."Source 4" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Source 4"));
+                    5:
+                        ExtTranslLine."Source 5" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Source 5"));
+                end;
+            'TARGET':
+                case Index of
+                    1:
+                        ExtTranslLine."Target 1" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Target 1"));
+                    2:
+                        ExtTranslLine."Target 2" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Target 2"));
+                    3:
+                        ExtTranslLine."Target 3" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Target 3"));
+                    4:
+                        ExtTranslLine."Target 4" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Target 4"));
+                    5:
+                        ExtTranslLine."Target 5" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Target 5"));
+                end;
+            'NEW TARGET':
+                case Index of
+                    1:
+                        ExtTranslLine."New Target 1" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."New Target 1"));
+                    2:
+                        ExtTranslLine."New Target 2" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."New Target 2"));
+                    3:
+                        ExtTranslLine."New Target 3" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."New Target 3"));
+                    4:
+                        ExtTranslLine."New Target 4" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."New Target 4"));
+                    5:
+                        ExtTranslLine."New Target 5" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."New Target 5"));
+                end;
+            'XLIFF NOTE':
+                case Index of
+                    1:
+                        ExtTranslLine."Xliff Note 1" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Xliff Note 1"));
+                    2:
+                        ExtTranslLine."Xliff Note 2" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Xliff Note 2"));
+                    3:
+                        ExtTranslLine."Xliff Note 3" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Xliff Note 3"));
+                    4:
+                        ExtTranslLine."Xliff Note 4" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Xliff Note 4"));
+                    5:
+                        ExtTranslLine."Xliff Note 5" := CopyStr(Value, 1, MaxStrLen(ExtTranslLine."Xliff Note 5"));
+                end;
+        end;
     end;
 
     internal procedure RunObject(ElemTransl: Record ADD_ExtTranslLine)
