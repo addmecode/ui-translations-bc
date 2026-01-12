@@ -437,7 +437,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
             ExtTranslLine."Element Name" := XliffNote.Substring(ElemNameStartPart + StrLen(SPLIT_BY));
             XliffNote := XliffNote.Substring(1, ElemNameStartPart - 1);
         end;
-        ExtTranslLine."Object Name" := XliffNote.Substring(StrLen(ExtTranslLine."Object Type") + 1);
+        ExtTranslLine."Object Name" := XliffNote.Substring(StrLen(ExtTranslLine."Object Type") + 2);
 #pragma warning restore AA0139
     end;
 
