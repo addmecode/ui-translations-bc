@@ -2,11 +2,11 @@ page 50104 ADDDeepLSetup
 {
     ApplicationArea = All;
     Caption = 'DeepL Setup';
+    DeleteAllowed = false;
+    InsertAllowed = false;
     PageType = Card;
     SourceTable = ADD_DeepLSetup;
     UsageCategory = Administration;
-    DeleteAllowed = false;
-    InsertAllowed = false;
 
     layout
     {
@@ -24,8 +24,8 @@ page 50104 ADDDeepLSetup
                 field("API Key"; this.ApiKey)
                 {
                     ApplicationArea = Basic, Suite;
-                    ExtendedDatatype = Masked;
                     Caption = 'API Key';
+                    ExtendedDatatype = Masked;
                     ToolTip = 'Specifies the value of the API Key.', Comment = '%';
 
                     trigger OnValidate()

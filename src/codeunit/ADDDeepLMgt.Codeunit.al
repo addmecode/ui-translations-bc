@@ -2,8 +2,8 @@ codeunit 50101 "ADD_DeepLMgt"
 {
     internal procedure Translate(TextToTranslate: Text; TargetLang: Text): Text
     var
-        BodyText: Text;
         Response: HttpResponseMessage;
+        BodyText: Text;
     begin
         BodyText := this.CreateDeepLBody(TextToTranslate, TargetLang);
         this.PostDeepL(Response, BodyText);
@@ -12,8 +12,8 @@ codeunit 50101 "ADD_DeepLMgt"
 
     local procedure CreateDeepLBody(TextToTranslate: Text; TargetLang: Text): Text
     var
-        BodyJson: JsonObject;
         TextArray: JsonArray;
+        BodyJson: JsonObject;
         BodyText: Text;
     begin
         TextArray.Add(TextToTranslate);
@@ -29,10 +29,10 @@ codeunit 50101 "ADD_DeepLMgt"
         Client: HttpClient;
         Content: HttpContent;
         ContentHeaders: HttpHeaders;
-        Url: Text;
+        ApiKeyPrefixTxt: Label 'DeepL-Auth-Key %1', Locked = true;
         DeepLSetupNotFoundErr: Label 'DeepL Setup is not configured. Open the DeepL Setup page and enter the API key and base URL.';
         PostErr: Label 'DeepL error (%1 %2): %3', Comment = '%1 is Response Http Status Code, %2 is Response Reason Phrase, %3 is Response body';
-        ApiKeyPrefixTxt: Label 'DeepL-Auth-Key %1', Locked = true;
+        Url: Text;
     begin
         if not DeepLSetup.Get() then
             Error(DeepLSetupNotFoundErr);
@@ -55,12 +55,12 @@ codeunit 50101 "ADD_DeepLMgt"
 
     local procedure GetTranslatedTextFromDeepLResponse(var Response: HttpResponseMessage): Text
     var
-        ResponseJson: JsonObject;
-        TranslationsToken: JsonToken;
-        TranslToken: JsonToken;
         TranslationsArray: JsonArray;
+        ResponseJson: JsonObject;
         TranslationObj: JsonObject;
         TextToken: JsonToken;
+        TranslationsToken: JsonToken;
+        TranslToken: JsonToken;
         BodyText: Text;
     begin
         Response.Content.ReadAs(BodyText);

@@ -36,9 +36,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     local procedure GetConcatenatedFields(ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; NumberOfFields: Integer): Text
     var
-        Result: Text;
-        FieldValue: Text;
         i: Integer;
+        FieldValue: Text;
+        Result: Text;
     begin
         for i := 1 to NumberOfFields do begin
             FieldValue := this.GetFieldValue(ExtTranslLine, FieldPrefix, i);
@@ -146,9 +146,9 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
 
     local procedure SetConcatenatedFields(var ExtTranslLine: Record ADD_ExtTranslLine; FieldPrefix: Text; Value: Text; NumberOfFields: Integer)
     var
-        TableFieldStartPos: Integer;
         FieldLength: Integer;
         i: Integer;
+        TableFieldStartPos: Integer;
     begin
         TableFieldStartPos := 1;
         for i := 1 to NumberOfFields do begin
@@ -351,6 +351,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         SelectXlfFileLbl: Label 'Select Xlf file';
         XlfFileFilterLbl: Label 'Xlf Files (*.xlf)|*.xlf', Locked = true;
+        TempOutStr: OutStream;
         DeveloperNote: Text;
         ImportedFileName: Text;
         NS_PREFIX: Text;
@@ -358,7 +359,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         SourceTxt: Text;
         TargetLangFromXlf: Text;
         TargetTxt: Text;
-        TempOutStr: OutStream;
         TuId: Text;
         XliffNote: Text;
         XmlDoc: XmlDocument;
@@ -818,7 +818,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 ExtTranslLine.Modify(false);
             until ExtTranslLine.Next() = 0;
     end;
-
 
     local procedure SetTargetLangInXlfDoc(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetLang: Text)
     var
