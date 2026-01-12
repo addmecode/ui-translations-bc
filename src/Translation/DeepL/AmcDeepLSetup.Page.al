@@ -1,11 +1,11 @@
-page 50104 ADDDeepLSetup
+page 50104 "AMC DeepL Setup"
 {
     ApplicationArea = All;
     Caption = 'DeepL Setup';
     DeleteAllowed = false;
     InsertAllowed = false;
     PageType = Card;
-    SourceTable = ADD_DeepLSetup;
+    SourceTable = "AMC DeepL Setup";
     UsageCategory = Administration;
 
     layout

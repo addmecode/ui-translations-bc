@@ -1,10 +1,10 @@
-page 50101 ADD_ExtTranslCard
+page 50101 "AMC Extension Transl Card"
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Card';
     InsertAllowed = false;
     PageType = Card;
-    SourceTable = ADD_ExtTranslHeader;
+    SourceTable = "AMC Extension Transl Header";
 
     layout
     {
@@ -40,7 +40,7 @@ page 50101 ADD_ExtTranslCard
                     ToolTip = 'Specifies the value of the Target Language field.', Comment = '%';
                 }
             }
-            part(TranslationElements; ADD_ExtTranslSubform)
+            part(TranslationElements; "AMC Extension Transl Subform")
             {
                 Enabled = true;
                 SubPageLink = "Extension ID" = field("Extension ID"),
@@ -72,7 +72,7 @@ page 50101 ADD_ExtTranslCard
 
                     trigger OnAction()
                     var
-                        CopyExtTranslToNewTargLang: Report ADD_CopyExtTranslToNewTargLang;
+                        CopyExtTranslToNewTargLang: Report "AMC Copy Ext Transl To Lang";
                     begin
                         CopyExtTranslToNewTargLang.SetReqPageParams(Rec."Extension ID", Rec."Target Language");
                         CopyExtTranslToNewTargLang.Run();

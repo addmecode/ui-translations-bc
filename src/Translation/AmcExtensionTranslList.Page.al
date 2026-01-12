@@ -1,11 +1,11 @@
-page 50100 ADD_ExtTranslList
+page 50100 "AMC Extension Transl List"
 {
     ApplicationArea = All;
     Caption = 'Extension Translations';
-    CardPageId = ADD_ExtTranslCard;
+    CardPageId = "AMC Extension Transl Card";
     Editable = false;
     PageType = List;
-    SourceTable = ADD_ExtTranslHeader;
+    SourceTable = "AMC Extension Transl Header";
     UsageCategory = Lists;
 
     layout
@@ -59,7 +59,7 @@ page 50100 ADD_ExtTranslList
                     Caption = 'Import Xlf';
                     Ellipsis = true;
                     Image = Import;
-                    RunObject = report ADD_ImportXlf;
+                    RunObject = report "AMC Import Xlf";
                     ToolTip = 'Import Xlf';
                 }
             }

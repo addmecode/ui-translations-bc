@@ -1,4 +1,4 @@
-page 50102 "ADD_ExtTranslSubform"
+page 50102 "AMC Extension Transl Subform"
 {
     ApplicationArea = All;
     Caption = 'Extension Translation Subform';
@@ -6,7 +6,7 @@ page 50102 "ADD_ExtTranslSubform"
     Editable = true;
     InsertAllowed = false;
     PageType = ListPart;
-    SourceTable = ADD_ExtTranslLine;
+    SourceTable = "AMC Extension Transl Line";
 
     layout
     {
@@ -116,8 +116,8 @@ page 50102 "ADD_ExtTranslSubform"
                 ToolTip = 'Translate Source Using Api';
                 trigger OnAction()
                 var
-                    ExtTranslLine: Record ADD_ExtTranslLine;
-                    ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                    ExtTranslLine: Record "AMC Extension Transl Line";
+                    ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
                 begin
                     CurrPage.SetSelectionFilter(ExtTranslLine);
                     ExtTranslMgt.TranslateElemSrcsUsingDeepL(ExtTranslLine);

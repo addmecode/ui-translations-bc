@@ -1,4 +1,4 @@
-page 50103 ADD_NavAppInstalledApp
+page 50103 "AMC Nav App Installed App"
 {
     ApplicationArea = All;
     Caption = 'Nav App Installed App List';

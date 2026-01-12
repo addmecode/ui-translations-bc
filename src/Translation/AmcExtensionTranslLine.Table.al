@@ -1,4 +1,4 @@
-table 50100 ADD_ExtTranslLine
+table 50100 "AMC Extension Transl Line"
 {
     Caption = 'Element Translation Line';
     DataClassification = CustomerContent;
@@ -9,7 +9,7 @@ table 50100 ADD_ExtTranslLine
         {
             Caption = 'Extension ID';
             Editable = false;
-            TableRelation = ADD_ExtTranslHeader."Extension ID";
+            TableRelation = "AMC Extension Transl Header"."Extension ID";
             ValidateTableRelation = true;
         }
         field(2; "Trans Unit ID"; Text[250])
@@ -21,7 +21,7 @@ table 50100 ADD_ExtTranslLine
         {
             Caption = 'Target Language';
             Editable = false;
-            TableRelation = ADD_ExtTranslHeader."Target Language";
+            TableRelation = "AMC Extension Transl Header"."Target Language";
             ValidateTableRelation = true;
         }
         field(4; "Object Type"; Text[30])
@@ -185,77 +185,77 @@ table 50100 ADD_ExtTranslLine
 
     procedure GetDeveloperNotes(): Text
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslHead.GetExtTransLineDeveloperNotes(Rec));
     end;
 
     procedure GetSource(): Text
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslHead.GetExtTransLineSource(Rec));
     end;
 
     procedure GetTarget(): Text
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslHead.GetExtTransLineTarget(Rec));
     end;
 
     procedure GetNewTarget(): Text
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslHead.GetExtTransLineNewTarget(Rec));
     end;
 
     procedure GetXliffNote(): Text
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslHead.GetExtTransLineXliffNote(Rec));
     end;
 
     procedure SetNewTarget(NewTarget: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.SetExtTransLineNewTarget(Rec, NewTarget);
     end;
 
     procedure SetTarget(Target: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.SetExtTransLineTarget(Rec, Target);
     end;
 
     procedure SetSource(Source: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.SetExtTransLineSource(Rec, Source);
     end;
 
     procedure SetDevNote(DevNote: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.SetExtTransLineDevNote(Rec, DevNote);
     end;
 
     procedure SetXliffNote(XliffNote: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.SetExtTransLineXliffNote(Rec, XliffNote);
     end;
 
     procedure CopyToNewTargetLang(CopyToTargetLang: Text[80])
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.CopyExtTranslLineToNewTargetLang(Rec, CopyToTargetLang);
     end;
@@ -263,21 +263,21 @@ table 50100 ADD_ExtTranslLine
     procedure CreateExtTranslLine(ExtId: Guid; TargetLang: Text; TuId: Text; SourceTxt: Text;
                                   TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.CreateExtTranslLine(Rec, ExtId, TargetLang, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
     end;
 
     procedure ParseXliffNote()
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.ParseXliffNote(Rec);
     end;
 
     procedure RunObject()
     var
-        ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslHead.RunObject(Rec);
     end;

@@ -1,4 +1,4 @@
-report 50100 "ADD_ImportXlf"
+report 50100 "AMC Import Xlf"
 {
     ApplicationArea = All;
     Caption = 'Import Xlf';
@@ -29,7 +29,7 @@ report 50100 "ADD_ImportXlf"
                         var
                             NavAppInstalledApp: Record "NAV App Installed App";
                         begin
-                            if Page.RunModal(Page::ADD_NavAppInstalledApp, NavAppInstalledApp) = Action::LookupOK then begin
+                            if Page.RunModal(Page::"AMC Nav App Installed App", NavAppInstalledApp) = Action::LookupOK then begin
                                 ExtID := NavAppInstalledApp."App ID";
                                 ValidateExtID();
                                 exit(true);
@@ -77,7 +77,7 @@ report 50100 "ADD_ImportXlf"
 
                         trigger OnAssistEdit()
                         var
-                            ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                            ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
                         begin
                             TargetLang := ExtTranslMgt.SelectLangTag();
                         end;
@@ -94,7 +94,7 @@ report 50100 "ADD_ImportXlf"
 
     trigger OnPreReport()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.ImportXlf(this.CreatedExtTranslHead, this.ExtID, this.ExtName, this.ExtPublisher, this.ExtVersion, this.ImportTargetLang, this.TargetLang);
         Commit();
@@ -102,11 +102,11 @@ report 50100 "ADD_ImportXlf"
 
     trigger OnPostReport()
     begin
-        Page.RunModal(Page::ADD_ExtTranslCard, this.CreatedExtTranslHead);
+        Page.RunModal(Page::"AMC Extension Transl Card", this.CreatedExtTranslHead);
     end;
 
     var
-        CreatedExtTranslHead: Record ADD_ExtTranslHeader;
+        CreatedExtTranslHead: Record "AMC Extension Transl Header";
         ImportTargetLang: Boolean;
         ExtID: Guid;
         TargetLang: Text[80];

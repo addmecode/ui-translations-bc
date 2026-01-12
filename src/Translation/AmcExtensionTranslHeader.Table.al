@@ -1,9 +1,9 @@
-table 50101 ADD_ExtTranslHeader
+table 50101 "AMC Extension Transl Header"
 {
     Caption = 'Extension Translation Header';
     DataClassification = CustomerContent;
-    DrillDownPageId = ADD_ExtTranslCard;
-    LookupPageId = ADD_ExtTranslCard;
+    DrillDownPageId = "AMC Extension Transl Card";
+    LookupPageId = "AMC Extension Transl Card";
 
     fields
     {
@@ -61,63 +61,63 @@ table 50101 ADD_ExtTranslHeader
 
     trigger OnDelete()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.DeleteAllExtTranslHeadLines(Rec);
     end;
 
     procedure GetTranslatedFileName(): Text
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslMgt.GetTranslatedFileName(Rec));
     end;
 
     procedure ValidateExtTranslLinesExist()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.ValidateExtTranslLinesExist(Rec);
     end;
 
     procedure AreAllLinesTranslated(): Boolean
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         exit(ExtTranslMgt.AreAllLinesTranslated(Rec));
     end;
 
     procedure DownloadImported()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.DownloadImported(Rec);
     end;
 
     procedure DownloadTranslated()
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.DownloadTranslated(Rec);
     end;
 
     procedure CopyExtTranslHeadAndLinesToNewTargetLang(CopyToTargetLang: Text[80])
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.CopyExtTranslHeadAndLinesToNewTargetLang(Rec, CopyToTargetLang);
     end;
 
     procedure CopyExtTranslHeadToNewTargetLang(CopyToTargetLang: Text[80])
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.CopyExtTranslHeadToNewTargetLang(Rec, CopyToTargetLang);
     end;
 
-    procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record ADD_ExtTranslLine)
+    procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record "AMC Extension Transl Line")
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.FilterExtTranslLines(ExtTranslLineCopyFrom, Rec);
     end;
@@ -125,7 +125,7 @@ table 50101 ADD_ExtTranslHeader
     procedure CreateExtTranslHead(ExtID: Guid; ExtName: Text; ExtPublisher: Text; ExtVersion: Text; TargetLang: Text;
                                   ImportedXlfInStr: InStream; ImportedFileName: Text; SourceLang: Text)
     var
-        ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+        ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
     begin
         ExtTranslMgt.CreateExtTranslHead(Rec, ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang,
                                          ImportedXlfInStr, ImportedFileName, SourceLang)

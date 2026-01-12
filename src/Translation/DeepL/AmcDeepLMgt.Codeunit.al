@@ -1,4 +1,4 @@
-codeunit 50101 "ADD_DeepLMgt"
+codeunit 50101 "AMC DeepL Mgt"
 {
     internal procedure Translate(TextToTranslate: Text; TargetLang: Text): Text
     var
@@ -25,7 +25,7 @@ codeunit 50101 "ADD_DeepLMgt"
 
     local procedure PostDeepL(var Response: HttpResponseMessage; BodyText: Text)
     var
-        DeepLSetup: Record ADD_DeepLSetup;
+        DeepLSetup: Record "AMC DeepL Setup";
         Client: HttpClient;
         Content: HttpContent;
         ContentHeaders: HttpHeaders;

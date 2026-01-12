@@ -1,4 +1,4 @@
-report 50101 ADD_CopyExtTranslToNewTargLang
+report 50101 "AMC Copy Ext Transl To Lang"
 {
     ApplicationArea = All;
     Caption = 'Copy Extension Translation To New Target Language';
@@ -18,7 +18,7 @@ report 50101 ADD_CopyExtTranslToNewTargLang
                     {
                         ApplicationArea = All;
                         Caption = 'Copy From Extension ID';
-                        TableRelation = ADD_ExtTranslHeader."Extension ID";
+                        TableRelation = "AMC Extension Transl Header"."Extension ID";
                         ToolTip = 'Copy From Extension ID';
                         trigger OnValidate()
                         begin
@@ -33,13 +33,13 @@ report 50101 ADD_CopyExtTranslToNewTargLang
 
                         trigger OnLookup(var Text: Text): Boolean
                         var
-                            ExtTransHead: Record ADD_ExtTranslHeader;
+                            ExtTransHead: Record "AMC Extension Transl Header";
                         begin
                             if IsNullGuid(CopyFromExtID) then
                                 exit(false);
                             ExtTransHead.SetRange("Extension ID", CopyFromExtID);
                             CopyFromTargetLang := '';
-                            if Page.RunModal(Page::ADD_ExtTranslList, ExtTransHead) = Action::LookupOK then
+                            if Page.RunModal(Page::"AMC Extension Transl List", ExtTransHead) = Action::LookupOK then
                                 CopyFromTargetLang := ExtTransHead."Target Language";
                             exit(CopyFromTargetLang <> '');
                         end;
@@ -53,7 +53,7 @@ report 50101 ADD_CopyExtTranslToNewTargLang
 
                         trigger OnAssistEdit()
                         var
-                            ExtTranslMgt: Codeunit ADD_ExtensionTranslationMgt;
+                            ExtTranslMgt: Codeunit "AMC Extension Transl Mgt";
                         begin
                             CopyToTargetLang := ExtTranslMgt.SelectLangTag();
                         end;
@@ -65,7 +65,7 @@ report 50101 ADD_CopyExtTranslToNewTargLang
 
     trigger OnPreReport()
     var
-        ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader;
+        ExtTranslHeadCopyFrom: Record "AMC Extension Transl Header";
     begin
         ExtTranslHeadCopyFrom.Get(this.CopyFromExtID, this.CopyFromTargetLang);
         ExtTranslHeadCopyFrom.CopyExtTranslHeadAndLinesToNewTargetLang(this.CopyToTargetLang);
@@ -74,10 +74,10 @@ report 50101 ADD_CopyExtTranslToNewTargLang
 
     trigger OnPostReport()
     var
-        ExtTranslNew: Record ADD_ExtTranslHeader;
+        ExtTranslNew: Record "AMC Extension Transl Header";
     begin
         if ExtTranslNew.Get(this.CopyFromExtID, this.CopyToTargetLang) then
-            Page.RunModal(Page::ADD_ExtTranslCard, ExtTranslNew);
+            Page.RunModal(Page::"AMC Extension Transl Card", ExtTranslNew);
     end;
 
     var
