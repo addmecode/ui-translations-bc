@@ -137,6 +137,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     internal procedure RunObject(ElemTransl: Record ADD_ExtTranslLine)
     var
         AllObj: Record AllObjWithCaption;
+        Utilities: Codeunit "Add Utilities";
         ObjTypeNotSuppErr: Label 'Object Type %1 is not supported', Comment = '%1 is object type';
     begin
         case UpperCase(ElemTransl."Object Type") of
@@ -149,19 +150,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         end;
         AllObj.SetRange("Object Name", ElemTransl."Object Name");
         AllObj.FindFirst();
-        this.RunObject(AllObj."Object Type", AllObj."Object ID");
-    end;
-
-    local procedure RunObject(ObjType: Integer; ObjectId: Integer)
-    var
-        AllObj: Record AllObjWithCaption;
-    begin
-        case ObjType of
-            AllObj."Object Type"::Page:
-                Page.Run(ObjectId);
-            AllObj."Object Type"::Table:
-                Hyperlink(GetUrl(ClientType::Current, CompanyName, ObjectType::Table, ObjectId));
-        end;
+        Utilities.RunObject(AllObj, false);
     end;
 
     internal procedure SelectLangTag(): Text[80]
