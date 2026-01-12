@@ -1,4 +1,4 @@
-report 50100 ADD_ImportXlf
+report 50100 "ADD_ImportXlf"
 {
     ApplicationArea = All;
     Caption = 'Import Xlf';
@@ -32,7 +32,9 @@ report 50100 ADD_ImportXlf
                             if Page.RunModal(Page::ADD_NavAppInstalledApp, NavAppInstalledApp) = Action::LookupOK then begin
                                 ExtID := NavAppInstalledApp."App ID";
                                 ValidateExtID();
+                                exit(true);
                             end;
+                            exit(false);
                         end;
                     }
                     field("Extension Name"; ExtName)

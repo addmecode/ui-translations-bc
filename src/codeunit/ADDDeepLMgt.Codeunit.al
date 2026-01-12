@@ -30,10 +30,12 @@ codeunit 50101 "ADD_DeepLMgt"
         Content: HttpContent;
         ContentHeaders: HttpHeaders;
         Url: Text;
+        DeepLSetupNotFoundErr: Label 'DeepL Setup is not configured. Open the DeepL Setup page and enter the API key and base URL.';
         PostErr: Label 'DeepL error (%1 %2): %3', Comment = '%1 is Response Http Status Code, %2 is Response Reason Phrase, %3 is Response body';
         ApiKeyPrefixTxt: Label 'DeepL-Auth-Key %1', Locked = true;
     begin
-        DeepLSetup.Get();
+        if not DeepLSetup.Get() then
+            Error(DeepLSetupNotFoundErr);
         Url := DeepLSetup."Base Url" + '/translate';
 
         Content.GetHeaders(ContentHeaders);
@@ -75,9 +77,12 @@ codeunit 50101 "ADD_DeepLMgt"
     var
         WindLang: Record "Windows Language";
         Lang: Codeunit Language;
+        LanguageTagNotFoundErr: Label 'Language tag %1 is not defined in Windows Languages.', Comment = '%1 is the language tag';
     begin
         WindLang.SetRange("Language Tag", LangTag);
-        WindLang.FindFirst();
+        WindLang.SetLoadFields("Language ID");
+        if not WindLang.FindFirst() then
+            Error(LanguageTagNotFoundErr, LangTag);
         exit(Lang.GetTwoLetterISOLanguageName(WindLang."Language ID"));
     end;
 }

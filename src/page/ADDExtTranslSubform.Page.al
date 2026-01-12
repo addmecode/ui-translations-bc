@@ -40,7 +40,7 @@ page 50102 "ADD_ExtTranslSubform"
                 field("Developer Note"; Rec.GetDeveloperNotes())
                 {
                     Caption = 'Developer Note';
-                    ToolTip = 'Specifies the value of the Developer Note fields.', Comment = 'Where am i';
+                    ToolTip = 'Specifies the value of the Developer Note fields.', Comment = '%';
                 }
                 field(Target; Rec.GetTarget())
                 {
@@ -60,7 +60,7 @@ page 50102 "ADD_ExtTranslSubform"
                 }
                 field(Translated; Rec.Translated)
                 {
-                    ToolTip = 'Specifies the value of the Translated field.', Comment = 'Where am i';
+                    ToolTip = 'Specifies the value of the Translated field.', Comment = '%';
                 }
             }
         }

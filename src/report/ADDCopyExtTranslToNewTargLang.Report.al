@@ -41,6 +41,7 @@ report 50101 ADD_CopyExtTranslToNewTargLang
                             CopyFromTargetLang := '';
                             if Page.RunModal(Page::ADD_ExtTranslList, ExtTransHead) = Action::LookupOK then
                                 CopyFromTargetLang := ExtTransHead."Target Language";
+                            exit(CopyFromTargetLang <> '');
                         end;
                     }
                     field("Copy To Target Language"; CopyToTargetLang)

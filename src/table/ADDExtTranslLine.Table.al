@@ -260,7 +260,7 @@ table 50100 ADD_ExtTranslLine
         ExtTranslHead.CopyExtTranslLineToNewTargetLang(Rec, CopyToTargetLang);
     end;
 
-    procedure CreateExtTranslLine(ExtId: Text; TargetLang: Text; TuId: Text; SourceTxt: Text;
+    procedure CreateExtTranslLine(ExtId: Guid; TargetLang: Text; TuId: Text; SourceTxt: Text;
                                   TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     var
         ExtTranslHead: Codeunit ADD_ExtensionTranslationMgt;

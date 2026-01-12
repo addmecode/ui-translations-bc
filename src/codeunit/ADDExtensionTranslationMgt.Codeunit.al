@@ -307,6 +307,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     var
         AllObj: Record AllObjWithCaption;
         Utilities: Codeunit "Add Utilities";
+        ObjNotFoundErr: Label 'Object %1 %2 not found', Comment = '%1 is object type, %2 is object name';
         ObjTypeNotSuppErr: Label 'Object Type %1 is not supported', Comment = '%1 is object type';
     begin
         case UpperCase(ElemTransl."Object Type") of
@@ -318,7 +319,8 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 Error(ObjTypeNotSuppErr, ElemTransl."Object Type");
         end;
         AllObj.SetRange("Object Name", ElemTransl."Object Name");
-        AllObj.FindFirst();
+        if not AllObj.FindFirst() then
+            Error(ObjNotFoundErr, ElemTransl."Object Type", ElemTransl."Object Name");
         Utilities.RunObject(AllObj, false);
     end;
 
@@ -336,14 +338,19 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         CreatedExtTranslLine: Record ADD_ExtTranslLine;
         Utilities: Codeunit "Add Utilities";
         XmlUtilities: Codeunit "Add Xml Utilities";
-        PROGR_UPD_PERC: Decimal;
+        TempBlob: Codeunit "Temp Blob";
+        PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
         ImportedXlfInStr: InStream;
+        XlfHeadInStr: InStream;
+        XlfXmlInStr: InStream;
         ProgrUpdBatch: Integer;
         TransUnitCounter: Integer;
         FirstProgrStepMsg: Label 'Importing File: %1', Comment = '%1 is file name';
         ProgressMsg: Label '#1 \#2', Comment = '#1 is first step label, #2 is second step label';
         SecProgrStepMsg: Label 'Importing Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
+        SelectXlfFileLbl: Label 'Select Xlf file';
+        XlfFileFilterLbl: Label 'Xlf Files (*.xlf)|*.xlf', Locked = true;
         DeveloperNote: Text;
         ImportedFileName: Text;
         NS_PREFIX: Text;
@@ -351,6 +358,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         SourceTxt: Text;
         TargetLangFromXlf: Text;
         TargetTxt: Text;
+        TempOutStr: OutStream;
         TuId: Text;
         XliffNote: Text;
         XmlDoc: XmlDocument;
@@ -358,24 +366,29 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         TransUnitNode: XmlNode;
         TransUnitNodeList: XmlNodeList;
     begin
-        PROGR_UPD_PERC := 0.1;
+        PROGRESS_UPDATE_PERCENT := 0.1;
         NS_PREFIX := 'x';
         TransUnitCounter := 0;
         this.ImportXlfValidateParams(ExtID, ImportTargetLang, TargetLang);
         this.DeleteAllExtTranslHeadWithExtIdIfConf(ExtID);
-        UploadIntoStream('Select Xlf file', '', 'Xlf Files (*.xlf)|*.xlf', ImportedFileName, ImportedXlfInStr);
+        if not UploadIntoStream(SelectXlfFileLbl, '', XlfFileFilterLbl, ImportedFileName, ImportedXlfInStr) then
+            exit;
+        TempBlob.CreateOutStream(TempOutStr);
+        CopyStream(TempOutStr, ImportedXlfInStr);
+        TempBlob.CreateInStream(XlfXmlInStr);
         if GuiAllowed then begin
             Progress.Open(ProgressMsg);
             Progress.Update(1, StrSubstNo(FirstProgrStepMsg, ImportedFileName));
         end;
-        XmlUtilities.GetXmlDocumentAndNamespaceManagerFromInStream(ImportedXlfInStr, NS_PREFIX, XmlDoc, NsMgr);
+        XmlUtilities.GetXmlDocumentAndNamespaceManagerFromInStream(XlfXmlInStr, NS_PREFIX, XmlDoc, NsMgr);
         this.GetTargetAndSourceLangFromXlf(XmlDoc, NsMgr, NS_PREFIX, SourceLang, TargetLangFromXlf);
         if ImportTargetLang then
             TargetLang := TargetLangFromXlf;
-        CreatedExtTranslHead.CreateExtTranslHead(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang, ImportedXlfInStr, ImportedFileName, SourceLang);
+        TempBlob.CreateInStream(XlfHeadInStr);
+        CreatedExtTranslHead.CreateExtTranslHead(ExtID, ExtName, ExtPublisher, ExtVersion, TargetLang, XlfHeadInStr, ImportedFileName, SourceLang);
 
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
-        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(TransUnitNodeList.Count(), PROGRESS_UPDATE_PERCENT);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
@@ -514,14 +527,13 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         exit(NoteAttr.Value() = 'Xliff Generator');
     end;
 
-    internal procedure CreateExtTranslLine(var NewElTransl: Record ADD_ExtTranslLine; ExtId: Text; TargetLang: Text; TuId: Text;
+    internal procedure CreateExtTranslLine(var NewElTransl: Record ADD_ExtTranslLine; ExtId: Guid; TargetLang: Text; TuId: Text;
                                            SourceTxt: Text; TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     begin
-#pragma warning disable AA0139
         NewElTransl.Init();
         NewElTransl."Extension ID" := ExtId;
-        NewElTransl."Target Language" := TargetLang;
-        NewElTransl."Trans Unit ID" := TuId;
+        NewElTransl."Target Language" := CopyStr(TargetLang, 1, MaxStrLen(NewElTransl."Target Language"));
+        NewElTransl."Trans Unit ID" := CopyStr(TuId, 1, MaxStrLen(NewElTransl."Trans Unit ID"));
         NewElTransl.Translated := false;
         NewElTransl.SetXliffNote(XliffNote);
         NewElTransl.SetSource(SourceTxt);
@@ -530,7 +542,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         NewElTransl.SetDevNote(DeveloperNote);
         NewElTransl.ParseXliffNote();
         NewElTransl.Insert(false);
-#pragma warning restore AA0139
     end;
 
     internal procedure ParseXliffNote(var ExtTranslLine: Record ADD_ExtTranslLine)
@@ -538,7 +549,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ElemNameStartPart: Integer;
         ElemTypeStartPart: Integer;
         FoundUnhandledTransUnitPartErr: Label 'Found %1 parts in Trans unit id: %2', Comment = '%1 is " - " parts number, %2 is trans unit id value';
-        HyphenParts: List of [Text];
         TuHyphenParts: List of [Text];
         ElemNameFirstWord: Text;
         ElemTypeFirstWord: Text;
@@ -586,7 +596,6 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
                 Error(FoundUnhandledTransUnitPartErr, TuHyphenParts.Count(), ExtTranslLine."Trans Unit ID");
         end;
         XliffNote := ExtTranslLine.GetXliffNote();
-        HyphenParts := XliffNote.Split(' - ');
         ElemTypeStartPart := XliffNote.LastIndexOf(' - ' + ElemTypeFirstWord);
         ExtTranslLine."Element Type" := XliffNote.Substring(ElemTypeStartPart + StrLen(SPLIT_BY));
         XliffNote := XliffNote.Substring(1, ElemTypeStartPart - 1);
@@ -600,15 +609,20 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     end;
 
     local procedure GetTextPartBeforeFirstSpace(InputText: Text): Text
+    var
+        SpaceIndex: Integer;
     begin
-        exit(InputText.Substring(1, InputText.IndexOf(' ') - 1));
+        SpaceIndex := InputText.IndexOf(' ');
+        if SpaceIndex = 0 then
+            exit(InputText);
+        exit(InputText.Substring(1, SpaceIndex - 1));
     end;
 
     internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record ADD_ExtTranslHeader; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyFrom: Record ADD_ExtTranslLine;
         Utilities: Codeunit "Add Utilities";
-        PROGR_UPD_PERC: Decimal;
+        PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
         LinesCounter: Integer;
         LinesNumber: Integer;
@@ -616,7 +630,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         FirstProgrStepMsg: Label 'Copying Lines: %1 of %2', Comment = '%1 is current line number, %2 is total lines number';
         ProgressMsg: Label '#1', Comment = '#1 is first step label';
     begin
-        PROGR_UPD_PERC := 0.1;
+        PROGRESS_UPDATE_PERCENT := 0.1;
         LinesCounter := 0;
         if GuiAllowed then
             Progress.Open(ProgressMsg);
@@ -624,7 +638,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         ExtTranslHeadCopyFrom.CopyExtTranslHeadToNewTargetLang(CopyToTargetLang);
         ExtTranslHeadCopyFrom.FilterExtTranslLines(ExtTranslLineCopyFrom);
         LinesNumber := ExtTranslLineCopyFrom.Count();
-        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(LinesNumber, PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(LinesNumber, PROGRESS_UPDATE_PERCENT);
         if ExtTranslLineCopyFrom.FindSet() then
             repeat
                 LinesCounter += 1;
@@ -686,7 +700,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     var
         Utilities: Codeunit "Add Utilities";
         XmlUtilities: Codeunit "Add Xml Utilities";
-        PROGR_UPD_PERC: Decimal;
+        PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
         InStr: InStream;
         ProgrUpdBatch: Integer;
@@ -702,7 +716,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         TransUnitNode: XmlNode;
         TransUnitNodeList: XmlNodeList;
     begin
-        PROGR_UPD_PERC := 0.1;
+        PROGRESS_UPDATE_PERCENT := 0.1;
         NS_PREFIX := 'x';
         TransUnitCounter := 0;
 
@@ -720,7 +734,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         XmlUtilities.GetXmlDocumentAndNamespaceManagerFromInStream(InStr, NS_PREFIX, XmlDoc, NsMgr);
         this.SetTargetLangInXlfDoc(XmlDoc, NsMgr, NS_PREFIX, ExtTranslHead."Target Language");
         this.GetAllTransUnitIds(XmlDoc, NsMgr, NS_PREFIX, TransUnitNodeList);
-        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(TransUnitNodeList.Count(), PROGR_UPD_PERC);
+        ProgrUpdBatch := Utilities.GetUpdateProgressBatch(TransUnitNodeList.Count(), PROGRESS_UPDATE_PERCENT);
         foreach TransUnitNode in TransUnitNodeList do begin
             TransUnitCounter += 1;
             if GuiAllowed and (TransUnitCounter mod ProgrUpdBatch = 0) then
@@ -783,8 +797,13 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
     end;
 
     internal procedure GetTranslatedFileName(ExtTranslHead: Record ADD_ExtTranslHeader): Text
+    var
+        DotIndex: Integer;
     begin
-        exit(ExtTranslHead."Imported FileName".Substring(1, ExtTranslHead."Imported FileName".IndexOf('.')) + ExtTranslHead."Target Language" + '.xlf');
+        DotIndex := ExtTranslHead."Imported FileName".LastIndexOf('.');
+        if DotIndex = 0 then
+            exit(ExtTranslHead."Imported FileName" + ExtTranslHead."Target Language" + '.xlf');
+        exit(ExtTranslHead."Imported FileName".Substring(1, DotIndex) + ExtTranslHead."Target Language" + '.xlf');
     end;
 
     internal procedure TranslateElemSrcsUsingDeepL(var ExtTranslLine: Record ADD_ExtTranslLine)
@@ -792,7 +811,7 @@ codeunit 50100 "ADD_ExtensionTranslationMgt"
         DeepLMgt: Codeunit ADD_DeepLMgt;
         TranslatedText: Text;
     begin
-        if ExtTranslLine.FindSet() then
+        if ExtTranslLine.FindSet(true) then
             repeat
                 TranslatedText := DeepLMgt.Translate(ExtTranslLine.GetSource(), DeepLMgt.GetDeepLLangFromLangTag(ExtTranslLine."Target Language"));
                 ExtTranslLine.SetNewTarget(TranslatedText);
