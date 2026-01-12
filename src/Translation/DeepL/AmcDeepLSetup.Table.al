@@ -33,6 +33,10 @@ table 50102 "AMC DeepL Setup"
         }
     }
 
+    /// <summary>
+    /// Stores the DeepL API key in isolated storage.
+    /// </summary>
+    /// <param name="NewApiKey">API key value.</param>
     internal procedure SetApiKey(NewApiKey: SecretText)
     var
         OverwriteApiKeyQst: Label 'The Api key is already set. Do you want to overwrite it?';
@@ -47,6 +51,10 @@ table 50102 "AMC DeepL Setup"
             IsolatedStorage.Set(this.GetStorageKey(), NewApiKey, DataScope::Module);
     end;
 
+    /// <summary>
+    /// Gets the stored DeepL API key.
+    /// </summary>
+    /// <returns>Stored API key.</returns>
     internal procedure GetApiKey(): SecretText
     var
         ApiKey: SecretText;
@@ -55,6 +63,10 @@ table 50102 "AMC DeepL Setup"
         exit(ApiKey);
     end;
 
+    /// <summary>
+    /// Checks whether the DeepL API key is set.
+    /// </summary>
+    /// <returns>True if the API key is stored.</returns>
     internal procedure IsApiKeySet(): Boolean
     begin
         exit(IsolatedStorage.Contains(this.GetStorageKey(), DataScope::Module));

@@ -1,5 +1,11 @@
 codeunit 50101 "AMC DeepL Mgt"
 {
+    /// <summary>
+    /// Translates text using DeepL and returns the translated text.
+    /// </summary>
+    /// <param name="TextToTranslate">Text to translate.</param>
+    /// <param name="TargetLang">Target language tag.</param>
+    /// <returns>Translated text.</returns>
     internal procedure Translate(TextToTranslate: Text; TargetLang: Text): Text
     var
         Response: HttpResponseMessage;
@@ -73,6 +79,11 @@ codeunit 50101 "AMC DeepL Mgt"
         exit(TextToken.AsValue().AsText());
     end;
 
+    /// <summary>
+    /// Resolves a DeepL language code from a Windows language tag.
+    /// </summary>
+    /// <param name="LangTag">Windows language tag.</param>
+    /// <returns>DeepL language code.</returns>
     internal procedure GetDeepLLangFromLangTag(LangTag: Text[80]): Text
     var
         WindLang: Record "Windows Language";

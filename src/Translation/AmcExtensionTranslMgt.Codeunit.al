@@ -1,5 +1,9 @@
 codeunit 50100 "AMC Extension Transl Mgt"
 {
+    /// <summary>
+    /// Deletes all translation lines that belong to the specified header.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
     internal procedure DeleteAllExtTranslHeadLines(ExtTranslHead: Record "AMC Extension Transl Header")
     var
         ExtTransLine: Record "AMC Extension Transl Line";
@@ -9,26 +13,51 @@ codeunit 50100 "AMC Extension Transl Mgt"
         ExtTransLine.DeleteAll(true);
     end;
 
+    /// <summary>
+    /// Returns concatenated developer notes for the specified line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <returns>Concatenated developer notes.</returns>
     internal procedure GetExtTransLineDeveloperNotes(ExtTranslLine: Record "AMC Extension Transl Line"): Text
     begin
         exit(this.GetConcatenatedFields(ExtTranslLine, 'Developer Note', 5));
     end;
 
+    /// <summary>
+    /// Returns concatenated source text for the specified line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <returns>Concatenated source text.</returns>
     internal procedure GetExtTransLineSource(ExtTranslLine: Record "AMC Extension Transl Line"): Text
     begin
         exit(this.GetConcatenatedFields(ExtTranslLine, 'Source', 5));
     end;
 
+    /// <summary>
+    /// Returns concatenated target text for the specified line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <returns>Concatenated target text.</returns>
     internal procedure GetExtTransLineTarget(ExtTranslLine: Record "AMC Extension Transl Line"): Text
     begin
         exit(this.GetConcatenatedFields(ExtTranslLine, 'Target', 5));
     end;
 
+    /// <summary>
+    /// Returns concatenated new target text for the specified line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <returns>Concatenated new target text.</returns>
     internal procedure GetExtTransLineNewTarget(ExtTranslLine: Record "AMC Extension Transl Line"): Text
     begin
         exit(this.GetConcatenatedFields(ExtTranslLine, 'New Target', 5));
     end;
 
+    /// <summary>
+    /// Returns concatenated Xliff notes for the specified line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <returns>Concatenated Xliff notes.</returns>
     internal procedure GetExtTransLineXliffNote(ExtTranslLine: Record "AMC Extension Transl Line"): Text
     begin
         exit(this.GetConcatenatedFields(ExtTranslLine, 'Xliff Note', 5));
@@ -119,26 +148,51 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit('');
     end;
 
+    /// <summary>
+    /// Sets the new target fields on a translation line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <param name="NewTarget">New target text.</param>
     internal procedure SetExtTransLineNewTarget(var ExtTranslLine: Record "AMC Extension Transl Line"; NewTarget: Text)
     begin
         this.SetConcatenatedFields(ExtTranslLine, 'New Target', NewTarget, 5);
     end;
 
+    /// <summary>
+    /// Sets the target fields on a translation line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <param name="Target">Target text.</param>
     internal procedure SetExtTransLineTarget(var ExtTranslLine: Record "AMC Extension Transl Line"; Target: Text)
     begin
         this.SetConcatenatedFields(ExtTranslLine, 'Target', Target, 5);
     end;
 
+    /// <summary>
+    /// Sets the source fields on a translation line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <param name="Source">Source text.</param>
     internal procedure SetExtTransLineSource(var ExtTranslLine: Record "AMC Extension Transl Line"; Source: Text)
     begin
         this.SetConcatenatedFields(ExtTranslLine, 'Source', Source, 5);
     end;
 
+    /// <summary>
+    /// Sets the developer note fields on a translation line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <param name="DevNote">Developer note text.</param>
     internal procedure SetExtTransLineDevNote(var ExtTranslLine: Record "AMC Extension Transl Line"; DevNote: Text)
     begin
         this.SetConcatenatedFields(ExtTranslLine, 'Developer Note', DevNote, 5);
     end;
 
+    /// <summary>
+    /// Sets the Xliff note fields on a translation line.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
+    /// <param name="XliffNote">Xliff note text.</param>
     internal procedure SetExtTransLineXliffNote(var ExtTranslLine: Record "AMC Extension Transl Line"; XliffNote: Text)
     begin
         this.SetConcatenatedFields(ExtTranslLine, 'Xliff Note', XliffNote, 5);
@@ -303,6 +357,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         end;
     end;
 
+    /// <summary>
+    /// Runs the object referenced by the translation line.
+    /// </summary>
+    /// <param name="ElemTransl">Translation line that references an object.</param>
     internal procedure RunObject(ElemTransl: Record "AMC Extension Transl Line")
     var
         AllObj: Record AllObjWithCaption;
@@ -324,6 +382,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         Utilities.RunObject(AllObj, false);
     end;
 
+    /// <summary>
+    /// Prompts the user to select a language tag.
+    /// </summary>
+    /// <returns>Selected language tag, or empty if canceled.</returns>
     internal procedure SelectLangTag(): Text[80]
     var
         WindLang: Record "Windows Language";
@@ -333,6 +395,16 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit('');
     end;
 
+    /// <summary>
+    /// Imports an XLF file and creates translation headers and lines.
+    /// </summary>
+    /// <param name="CreatedExtTranslHead">Header record to receive the created entry.</param>
+    /// <param name="ExtID">Extension ID.</param>
+    /// <param name="ExtName">Extension name.</param>
+    /// <param name="ExtPublisher">Extension publisher.</param>
+    /// <param name="ExtVersion">Extension version.</param>
+    /// <param name="ImportTargetLang">Whether to take the target language from the file.</param>
+    /// <param name="TargetLang">Target language tag.</param>
     internal procedure ImportXlf(var CreatedExtTranslHead: Record "AMC Extension Transl Header"; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
         CreatedExtTranslLine: Record "AMC Extension Transl Line";
@@ -436,6 +508,18 @@ codeunit 50100 "AMC Extension Transl Mgt"
         TargetLang := XmlUtilities.GetAttributeValueFromCollection(FileAttributes, 'target-language');
     end;
 
+    /// <summary>
+    /// Creates and inserts a translation header from imported metadata.
+    /// </summary>
+    /// <param name="NewExtTranslHead">Header record to initialize.</param>
+    /// <param name="ExtID">Extension ID.</param>
+    /// <param name="ExtName">Extension name.</param>
+    /// <param name="ExtPublisher">Extension publisher.</param>
+    /// <param name="ExtVersion">Extension version.</param>
+    /// <param name="TargetLang">Target language tag.</param>
+    /// <param name="ImportedXlfInStr">Input stream with the imported XLF.</param>
+    /// <param name="ImportedFileName">Imported file name.</param>
+    /// <param name="SourceLang">Source language tag.</param>
     internal procedure CreateExtTranslHead(var NewExtTranslHead: Record "AMC Extension Transl Header"; ExtID: Guid; ExtName: Text; ExtPublisher: Text;
                                            ExtVersion: Text; TargetLang: Text; ImportedXlfInStr: InStream; ImportedFileName: Text; SourceLang: Text)
     var
@@ -527,6 +611,17 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit(NoteAttr.Value() = 'Xliff Generator');
     end;
 
+    /// <summary>
+    /// Creates and inserts a translation line from XLF data.
+    /// </summary>
+    /// <param name="NewElTransl">Line record to initialize.</param>
+    /// <param name="ExtId">Extension ID.</param>
+    /// <param name="TargetLang">Target language tag.</param>
+    /// <param name="TuId">Translation unit ID.</param>
+    /// <param name="SourceTxt">Source text.</param>
+    /// <param name="TargetTxt">Target text.</param>
+    /// <param name="DeveloperNote">Developer note text.</param>
+    /// <param name="XliffNote">Xliff note text.</param>
     internal procedure CreateExtTranslLine(var NewElTransl: Record "AMC Extension Transl Line"; ExtId: Guid; TargetLang: Text; TuId: Text;
                                            SourceTxt: Text; TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     begin
@@ -544,6 +639,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         NewElTransl.Insert(false);
     end;
 
+    /// <summary>
+    /// Parses the Xliff note and updates object and element fields.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
     internal procedure ParseXliffNote(var ExtTranslLine: Record "AMC Extension Transl Line")
     var
         ElemNameStartPart: Integer;
@@ -618,6 +717,11 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit(InputText.Substring(1, SpaceIndex - 1));
     end;
 
+    /// <summary>
+    /// Copies a header and its lines to a new target language.
+    /// </summary>
+    /// <param name="ExtTranslHeadCopyFrom">Header record to copy from.</param>
+    /// <param name="CopyToTargetLang">Target language to copy to.</param>
     internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record "AMC Extension Transl Header"; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyFrom: Record "AMC Extension Transl Line";
@@ -668,6 +772,11 @@ codeunit 50100 "AMC Extension Transl Mgt"
                   ExtTranslHead.FieldCaption("Target Language"), ExtTranslHead."Target Language");
     end;
 
+    /// <summary>
+    /// Copies only the header to a new target language.
+    /// </summary>
+    /// <param name="ExtTranslHeadCopyFrom">Header record to copy from.</param>
+    /// <param name="CopyToTargetLang">Target language to copy to.</param>
     internal procedure CopyExtTranslHeadToNewTargetLang(ExtTranslHeadCopyFrom: Record "AMC Extension Transl Header"; CopyToTargetLang: Text[80])
     var
         ExtTranslHeadCopyTo: Record "AMC Extension Transl Header";
@@ -679,12 +788,22 @@ codeunit 50100 "AMC Extension Transl Mgt"
         ExtTranslHeadCopyTo.Insert(true);
     end;
 
+    /// <summary>
+    /// Applies header filters to a translation line record.
+    /// </summary>
+    /// <param name="ExtTranslLineCopyFrom">Line record to filter or copy from.</param>
+    /// <param name="ExtTranslHeadCopyFrom">Header record to copy from.</param>
     internal procedure FilterExtTranslLines(var ExtTranslLineCopyFrom: Record "AMC Extension Transl Line"; ExtTranslHeadCopyFrom: Record "AMC Extension Transl Header")
     begin
         ExtTranslLineCopyFrom.SetRange("Extension ID", ExtTranslHeadCopyFrom."Extension ID");
         ExtTranslLineCopyFrom.SetRange("Target Language", ExtTranslHeadCopyFrom."Target Language");
     end;
 
+    /// <summary>
+    /// Copies a translation line to a new target language.
+    /// </summary>
+    /// <param name="ExtTranslLineCopyFrom">Line record to filter or copy from.</param>
+    /// <param name="CopyToTargetLang">Target language to copy to.</param>
     internal procedure CopyExtTranslLineToNewTargetLang(ExtTranslLineCopyFrom: Record "AMC Extension Transl Line"; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyTo: Record "AMC Extension Transl Line";
@@ -696,6 +815,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         ExtTranslLineCopyTo.Insert(true);
     end;
 
+    /// <summary>
+    /// Builds and downloads a translated XLF file.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
     internal procedure DownloadTranslated(ExtTranslHead: Record "AMC Extension Transl Header")
     var
         Utilities: Codeunit "Add Utilities";
@@ -748,6 +871,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
             Progress.Close();
     end;
 
+    /// <summary>
+    /// Validates that translation lines exist for the header.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
     internal procedure ValidateExtTranslLinesExist(ExtTranslHead: Record "AMC Extension Transl Header")
     var
         ExtTransLinesDontExistErr: Label 'No lines exist for: %1 with filters: %2',
@@ -775,6 +902,11 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit(Confirm(DownloadIfNotAllLinesAreTranslatedQst, true));
     end;
 
+    /// <summary>
+    /// Checks whether all lines for the header are translated.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
+    /// <returns>True if all lines are translated.</returns>
     internal procedure AreAllLinesTranslated(ExtTranslHead: Record "AMC Extension Transl Header"): Boolean
     var
         ExtTranslLine: Record "AMC Extension Transl Line";
@@ -785,6 +917,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit(ExtTranslLine.IsEmpty());
     end;
 
+    /// <summary>
+    /// Downloads the originally imported XLF file.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
     internal procedure DownloadImported(ExtTranslHead: Record "AMC Extension Transl Header")
     var
         InStr: InStream;
@@ -796,6 +932,11 @@ codeunit 50100 "AMC Extension Transl Mgt"
 #pragma warning restore AA0139
     end;
 
+    /// <summary>
+    /// Returns the translated XLF file name for the header.
+    /// </summary>
+    /// <param name="ExtTranslHead">Translation header record.</param>
+    /// <returns>Translated XLF file name.</returns>
     internal procedure GetTranslatedFileName(ExtTranslHead: Record "AMC Extension Transl Header"): Text
     var
         DotIndex: Integer;
@@ -806,6 +947,10 @@ codeunit 50100 "AMC Extension Transl Mgt"
         exit(ExtTranslHead."Imported FileName".Substring(1, DotIndex) + ExtTranslHead."Target Language" + '.xlf');
     end;
 
+    /// <summary>
+    /// Translates source text using DeepL and stores it as new target.
+    /// </summary>
+    /// <param name="ExtTranslLine">Translation line record.</param>
     internal procedure TranslateElemSrcsUsingDeepL(var ExtTranslLine: Record "AMC Extension Transl Line")
     var
         DeepLMgt: Codeunit "AMC DeepL Mgt";

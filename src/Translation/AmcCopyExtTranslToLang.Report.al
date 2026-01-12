@@ -85,6 +85,11 @@ report 50101 "AMC Copy Ext Transl To Lang"
         CopyFromTargetLang: Text[80];
         CopyToTargetLang: Text[80];
 
+    /// <summary>
+    /// Sets request page parameters for the copy operation.
+    /// </summary>
+    /// <param name="ExtID">Extension ID.</param>
+    /// <param name="TargetLang">Target language tag.</param>
     procedure SetReqPageParams(ExtID: Guid; TargetLang: Text[80])
     begin
         this.CopyFromExtID := ExtID;

@@ -135,6 +135,10 @@ page 50102 "AMC Extension Transl Subform"
         IsNewTargetEditable: Boolean;
         NewTarget: Text;
 
+    /// <summary>
+    /// Sets whether the New Target field is editable.
+    /// </summary>
+    /// <param name="IsEditable">Whether the field should be editable.</param>
     procedure SetNewTargetEditable(IsEditable: Boolean)
     begin
         IsNewTargetEditable := IsEditable;

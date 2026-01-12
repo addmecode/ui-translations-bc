@@ -183,6 +183,10 @@ table 50100 "AMC Extension Transl Line"
         }
     }
 
+    /// <summary>
+    /// Returns concatenated developer notes for this line.
+    /// </summary>
+    /// <returns>Concatenated developer notes.</returns>
     procedure GetDeveloperNotes(): Text
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -190,6 +194,10 @@ table 50100 "AMC Extension Transl Line"
         exit(ExtTranslHead.GetExtTransLineDeveloperNotes(Rec));
     end;
 
+    /// <summary>
+    /// Returns concatenated source text for this line.
+    /// </summary>
+    /// <returns>Concatenated source text.</returns>
     procedure GetSource(): Text
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -197,6 +205,10 @@ table 50100 "AMC Extension Transl Line"
         exit(ExtTranslHead.GetExtTransLineSource(Rec));
     end;
 
+    /// <summary>
+    /// Returns concatenated target text for this line.
+    /// </summary>
+    /// <returns>Concatenated target text.</returns>
     procedure GetTarget(): Text
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -204,6 +216,10 @@ table 50100 "AMC Extension Transl Line"
         exit(ExtTranslHead.GetExtTransLineTarget(Rec));
     end;
 
+    /// <summary>
+    /// Returns concatenated new target text for this line.
+    /// </summary>
+    /// <returns>Concatenated new target text.</returns>
     procedure GetNewTarget(): Text
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -211,6 +227,10 @@ table 50100 "AMC Extension Transl Line"
         exit(ExtTranslHead.GetExtTransLineNewTarget(Rec));
     end;
 
+    /// <summary>
+    /// Returns concatenated Xliff notes for this line.
+    /// </summary>
+    /// <returns>Concatenated Xliff notes.</returns>
     procedure GetXliffNote(): Text
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -218,6 +238,10 @@ table 50100 "AMC Extension Transl Line"
         exit(ExtTranslHead.GetExtTransLineXliffNote(Rec));
     end;
 
+    /// <summary>
+    /// Sets the new target fields from text.
+    /// </summary>
+    /// <param name="NewTarget">New target text.</param>
     procedure SetNewTarget(NewTarget: Text)
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -225,6 +249,10 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.SetExtTransLineNewTarget(Rec, NewTarget);
     end;
 
+    /// <summary>
+    /// Sets the target fields from text.
+    /// </summary>
+    /// <param name="Target">Target text.</param>
     procedure SetTarget(Target: Text)
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -232,6 +260,10 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.SetExtTransLineTarget(Rec, Target);
     end;
 
+    /// <summary>
+    /// Sets the source fields from text.
+    /// </summary>
+    /// <param name="Source">Source text.</param>
     procedure SetSource(Source: Text)
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -239,6 +271,10 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.SetExtTransLineSource(Rec, Source);
     end;
 
+    /// <summary>
+    /// Sets the developer note fields from text.
+    /// </summary>
+    /// <param name="DevNote">Developer note text.</param>
     procedure SetDevNote(DevNote: Text)
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -246,6 +282,10 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.SetExtTransLineDevNote(Rec, DevNote);
     end;
 
+    /// <summary>
+    /// Sets the Xliff note fields from text.
+    /// </summary>
+    /// <param name="XliffNote">Xliff note text.</param>
     procedure SetXliffNote(XliffNote: Text)
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -253,6 +293,10 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.SetExtTransLineXliffNote(Rec, XliffNote);
     end;
 
+    /// <summary>
+    /// Copies this line to a new target language.
+    /// </summary>
+    /// <param name="CopyToTargetLang">Target language to copy to.</param>
     procedure CopyToNewTargetLang(CopyToTargetLang: Text[80])
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -260,6 +304,16 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.CopyExtTranslLineToNewTargetLang(Rec, CopyToTargetLang);
     end;
 
+    /// <summary>
+    /// Creates and inserts a translation line from XLF data.
+    /// </summary>
+    /// <param name="ExtId">Extension ID.</param>
+    /// <param name="TargetLang">Target language tag.</param>
+    /// <param name="TuId">Translation unit ID.</param>
+    /// <param name="SourceTxt">Source text.</param>
+    /// <param name="TargetTxt">Target text.</param>
+    /// <param name="DeveloperNote">Developer note text.</param>
+    /// <param name="XliffNote">Xliff note text.</param>
     procedure CreateExtTranslLine(ExtId: Guid; TargetLang: Text; TuId: Text; SourceTxt: Text;
                                   TargetTxt: Text; DeveloperNote: Text; XliffNote: Text)
     var
@@ -268,6 +322,9 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.CreateExtTranslLine(Rec, ExtId, TargetLang, TuId, SourceTxt, TargetTxt, DeveloperNote, XliffNote);
     end;
 
+    /// <summary>
+    /// Parses the Xliff note and updates object and element fields.
+    /// </summary>
     procedure ParseXliffNote()
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
@@ -275,6 +332,9 @@ table 50100 "AMC Extension Transl Line"
         ExtTranslHead.ParseXliffNote(Rec);
     end;
 
+    /// <summary>
+    /// Runs the object referenced by the translation line.
+    /// </summary>
     procedure RunObject()
     var
         ExtTranslHead: Codeunit "AMC Extension Transl Mgt";
