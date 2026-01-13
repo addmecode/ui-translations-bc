@@ -364,7 +364,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
     internal procedure RunObject(ElemTransl: Record "AMC Extension Transl Line")
     var
         AllObj: Record AllObjWithCaption;
-        Utilities: Codeunit "Add Utilities";
+        Utilities: Codeunit "AMC Utilities";
         ObjNotFoundErr: Label 'Object %1 %2 not found', Comment = '%1 is object type, %2 is object name';
         ObjTypeNotSuppErr: Label 'Object Type %1 is not supported', Comment = '%1 is object type';
     begin
@@ -408,8 +408,8 @@ codeunit 50100 "AMC Extension Transl Mgt"
     internal procedure ImportXlf(var CreatedExtTranslHead: Record "AMC Extension Transl Header"; ExtID: Guid; ExtName: Text[250]; ExtPublisher: Text[250]; ExtVersion: Text[250]; ImportTargetLang: Boolean; TargetLang: Text)
     var
         CreatedExtTranslLine: Record "AMC Extension Transl Line";
-        Utilities: Codeunit "Add Utilities";
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        Utilities: Codeunit "AMC Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         TempBlob: Codeunit "Temp Blob";
         PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
@@ -498,7 +498,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
 
     local procedure GetTargetAndSourceLangFromXlf(XmlDoc: XmlDocument; NsMgr: XmlNamespaceManager; NsPrefix: Text; var SourceLang: Text; var TargetLang: Text)
     var
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         FileAttributes: XmlAttributeCollection;
         FileNode: XmlNode;
     begin
@@ -595,7 +595,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
 
     local procedure IsDeveloperNoteNode(NoteNode: XmlNode): Boolean
     var
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         NoteAttr: XmlAttribute;
     begin
         XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
@@ -604,7 +604,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
 
     local procedure IsXliffGeneratorNoteNode(NoteNode: XmlNode): Boolean
     var
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         NoteAttr: XmlAttribute;
     begin
         XmlUtilities.GetElementAttribute(NoteAttr, 'from', NoteNode);
@@ -725,7 +725,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
     internal procedure CopyExtTranslHeadAndLinesToNewTargetLang(ExtTranslHeadCopyFrom: Record "AMC Extension Transl Header"; CopyToTargetLang: Text[80])
     var
         ExtTranslLineCopyFrom: Record "AMC Extension Transl Line";
-        Utilities: Codeunit "Add Utilities";
+        Utilities: Codeunit "AMC Utilities";
         PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
         LinesCounter: Integer;
@@ -821,8 +821,8 @@ codeunit 50100 "AMC Extension Transl Mgt"
     /// <param name="ExtTranslHead">Translation header record.</param>
     internal procedure DownloadTranslated(ExtTranslHead: Record "AMC Extension Transl Header")
     var
-        Utilities: Codeunit "Add Utilities";
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        Utilities: Codeunit "AMC Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         PROGRESS_UPDATE_PERCENT: Decimal;
         Progress: Dialog;
         InStr: InStream;
@@ -1008,7 +1008,7 @@ codeunit 50100 "AMC Extension Transl Mgt"
 
     local procedure AddTargetToTransUnit(var TransUnitNode: XmlNode; NsMgr: XmlNamespaceManager; NsPrefix: Text; TargetElement: XmlElement)
     var
-        XmlUtilities: Codeunit "Add Xml Utilities";
+        XmlUtilities: Codeunit "AMC Xml Utilities";
         NewLineNode: XmlNode;
         SourceNode: XmlNode;
     begin
